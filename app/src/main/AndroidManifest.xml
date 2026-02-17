@@ -17,10 +17,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SystemUI">
 
-        <service android:name="SystemUIService"
-            android:exported="true"/>
-        <service android:name="KeyguardService"
-            android:exported="true"/>
+        <service android:name=".SystemUIService"
+            android:exported="true"
+            android:directBootAware="true"
+            android:enabled="true"/>
+        <service android:name=".KeyguardService"
+            android:exported="true"
+            android:directBootAware="true"
+            android:enabled="true"/>
 
     </application>
 
