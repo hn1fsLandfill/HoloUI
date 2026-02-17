@@ -3,7 +3,8 @@
     coreApp="true"
     package="eu.hn1f.holoui"
     android:sharedUserId="android.uid.systemui"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="Deprecated">
 
     <application
         android:name=".SystemUIApplication"
@@ -16,9 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SystemUI">
 
-        <service android:name=".SystemUIService"
+        <service android:name="SystemUIService"
             android:exported="true"/>
-        <service android:name=".KeyguardService"
+        <service android:name="KeyguardService"
             android:exported="true"/>
 
     </application>
