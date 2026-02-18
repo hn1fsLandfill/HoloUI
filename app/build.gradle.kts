@@ -19,10 +19,6 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    buildFeatures {
-        aidl = true
-    }
-
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -42,5 +38,5 @@ android {
 }
 
 dependencies {
-
+    compileOnly(files("../libs/framework.jar"))
 }
