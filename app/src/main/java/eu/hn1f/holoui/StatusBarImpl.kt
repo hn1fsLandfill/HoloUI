@@ -121,8 +121,10 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
     }
 
     override fun immersiveModeChanged(rootDisplayAreaId: Int, isImmersiveMode: Boolean, windowType: Int) {
-        if(isImmersiveMode) core.hideStatusBar()
-        else core.showStatusBar()
+        core.context.run {
+            if(isImmersiveMode) core.hideStatusBar()
+            else core.showStatusBar()
+        }
     }
 
     override fun moveFocusedTaskToDesktop(p0: Int) {
@@ -266,8 +268,10 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
     }
 
     override fun setTopAppHidesStatusBar(hidesStatusBar: Boolean) {
-        if(hidesStatusBar) core.hideStatusBar()
-        else core.showStatusBar()
+        core.context.run {
+            if(hidesStatusBar) core.hideStatusBar()
+            else core.showStatusBar()
+        }
     }
 
     override fun setUdfpsRefreshRateCallback(callback: IUdfpsRefreshRateRequestCallback?) {

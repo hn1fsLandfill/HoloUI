@@ -2,19 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TextView
+    android:layout_height="match_parent"
+    android:id="@+id/status_bar">
+    <eu.hn1f.holoui.widgets.Clock
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:textColor="#FFFFFF"
-        android:textSize="18dp"
-        android:text=" 9:00"/>
+        android:textSize="18sp"/>
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="horizontal"
-        android:gravity="right">
+        android:gravity="end">
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
