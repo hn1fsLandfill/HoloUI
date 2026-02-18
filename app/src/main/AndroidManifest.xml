@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     coreApp="true"
-    package="eu.hn1f.holoui"
     android:sharedUserId="android.uid.systemui"
+    android:usesNonSdkApi="true"
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="Deprecated">
+    
+    <uses-permission android:name="android.permission.STATUS_BAR"
+        tools:ignore="ProtectedPermissions" />
 
     <application
         android:name=".SystemUIApplication"
