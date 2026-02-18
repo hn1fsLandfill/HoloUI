@@ -1,6 +1,7 @@
 package eu.hn1f.holoui
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.PixelFormat
 import android.os.Binder
 import android.view.Gravity
@@ -17,7 +18,6 @@ class StatusBar(val context: Context) {
     fun add() {
         val barHeight = context.resources.getDimensionPixelSize(R.dimen.statusbar_height)
         root = inflater.inflate(R.layout.root, null) as FrameLayout?
-        root!!.setPadding(64, 0, 64, 0)
         val lp = WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT,
             barHeight,
@@ -37,6 +37,8 @@ class StatusBar(val context: Context) {
 
     fun init() {
         add()
+        root!!.setBackgroundColor(Color.BLACK)
         inflater.inflate(R.layout.status_bar, root)
+            .setPadding(64, 0, 64, 0)
     }
 }
