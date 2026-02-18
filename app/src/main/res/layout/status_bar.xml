@@ -23,10 +23,8 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_qs_wifi_full_4" />
-        <ImageView
+        <eu.hn1f.holoui.icons.Battery
             android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/stat_sys_battery_100"
-            android:tint="@color/white"/>
+            android:layout_height="24dp"/>
     </LinearLayout>
 </LinearLayout>

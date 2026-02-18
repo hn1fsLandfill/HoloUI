@@ -1,3 +1,6 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">HoloUI</string>
+    <string name="battery_low_title">Connect charger</string>
+    <string name="battery_low_subtitle">The battery is getting low.</string>
+    <string name="battery_low_percent_format"><xliff:g id="number">%d%%</xliff:g> remaining</string>
 </resources>
