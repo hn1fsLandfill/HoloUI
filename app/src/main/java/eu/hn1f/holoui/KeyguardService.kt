@@ -31,8 +31,10 @@ class KeyguardService: Service() {
             Log.v("HoloUI", "dismiss message $message")
             callback?.onDismissSucceeded()
         }
+        // dreams = cute name for screensavers
         override fun onDreamingStarted() {}
         override fun onDreamingStopped() {}
+
         override fun onStartedGoingToSleep(pmSleepReason: Int) {}
         override fun onFinishedGoingToSleep(
             pmSleepReason: Int,
