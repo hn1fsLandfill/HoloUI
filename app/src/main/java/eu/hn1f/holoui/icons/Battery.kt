@@ -5,21 +5,22 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.res.ColorStateList
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.os.BatteryManager
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.WindowManager
-import android.widget.ImageView
 import android.widget.TextView
 import eu.hn1f.holoui.R
 import eu.hn1f.holoui.Sounds
 import kotlin.math.roundToInt
 
 
-class Battery(context: Context?, attrs: AttributeSet? = null): ImageView(context, attrs) {
-    private class BatteryTracker: BroadcastReceiver() {
+class Battery(context: Context?, attrs: AttributeSet? = null): View(context, attrs) {
+    private class BatteryTracker(val main: Battery): BroadcastReceiver() {
         final val UNKNOWN_LEVEL = -1
         fun showLowBatteryDialog(context: Context, level: Int) {
 
@@ -51,15 +52,39 @@ class Battery(context: Context?, attrs: AttributeSet? = null): ImageView(context
             if(action.equals(Intent.ACTION_BATTERY_CHANGED)) {
                 // TODO: status bar battery icon shenanigans
                 Log.v("HoloUI", "new battey level: $level")
-
-                if(level < 20) showLowBatteryDialog(context, percentage.roundToInt())
+                main.percentage = percentage.roundToInt()
+                main.invalidate()
             } else if(action.equals(Intent.ACTION_BATTERY_LOW)) {
                 val level = 100f*(intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0) /
                         intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100))
 
+                main.low_battery = true
                 showLowBatteryDialog(context, percentage.roundToInt())
+            } else if(action.equals(Intent.ACTION_BATTERY_OKAY)) {
+                main.low_battery = false
             }
         }
+    }
+
+    var percentage = 70
+    var low_battery = false
+    val paint = Paint()
+    val batteryIcon = resources.getDrawable(R.drawable.stat_sys_drawable)
+
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+        /* val percentageHeight = (percentage.toFloat()/100)*height
+        paint.setColor(Color.GRAY)
+        canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
+        if(low_battery) paint.setColor(Color.RED)
+        else paint.setColor(Color.WHITE)
+        canvas.drawRect(0f, height-percentageHeight, width.toFloat(), height.toFloat(), paint) */
+
+        val battery_width = batteryIcon.minimumWidth
+
+        batteryIcon.setBounds(0,0,battery_width,height)
+        batteryIcon.setLevel(percentage)
+        batteryIcon.draw(canvas)
     }
 
     override fun onAttachedToWindow() {
@@ -67,10 +92,10 @@ class Battery(context: Context?, attrs: AttributeSet? = null): ImageView(context
         val filter = IntentFilter()
         filter.addAction(Intent.ACTION_BATTERY_CHANGED)
         filter.addAction(Intent.ACTION_BATTERY_LOW)
+        filter.addAction(Intent.ACTION_BATTERY_OKAY)
 
-        setImageResource(R.drawable.stat_sys_battery_100)
-        imageTintList = ColorStateList.valueOf(context.getColor(R.color.white))
+        context.registerReceiver(BatteryTracker(this), filter)
 
-        context.registerReceiver(BatteryTracker(), filter)
+        invalidate()
     }
 }
