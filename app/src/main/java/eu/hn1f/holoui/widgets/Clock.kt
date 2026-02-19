@@ -35,7 +35,12 @@ class Clock @JvmOverloads constructor(
         filter.addAction(Intent.ACTION_TIMEZONE_CHANGED)
         filter.addAction(Intent.ACTION_CONFIGURATION_CHANGED)
 
-        getContext().registerReceiver(mIntentReceiver, filter, null, getHandler())
+        context.registerReceiver(mIntentReceiver, filter, null, getHandler())
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        context.unregisterReceiver(mIntentReceiver)
     }
 
     fun updateTime() {

@@ -7,6 +7,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
+import android.widget.Button
 import android.widget.LinearLayout
 import eu.hn1f.holoui.widgets.PanelView
 
@@ -30,8 +31,7 @@ class NotificationShade(val core: StatusBar) {
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.TYPE_STATUS_BAR_SUB_PANEL,
-            WindowManager.LayoutParams.SYSTEM_FLAG_SHOW_FOR_ALL_USERS
-                or WindowManager.LayoutParams.PRIVATE_FLAG_NO_MOVE_ANIMATION,
+            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
             PixelFormat.TRANSLUCENT)
         lp.token = Binder()
         lp.gravity = Gravity.TOP
@@ -44,5 +44,8 @@ class NotificationShade(val core: StatusBar) {
 
     fun init() {
         add()
+        root!!.findViewById<Button>(R.id.debug_shade).setOnClickListener {
+            hide()
+        }
     }
 }

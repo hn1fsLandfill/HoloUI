@@ -51,6 +51,8 @@ class Battery(context: Context?, attrs: AttributeSet? = null): ImageView(context
             if(action.equals(Intent.ACTION_BATTERY_CHANGED)) {
                 // TODO: status bar battery icon shenanigans
                 Log.v("HoloUI", "new battey level: $level")
+
+                if(level < 20) showLowBatteryDialog(context, percentage.roundToInt())
             } else if(action.equals(Intent.ACTION_BATTERY_LOW)) {
                 val level = 100f*(intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0) /
                         intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100))

@@ -3,4 +3,6 @@
     <string name="battery_low_title">Connect charger</string>
     <string name="battery_low_subtitle">The battery is getting low.</string>
     <string name="battery_low_percent_format"><xliff:g id="number">%d%%</xliff:g> remaining</string>
+    <string name="warning">You\'re currently using HoloUI, an alternative SystemUI implementation which is work-in-progress.
+        \n\nYou may encounter bugs you wouldn\'t see with the original implementation.</string>
 </resources>

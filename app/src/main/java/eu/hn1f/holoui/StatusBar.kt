@@ -1,5 +1,6 @@
 package eu.hn1f.holoui
 
+import android.animation.Animator
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PixelFormat
@@ -9,6 +10,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
+import android.view.animation.Animation
 import android.widget.FrameLayout
 import com.android.internal.statusbar.IStatusBarService
 
@@ -22,21 +24,28 @@ class StatusBar(val context: Context) {
     val statusBarImpl = StatusBarImpl(this)
     val barHeight = context.resources.getDimensionPixelSize(R.dimen.statusbar_height)
     var shade: NotificationShade? = null
+    var lockscreen: Lockscreen? = null
 
     fun hideStatusBar() {
-        root!!.visibility = View.GONE
+        val animator = root!!.animate()
+        animator.translationY(-barHeight.toFloat())
+        animator.withEndAction {
+            root!!.visibility = View.GONE
+        }
+        animator.start()
     }
     fun showStatusBar() {
         root!!.visibility = View.VISIBLE
+        val animator = root!!.animate()
+        animator.translationY(0f)
+        animator.start()
     }
 
     fun expandStatusBar() {
         shade!!.show()
-        shade!!.root!!.offsetY = shade!!.root!!.height.toFloat()
     }
     fun unexpandStatusBar() {
         shade!!.hide()
-        shade!!.root!!.offsetY = 0.0f
     }
 
     fun add() {
@@ -70,5 +79,8 @@ class StatusBar(val context: Context) {
         shade = NotificationShade(this)
         shade!!.init()
         statusbarService.registerStatusBar(statusBarImpl)
+
+        lockscreen = Lockscreen(context)
+        lockscreen!!.showLockscreen()
     }
 }

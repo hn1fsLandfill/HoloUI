@@ -1,5 +1,6 @@
 package eu.hn1f.holoui.widgets
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
@@ -9,34 +10,41 @@ import android.widget.FrameLayout
 import eu.hn1f.holoui.R
 
 class PanelView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
-    var offsetY = 0.0f
     var handle: View? = null
+    var offsetY: Float = 0f
+    var handleHeight = resources.getDimensionPixelSize(R.dimen.handle_height)
 
-    override fun onFinishInflate() {
-        super.onFinishInflate()
-        handle = findViewById(R.id.handle)
-    }
-
-    /* override fun onTouchEvent(event: MotionEvent?): Boolean {
-        /* if(event?.action == MotionEvent.ACTION_MOVE || event?.action == MotionEvent.ACTION_DOWN) {
-            offsetY = event.y;
+    fun handleTouchEvent(event: MotionEvent?): Boolean {
+        if(event?.action == MotionEvent.ACTION_MOVE || event?.action == MotionEvent.ACTION_DOWN) {
+            offsetY = event.rawY-handleHeight;
+            handle!!.translationY = offsetY
             return true
         } else if(event?.action == MotionEvent.ACTION_UP) {
             val uv = offsetY/height
-            if(uv > 0.4) {
-                offsetY = 1.0f
+            if(uv > 0.7) {
+                offsetY = height.toFloat()-handleHeight
             } else {
                 offsetY = 0.0f
+                visibility = GONE
             }
+            handle!!.translationY = offsetY
             return true
-        } */
-        return super.onTouchEvent(event)
-    } */
+        }
+        return false
+    }
 
-    override fun draw(canvas: Canvas) {
-        super.draw(canvas)
-        canvas.translate(0.0f,offsetY)
-        handle!!.draw(canvas)
-        canvas.translate(0.0f,-offsetY)
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+        handle = findViewById(R.id.handle)
+        handle!!.setOnTouchListener { view, event ->
+            handleTouchEvent(event)
+        }
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        offsetY = height.toFloat()-handleHeight
+        handle!!.translationY = offsetY
     }
 }

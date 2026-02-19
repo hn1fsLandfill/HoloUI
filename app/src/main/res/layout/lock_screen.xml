@@ -2,15 +2,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_weight="1"
-    android:background="@color/white">
+    android:paddingTop="@dimen/statusbar_height"
+    android:background="@color/black">
 
+    <eu.hn1f.holoui.widgets.Clock
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="48sp"/>
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="i'm a lock screen!"
-        android:textColor="@color/black"
-        android:textSize="48sp"/>
+        android:layout_height="wrap_content"
+        android:text="@string/warning"
+        android:textSize="20sp"
+        android:textColor="#ff0000"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="(debug) Unlock"
+        android:id="@+id/unlock"/>
 
 </LinearLayout>

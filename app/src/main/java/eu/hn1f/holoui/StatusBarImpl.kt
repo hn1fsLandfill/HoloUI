@@ -14,8 +14,10 @@ import android.os.Bundle
 import android.os.IBinder
 import android.os.ParcelFileDescriptor
 import android.os.UserHandle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
+import android.view.WindowManager
 import com.android.internal.statusbar.DisableStates
 import com.android.internal.statusbar.IAddTileResultCallback
 import com.android.internal.statusbar.IStatusBar
@@ -25,6 +27,8 @@ import com.android.internal.statusbar.StatusBarIcon
 import com.android.internal.view.AppearanceRegion
 
 class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
+    var mApplication: SystemUIApplication? = core.context.applicationContext as SystemUIApplication;
+
     override fun abortTransient(displayId: Int, types: Int) {
         // TODO("Not yet implemented")
     }
@@ -118,10 +122,11 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
 
     override fun hideToast(p0: String?, p1: IBinder?) {
         // TODO("Not yet implemented")
+        Log.v("HoloUI", "TODO: hideToast")
     }
 
     override fun immersiveModeChanged(rootDisplayAreaId: Int, isImmersiveMode: Boolean, windowType: Int) {
-        core.context.run {
+        mApplication!!.runInUIThread {
             if(isImmersiveMode) core.hideStatusBar()
             else core.showStatusBar()
         }
@@ -268,7 +273,7 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
     }
 
     override fun setTopAppHidesStatusBar(hidesStatusBar: Boolean) {
-        core.context.run {
+        mApplication!!.runInUIThread {
             if(hidesStatusBar) core.hideStatusBar()
             else core.showStatusBar()
         }
@@ -279,7 +284,7 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
         callback?.onRequestEnabled(0);
     }
 
-    override fun setWindowState(p0: Int, p1: Int, p2: Int) {
+    override fun setWindowState(display: Int, window: Int, state: Int) {
         // TODO("Not yet implemented")
     }
 
@@ -299,7 +304,8 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
         requestId: Long
     ) {
         // TODO("Not yet implemented")
-        sysuiReceiver?.onDialogDismissed(0, null)
+        Log.v("HoloUI", "TODO: showAuthenticationDialog")
+        sysuiReceiver?.onResumeAuthentication()
     }
 
     override fun showGlobalActionsMenu() {
@@ -344,6 +350,7 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
 
     override fun showShutdownUi(p0: Boolean, p1: String?, p2: Boolean) {
         // TODO("Not yet implemented")
+        Log.v("HoloUI", "TODO: showAuthenticationDialog")
     }
 
     override fun showToast(
@@ -356,6 +363,7 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
         p6: ITransientNotificationCallback?,
         p7: Int
     ) {
+        Log.v("HoloUI", "TODO: showToast")
         // TODO("Not yet implemented")
     }
 
