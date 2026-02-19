@@ -38,6 +38,5 @@
     <View
         android:id="@+id/handle"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/handle_height"
-        android:background="@drawable/status_bar_close" />
+        android:layout_height="@dimen/handle_height"/>
 </eu.hn1f.holoui.widgets.PanelView>

@@ -19,11 +19,13 @@ class PanelView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
 
     fun handleTouchEvent(event: MotionEvent?): Boolean {
         if(event?.action == MotionEvent.ACTION_MOVE || event?.action == MotionEvent.ACTION_DOWN) {
+            handle!!.isPressed = true
             offsetY = event.rawY-handleHeight;
             handle!!.translationY = offsetY
             invalidate()
             return true
         } else if(event?.action == MotionEvent.ACTION_UP) {
+            handle!!.isPressed = false
             val uv = offsetY/height
             if(uv > 0.7) {
                 onOpen()
@@ -43,6 +45,7 @@ class PanelView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         handle!!.setOnTouchListener { view, event ->
             handleTouchEvent(event)
         }
+        handle!!.background = resources.getDrawable(R.drawable.status_bar_close)
         setWillNotDraw(false)
     }
 
