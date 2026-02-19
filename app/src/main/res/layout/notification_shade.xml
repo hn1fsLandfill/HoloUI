@@ -6,8 +6,8 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#c81f1f1f"
-        android:id="@+id/notification_shade">
+        android:id="@+id/notification_shade"
+        android:background="#e60e0e0e">
 
         <LinearLayout
             android:layout_width="match_parent"
