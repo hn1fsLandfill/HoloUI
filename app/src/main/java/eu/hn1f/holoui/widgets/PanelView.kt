@@ -45,6 +45,10 @@ class PanelView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         handle!!.setOnTouchListener { view, event ->
             handleTouchEvent(event)
         }
+        // dispatch it
+        setOnTouchListener { view, event ->
+            handle!!.dispatchTouchEvent(event)
+        }
         handle!!.background = resources.getDrawable(R.drawable.status_bar_close)
         setWillNotDraw(false)
     }
