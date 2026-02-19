@@ -14,10 +14,15 @@ import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
 import eu.hn1f.holoui.R
+import eu.hn1f.holoui.Sounds
+import kotlin.math.roundToInt
+
 
 class Battery(context: Context?, attrs: AttributeSet? = null): ImageView(context, attrs) {
     private class BatteryTracker: BroadcastReceiver() {
+        final val UNKNOWN_LEVEL = -1
         fun showLowBatteryDialog(context: Context, level: Int) {
+
             val dialog_view = LayoutInflater.from(context)
                 .inflate(R.layout.low_battery, null)
             dialog_view.findViewById<TextView>(R.id.level_percent).text =
@@ -31,6 +36,7 @@ class Battery(context: Context?, attrs: AttributeSet? = null): ImageView(context
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .create()
 
+            Sounds(context).playLowBattery()
             dialog.window!!.setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG)
             dialog.show()
         }
@@ -38,18 +44,18 @@ class Battery(context: Context?, attrs: AttributeSet? = null): ImageView(context
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action
 
+            val level: Int = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+            val scale: Int = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
+            val percentage = level * 100 / scale.toFloat()
+
             if(action.equals(Intent.ACTION_BATTERY_CHANGED)) {
-                val level = 100*(intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0) /
-                        intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100))
-
-                // TODO
+                // TODO: status bar battery icon shenanigans
                 Log.v("HoloUI", "new battey level: $level")
-                showLowBatteryDialog(context, level)
             } else if(action.equals(Intent.ACTION_BATTERY_LOW)) {
-                val level = 100*(intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0) /
+                val level = 100f*(intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0) /
                         intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100))
 
-                showLowBatteryDialog(context, level)
+                showLowBatteryDialog(context, percentage.roundToInt())
             }
         }
     }
