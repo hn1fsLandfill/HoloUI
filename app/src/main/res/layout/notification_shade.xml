@@ -20,15 +20,12 @@
                 android:layout_height="match_parent"
                 android:textSize="36sp" />
         </LinearLayout>
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="(DEBUG) close shade"
-            android:id="@+id/debug_shade"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:id="@+id/stuff"
+            android:orientation="vertical" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

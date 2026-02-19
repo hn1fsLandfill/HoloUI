@@ -1,16 +1,17 @@
 package eu.hn1f.holoui
 
-import android.animation.Animator
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Insets
 import android.graphics.PixelFormat
 import android.os.Binder
 import android.os.ServiceManager
 import android.view.Gravity
+import android.view.InsetsFrameProvider
 import android.view.LayoutInflater
 import android.view.View
+import android.view.WindowInsets
 import android.view.WindowManager
-import android.view.animation.Animation
 import android.widget.FrameLayout
 import com.android.internal.statusbar.IStatusBarService
 
@@ -25,6 +26,7 @@ class StatusBar(val context: Context) {
     val barHeight = context.resources.getDimensionPixelSize(R.dimen.statusbar_height)
     var shade: NotificationShade? = null
     var lockscreen: Lockscreen? = null
+    var windowInsetsOwner = Binder();
 
     fun hideStatusBar() {
         val animator = root!!.animate()
@@ -65,6 +67,10 @@ class StatusBar(val context: Context) {
         lp.packageName = context.packageName
         lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
         lp.windowAnimations = android.R.anim.fade_out
+        lp.providedInsets = arrayOf<InsetsFrameProvider>(
+            InsetsFrameProvider(windowInsetsOwner, 0, WindowInsets.Type.statusBars())
+                .setInsetsSize(Insets.of(0,barHeight,0,0))
+        )
         windowManager.addView(root, lp)
     }
 

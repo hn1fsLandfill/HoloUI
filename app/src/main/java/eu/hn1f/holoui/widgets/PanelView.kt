@@ -1,5 +1,7 @@
 package eu.hn1f.holoui.widgets
 
+import android.animation.Animator
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
@@ -9,6 +11,7 @@ import android.view.View
 import android.widget.FrameLayout
 import eu.hn1f.holoui.R
 
+// TODO: Flinging
 class PanelView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
     var handle: View? = null
     var offsetY: Float = 0f
@@ -18,14 +21,14 @@ class PanelView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         if(event?.action == MotionEvent.ACTION_MOVE || event?.action == MotionEvent.ACTION_DOWN) {
             offsetY = event.rawY-handleHeight;
             handle!!.translationY = offsetY
+            invalidate()
             return true
         } else if(event?.action == MotionEvent.ACTION_UP) {
             val uv = offsetY/height
             if(uv > 0.7) {
-                offsetY = height.toFloat()-handleHeight
+                onOpen()
             } else {
-                offsetY = 0.0f
-                visibility = GONE
+                onClose()
             }
             handle!!.translationY = offsetY
             return true
@@ -40,11 +43,45 @@ class PanelView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         handle!!.setOnTouchListener { view, event ->
             handleTouchEvent(event)
         }
+        setWillNotDraw(false)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        offsetY = height.toFloat()-handleHeight
-        handle!!.translationY = offsetY
+    }
+
+    override fun dispatchDraw(canvas: Canvas) {
+        canvas.save()
+        canvas.clipRect(0f, 0f, width.toFloat(), offsetY+handleHeight)
+        super.dispatchDraw(canvas)
+        canvas.restore()
+    }
+
+    fun onOpen() {
+        val animation = ValueAnimator.ofFloat(offsetY, height.toFloat()-handleHeight)
+        animation.addUpdateListener { animator ->
+            offsetY = animator.animatedValue as Float
+            handle!!.translationY = offsetY
+            invalidate()
+        }
+        animation.start()
+    }
+
+    fun onClose() {
+        val animation = ValueAnimator.ofFloat(offsetY, 0f)
+        animation.addUpdateListener { animator ->
+            offsetY = animator.animatedValue as Float
+            handle!!.translationY = offsetY
+            invalidate()
+        }
+        animation.addListener(object: Animator.AnimatorListener {
+            override fun onAnimationEnd(animation: Animator) {
+                visibility = GONE
+            }
+            override fun onAnimationCancel(animation: Animator) {}
+            override fun onAnimationRepeat(animation: Animator) {}
+            override fun onAnimationStart(animation: Animator) {}
+        })
+        animation.start()
     }
 }

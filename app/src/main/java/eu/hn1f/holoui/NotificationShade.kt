@@ -2,8 +2,14 @@ package eu.hn1f.holoui
 
 import android.content.Context
 import android.graphics.PixelFormat
+import android.hardware.input.InputManagerGlobal
 import android.os.Binder
+import android.os.Handler
+import android.os.InputEventInjectionSync
+import android.os.Looper
+import android.os.SystemClock
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
@@ -19,14 +25,15 @@ class NotificationShade(val core: StatusBar) {
 
     fun show() {
         root!!.visibility = View.VISIBLE
+        root!!.onOpen()
     }
     fun hide() {
-        root!!.visibility = View.GONE
+        root!!.onClose()
     }
 
     fun add() {
         root = inflater.inflate(R.layout.notification_shade, null) as PanelView?
-        hide()
+        root!!.visibility = View.GONE
         val lp = WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.MATCH_PARENT,
@@ -42,10 +49,49 @@ class NotificationShade(val core: StatusBar) {
         windowManager.addView(root, lp)
     }
 
+    fun addDebugButton(text: String, l: View.OnClickListener) {
+        val b = Button(core.context)
+        b.width = WindowManager.LayoutParams.MATCH_PARENT
+        b.height = WindowManager.LayoutParams.WRAP_CONTENT
+        b.text = "(DEBUG) $text"
+        b.setOnClickListener(l)
+        root!!.findViewById<LinearLayout>(R.id.stuff).addView(b)
+    }
+
+    fun sendEvent(action: Int, key: Int, whenDown: Long = 0): Long {
+        var downTime = whenDown
+        if(downTime == 0L)
+            downTime = SystemClock.uptimeMillis()
+
+        val eventTime = SystemClock.uptimeMillis()
+        InputManagerGlobal.getInstance().injectInputEvent(KeyEvent(
+            downTime, eventTime,
+            action,
+            key,
+            0
+        ), InputEventInjectionSync.NONE)
+
+        return eventTime
+    }
+
     fun init() {
         add()
-        root!!.findViewById<Button>(R.id.debug_shade).setOnClickListener {
+        addDebugButton("close shade", {
             hide()
-        }
+        })
+        addDebugButton("home", {
+            val downTime = sendEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_HOME)
+            Handler(Looper.getMainLooper()).postDelayed({
+                sendEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_HOME, downTime)
+            }, 100)
+            hide()
+        })
+        addDebugButton("back", {
+            val downTime = sendEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK)
+            Handler(Looper.getMainLooper()).postDelayed({
+                sendEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK, downTime)
+            }, 100)
+            hide()
+        })
     }
 }
