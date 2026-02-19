@@ -55,11 +55,8 @@ class Battery(context: Context?, attrs: AttributeSet? = null): View(context, att
                 main.percentage = percentage.roundToInt()
                 main.invalidate()
             } else if(action.equals(Intent.ACTION_BATTERY_LOW)) {
-                val level = 100f*(intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0) /
-                        intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100))
-
                 main.low_battery = true
-                showLowBatteryDialog(context, percentage.roundToInt())
+                showLowBatteryDialog(context, main.percentage)
             } else if(action.equals(Intent.ACTION_BATTERY_OKAY)) {
                 main.low_battery = false
             }
