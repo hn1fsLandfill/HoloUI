@@ -29,7 +29,7 @@ class KeyguardService: Service() {
             message: CharSequence?
         ) {
             Log.v("HoloUI", "dismiss message $message")
-            callback!!.onDismissSucceeded()
+            callback?.onDismissSucceeded()
         }
         override fun onDreamingStarted() {}
         override fun onDreamingStopped() {}
