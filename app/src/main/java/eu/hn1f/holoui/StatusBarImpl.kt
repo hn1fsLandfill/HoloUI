@@ -1,5 +1,6 @@
 package eu.hn1f.holoui
 
+import android.app.AlertDialog
 import android.app.ITransientNotificationCallback
 import android.content.ComponentName
 import android.graphics.drawable.Icon
@@ -348,20 +349,29 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
         // TODO("Not yet implemented")
     }
 
-    override fun showShutdownUi(p0: Boolean, p1: String?, p2: Boolean) {
+    // TODO: Tackle LineageOS's custom rebootCustom property
+    override fun showShutdownUi(isReboot: Boolean, reason: String?, rebootCustom: Boolean) {
         // TODO("Not yet implemented")
-        Log.v("HoloUI", "TODO: showAuthenticationDialog")
+        mApplication!!.runInUIThread {
+            val shutdownUI = AlertDialog.Builder(mApplication)
+                .setTitle("Powering off...")
+                .setMessage(mApplication!!.getRebootMessage(isReboot, reason))
+                .setCancelable(false)
+                .create()
+            shutdownUI.window!!.setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG)
+            shutdownUI.show()
+        }
     }
 
     override fun showToast(
-        p0: Int,
-        p1: String?,
-        p2: IBinder?,
-        p3: CharSequence?,
-        p4: IBinder?,
-        p5: Int,
-        p6: ITransientNotificationCallback?,
-        p7: Int
+        uid: Int,
+        packageName: String?,
+        token: IBinder?,
+        text: CharSequence?,
+        windowToken: IBinder?,
+        duration: Int,
+        callback: ITransientNotificationCallback?,
+        displayId: Int
     ) {
         Log.v("HoloUI", "TODO: showToast")
         // TODO("Not yet implemented")
