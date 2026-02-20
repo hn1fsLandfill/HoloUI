@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.app.ITransientNotificationCallback
 import android.content.ComponentName
 import android.graphics.drawable.Icon
+import android.hardware.biometrics.BiometricPrompt
 import android.hardware.biometrics.IBiometricContextListener
 import android.hardware.biometrics.IBiometricSysuiReceiver
 import android.hardware.biometrics.PromptInfo
@@ -148,14 +149,17 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
 
     override fun onBiometricAuthenticated(p0: Int) {
         // TODO("Not yet implemented")
+        Log.v("HoloUI", "TODO: onBiometricAuthenticated")
     }
 
     override fun onBiometricError(p0: Int, p1: Int, p2: Int) {
         // TODO("Not yet implemented")
+        Log.v("HoloUI", "TODO: onBiometricError")
     }
 
     override fun onBiometricHelp(p0: Int, p1: String?) {
         // TODO("Not yet implemented")
+        Log.v("HoloUI", "TODO: onBiometricHelp")
     }
 
     override fun onCameraLaunchGestureDetected(p0: Int) {
@@ -247,6 +251,7 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
 
     override fun setBiometicContextListener(p0: IBiometricContextListener?) {
         // TODO("Not yet implemented")
+        Log.v("HoloUI", "TODO: setBiometicContextListener")
     }
 
     override fun setIcon(p0: String?, p1: StatusBarIcon?) {
@@ -260,6 +265,7 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
         p3: Boolean
     ) {
         // TODO("Not yet implemented")
+        Log.v("HoloUI", "TODO: setImeWindowStatus")
     }
 
     override fun setNavigationBarLumaSamplingEnabled(p0: Int, p1: Boolean) {
@@ -283,14 +289,17 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
 
     override fun setUdfpsRefreshRateCallback(callback: IUdfpsRefreshRateRequestCallback?) {
         // TODO("Not yet implemented")
+        Log.v("HoloUI", "TODO: setUdfpsRefreshRateCallback")
         callback?.onRequestEnabled(0);
     }
 
     override fun setWindowState(display: Int, window: Int, state: Int) {
+        Log.v("HoloUI", "TODO: setWindowState")
         // TODO("Not yet implemented")
     }
 
     override fun showAssistDisclosure() {
+        Log.v("HoloUI", "TODO: showAssistDisclosure")
         // TODO("Not yet implemented")
     }
 
@@ -307,14 +316,16 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
     ) {
         // TODO("Not yet implemented")
         Log.v("HoloUI", "TODO: showAuthenticationDialog")
-        sysuiReceiver?.onResumeAuthentication()
+        sysuiReceiver?.onDialogDismissed(BiometricPrompt.BIOMETRIC_ACQUIRED_GOOD, null)
     }
 
     override fun showGlobalActionsMenu() {
+        Log.v("HoloUI", "TODO: showGlobalActionsMenu")
         // TODO("Not yet implemented")
     }
 
     override fun showInattentiveSleepWarning() {
+        Log.v("HoloUI", "TODO: showInattentiveSleepWarning")
         // TODO("Not yet implemented")
     }
 
@@ -381,14 +392,17 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
     }
 
     override fun showTransient(p0: Int, p1: Int, p2: Boolean) {
+        Log.v("HoloUI", "TODO: showTransient")
         // TODO("Not yet implemented")
     }
 
     override fun showWirelessChargingAnimation(p0: Int) {
+        Log.v("HoloUI", "TODO: showWirelessChargingAnimation")
         // TODO("Not yet implemented")
     }
 
     override fun startAssist(p0: Bundle?) {
+        Log.v("HoloUI", "TODO: startAssist")
         // TODO("Not yet implemented")
     }
 
