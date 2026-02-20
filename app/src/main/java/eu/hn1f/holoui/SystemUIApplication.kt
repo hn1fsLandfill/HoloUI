@@ -1,11 +1,10 @@
 package eu.hn1f.holoui
 
-import android.app.AlertDialog
 import android.app.Application
-import android.content.DialogInterface
 import android.os.Handler
 import android.os.Looper
-import android.view.WindowManager
+import android.os.PowerManager
+
 
 class SystemUIApplication: Application() {
     var statusBarRunning = false
@@ -18,6 +17,19 @@ class SystemUIApplication: Application() {
     fun runInUIThread(r: Runnable) {
         Handler(Looper.getMainLooper()).post(r)
     }
+
+    fun getRebootMessage(isReboot: Boolean, reason: String?): Int {
+        if (reason != null && reason.startsWith(PowerManager.REBOOT_RECOVERY_UPDATE)) {
+            return R.string.reboot_to_update_reboot
+        } else if (reason != null && reason == PowerManager.REBOOT_RECOVERY) {
+            return R.string.reboot_to_reset_message
+        } else if (isReboot) {
+            return R.string.reboot_to_reset_message
+        } else {
+            return R.string.shutdown_progress
+        }
+    }
+
 
     fun startServices() {
         setTheme(R.style.Theme_SystemUI)
