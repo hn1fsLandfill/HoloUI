@@ -77,9 +77,13 @@ class KeyguardService: Service() {
             startTime: Long,
             fadeoutDuration: Long
         ) {}
-        override fun onShortPowerPressedGoHome() {}
+        override fun onShortPowerPressedGoHome() {
+            Log.v("HoloUI", "TODO: onShortPowerPressedGoHome")
+        }
         override fun dismissKeyguardToLaunch(intentToLaunch: Intent?) {}
-        override fun onSystemKeyPressed(keycode: Int) {}
+        override fun onSystemKeyPressed(keycode: Int) {
+            Log.v("HoloUI", "TODO: onSystemKeyPressed $keycode")
+        }
         override fun showDismissibleKeyguard() {}
     }
 
