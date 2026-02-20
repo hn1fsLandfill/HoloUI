@@ -5,10 +5,15 @@ import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
 
+// TODO (aka get it to a usable stage):
+// Navigation bar
+// Pulling the status bar
+// Notifications
 
 class SystemUIApplication: Application() {
     var statusBarRunning = false
     var statusBar: StatusBar? = null
+    var navigationBar: NavigationBar? = null
     var toaster: Toaster? = null
 
     override fun onCreate() {
@@ -39,6 +44,8 @@ class SystemUIApplication: Application() {
                 toaster = Toaster(this)
                 statusBar = StatusBar(this)
                 statusBar!!.init()
+                navigationBar = NavigationBar(this)
+                navigationBar!!.init()
                 statusBarRunning = true
             }
         }

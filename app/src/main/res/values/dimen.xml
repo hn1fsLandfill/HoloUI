@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="statusbar_height">24dp</dimen>
+    <dimen name="navigationbar_height">48dp</dimen>
     <dimen name="handle_height">24dp</dimen>
 </resources>
