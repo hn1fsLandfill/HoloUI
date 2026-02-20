@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="main">
+        <Preference
+            android:title="TODO"/>
+        <PreferenceScreen android:title="About HoloUI">
+            <PreferenceCategory>
+                <Preference
+                    android:summary="alpha"
+                    android:title="HoloUI version" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+    </PreferenceCategory>
+</PreferenceScreen>
