@@ -3,13 +3,13 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingBottom="16dp">
+    android:paddingBottom="56dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
-        android:background="#7f7f7f7f"
+        android:background="#e07f7f7f"
         android:padding="4dp"
         android:id="@+id/toast_text"/>
 
