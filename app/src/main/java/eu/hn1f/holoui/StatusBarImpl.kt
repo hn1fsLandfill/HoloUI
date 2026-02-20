@@ -108,7 +108,8 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
         // TODO("Not yet implemented")
     }
 
-    override fun handleSystemKey(p0: KeyEvent?) {
+    override fun handleSystemKey(p0: KeyEvent) {
+        Log.v("HoloUI", "TODO: handleSystemKey ${p0.action} ${p0.keyCode} $p0")
         // TODO("Not yet implemented")
     }
 

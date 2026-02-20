@@ -29,14 +29,16 @@ class StatusBar(val context: Context) {
     var windowInsetsOwner = Binder();
 
     fun hideStatusBar() {
+        (context as SystemUIApplication).navigationBar?.hide()
         val animator = root!!.animate()
         animator.translationY(-barHeight.toFloat())
         animator.withEndAction {
-            root!!.visibility = View.GONE
+            root!!.visibility = View.INVISIBLE
         }
         animator.start()
     }
     fun showStatusBar() {
+        (context as SystemUIApplication).navigationBar?.show()
         root!!.visibility = View.VISIBLE
         val animator = root!!.animate()
         animator.translationY(0f)
