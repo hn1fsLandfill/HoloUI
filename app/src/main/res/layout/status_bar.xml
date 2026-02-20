@@ -19,10 +19,9 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_qs_airplane_on" />
-        <ImageView
+        <eu.hn1f.holoui.icons.WiFi
             android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_qs_wifi_full_4" />
+            android:layout_height="24dp"/>
         <eu.hn1f.holoui.icons.Battery
             android:layout_width="24dp"
             android:layout_height="24dp"/>
