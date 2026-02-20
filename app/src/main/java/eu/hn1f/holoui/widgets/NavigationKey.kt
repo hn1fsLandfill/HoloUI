@@ -11,6 +11,7 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.widget.ImageView
 import eu.hn1f.holoui.R
+import eu.hn1f.holoui.SystemUIApplication
 
 class NavigationKey(context: Context?, attrs: AttributeSet?): ImageView(context, attrs) {
     var downTime = 0L
@@ -40,7 +41,10 @@ class NavigationKey(context: Context?, attrs: AttributeSet?): ImageView(context,
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if(event?.action == MotionEvent.ACTION_UP) {
             background = null
-            sendEvent(KeyEvent.ACTION_UP, key.getInt(R.styleable.NavigationKey_key, 3), SystemClock.uptimeMillis())
+            val key = key.getInt(R.styleable.NavigationKey_key, 3)
+            if(key == KeyEvent.KEYCODE_HOME) (context.applicationContext as SystemUIApplication)
+                .onHome()
+            else sendEvent(KeyEvent.ACTION_UP, key, SystemClock.uptimeMillis())
             return true
         } else if(event?.action == MotionEvent.ACTION_DOWN) {
             background = highlight

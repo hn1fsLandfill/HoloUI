@@ -1,14 +1,18 @@
 package eu.hn1f.holoui
 
 import android.app.Application
+import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
 
 // TODO (aka get it to a usable stage):
-// Navigation bar
-// Pulling the status bar
-// Notifications
+// [] Authentication stuff (Keyguard related probably)
+// [X] Navigation bar
+// [] Pulling the navigation bar or status bar in fullscreen apps
+// [] Notifications (shade's already done)
+// [] Volume dialog
+// [] Power menu
 
 class SystemUIApplication: Application() {
     var statusBarRunning = false
@@ -22,6 +26,15 @@ class SystemUIApplication: Application() {
 
     fun runInUIThread(r: Runnable) {
         Handler(Looper.getMainLooper()).post(r)
+    }
+
+    fun onHome() {
+        val intent = Intent().apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            action = Intent.ACTION_MAIN
+            addCategory(Intent.CATEGORY_HOME)
+        }
+        startActivity(intent)
     }
 
     fun getRebootMessage(isReboot: Boolean, reason: String?): Int {
