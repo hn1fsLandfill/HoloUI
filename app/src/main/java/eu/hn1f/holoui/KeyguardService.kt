@@ -1,9 +1,13 @@
 package eu.hn1f.holoui
 
+import android.Manifest
 import android.app.Service
 import android.content.Intent
+import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.os.Binder
 import android.os.Bundle
 import android.os.IBinder
+import android.os.Process
 import android.util.Log
 import com.android.internal.policy.IKeyguardDismissCallback
 import com.android.internal.policy.IKeyguardDrawnCallback
@@ -11,23 +15,43 @@ import com.android.internal.policy.IKeyguardExitCallback
 import com.android.internal.policy.IKeyguardService
 import com.android.internal.policy.IKeyguardStateCallback
 
+
 class KeyguardService: Service() {
-    private class BinderService(val service: KeyguardService): IKeyguardService.Stub() {
+    val PERMISSION: String = Manifest.permission.CONTROL_KEYGUARD
+
+    fun checkPermission() {
+        // Avoid deadlock by avoiding calling back into the system process.
+        if (Binder.getCallingUid() == Process.SYSTEM_UID) return
+
+        // Otherwise,explicitly check for caller permission ...
+        if (getBaseContext().checkCallingOrSelfPermission(PERMISSION) != PERMISSION_GRANTED) {
+            Log.w("HoloUI", "Caller needs permission '" + PERMISSION)
+            throw SecurityException(
+                ("Access denied to process: " + Binder.getCallingPid()
+                        + ", must have permission " + PERMISSION)
+            )
+        }
+    }
+
+    private var mBinder = object: IKeyguardService.Stub() {
         var mApplication: SystemUIApplication? = null;
 
         override fun setOccluded(isOccluded: Boolean, animate: Boolean) {}
         override fun addStateMonitorCallback(callback: IKeyguardStateCallback?) {
             Log.v("HoloUI", "TODO: addStateMonitorCallback?")
+            checkPermission()
             callback!!.onShowingStateChanged(true, 0)
         }
         override fun verifyUnlock(callback: IKeyguardExitCallback) {
-            Log.v("HoloUI", "TODO: Authentication handling")
+            Log.v("HoloUI", "TODO: Authentication handling (verifyUnlock)")
+            checkPermission()
             callback.onKeyguardExitResult(true)
         }
         override fun dismiss(
             callback: IKeyguardDismissCallback?,
             message: CharSequence?
         ) {
+            checkPermission()
             Log.v("HoloUI", "dismiss message $message")
             callback?.onDismissSucceeded()
         }
@@ -56,11 +80,13 @@ class KeyguardService: Service() {
         }
         override fun onScreenTurningOff() {}
         override fun onScreenTurnedOff() {
+            checkPermission()
             mApplication!!.runInUIThread {
                 mApplication!!.statusBar!!.lockscreen!!.showLockscreen(true)
             }
         }
         override fun setKeyguardEnabled(enabled: Boolean) {
+            checkPermission()
             mApplication!!.runInUIThread {
                 if(enabled)
                     mApplication!!.statusBar!!.lockscreen!!.showLockscreen()
@@ -69,7 +95,9 @@ class KeyguardService: Service() {
             }
         }
         override fun onSystemReady() {}
-        override fun doKeyguardTimeout(options: Bundle?) {}
+        override fun doKeyguardTimeout(options: Bundle?) {
+            Log.v("HoloUI", "TODO: doKeyguardTimeout")
+        }
         override fun setSwitchingUser(switching: Boolean) {}
         override fun setCurrentUser(userId: Int) {}
         override fun onBootCompleted() {}
@@ -87,15 +115,13 @@ class KeyguardService: Service() {
         override fun showDismissibleKeyguard() {}
     }
 
-    private var mBinder = BinderService(this);
-
     override fun onCreate() {
         super.onCreate()
         // TODO?
         Log.v("HoloUI", "STUB: KeyguardService created")
         // throw RuntimeException("mrow meow mrrp")
     }
-    override fun onBind(p0: Intent?): IBinder? {
+    override fun onBind(p0: Intent?): IBinder {
         mBinder.mApplication = (application as SystemUIApplication)
         return mBinder;
     }
