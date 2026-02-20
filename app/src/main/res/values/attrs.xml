@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="key" format="integer"/>
+    <declare-styleable name="NavigationKey">
+        <attr name="key"/>
+    </declare-styleable>
+</resources>
