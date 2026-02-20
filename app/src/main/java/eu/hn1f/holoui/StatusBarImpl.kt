@@ -30,10 +30,6 @@ import com.android.internal.view.AppearanceRegion
 class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
     var mApplication: SystemUIApplication? = core.context.applicationContext as SystemUIApplication;
 
-    override fun abortTransient(displayId: Int, types: Int) {
-        // TODO("Not yet implemented")
-    }
-
     override fun addQsTile(p0: ComponentName?) {
         // TODO("Not yet implemented")
     }
@@ -130,8 +126,14 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
 
     override fun immersiveModeChanged(rootDisplayAreaId: Int, isImmersiveMode: Boolean, windowType: Int) {
         mApplication!!.runInUIThread {
-            if(isImmersiveMode) core.hideStatusBar()
-            else core.showStatusBar()
+            if(isImmersiveMode) {
+                mApplication!!.navigationBar!!.hide()
+                core.hideStatusBar()
+            }
+            else {
+                mApplication!!.navigationBar!!.show()
+                core.showStatusBar()
+            }
         }
     }
 
@@ -391,8 +393,13 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
         // TODO("Not yet implemented")
     }
 
-    override fun showTransient(p0: Int, p1: Int, p2: Boolean) {
+    override fun showTransient(displayId: Int, types: Int, isGestureOnSystemBar: Boolean) {
         Log.v("HoloUI", "TODO: showTransient")
+        // TODO("Not yet implemented")
+    }
+
+    override fun abortTransient(displayId: Int, types: Int) {
+        Log.v("HoloUI", "TODO: abortTransient")
         // TODO("Not yet implemented")
     }
 
