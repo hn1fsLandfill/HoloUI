@@ -9,6 +9,7 @@ import android.os.PowerManager
 class SystemUIApplication: Application() {
     var statusBarRunning = false
     var statusBar: StatusBar? = null
+    var toaster: Toaster? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -35,6 +36,7 @@ class SystemUIApplication: Application() {
         setTheme(R.style.Theme_SystemUI)
         if(!statusBarRunning) {
             runInUIThread {
+                toaster = Toaster(this)
                 statusBar = StatusBar(this)
                 statusBar!!.init()
                 statusBarRunning = true
