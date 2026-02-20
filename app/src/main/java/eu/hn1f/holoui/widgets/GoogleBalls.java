@@ -57,15 +57,6 @@ public class GoogleBalls extends View {
             height = getHeight();
             paint = new Paint();
 
-            // Calculate scale factor to fit screen
-            /*float scaleX = (float) width / BASE_WIDTH;
-            float scaleY = (float) height / BASE_HEIGHT;
-            float scaleFactor = Math.min(scaleX, scaleY);
-
-            // Don't scale up, only down
-            if (scaleFactor > 1.0f) scaleFactor = 1.0f; */
-            float scaleFactor = 1.0f;
-
             // Initialize points with scaling
             // Google logo ball data (x, y, size, color) - base coordinates for ~400x300
             int[][] BALL_DATA = {
@@ -93,13 +84,13 @@ public class GoogleBalls extends View {
                     {17, 17, 5, 0x4779F7}, {232, 93, 5, 0x4B78F1}
             };
             points = new Point[BALL_DATA.length];
-            int offsetX = width / 2 - (int)(BASE_WIDTH * scaleFactor / 2);
-            int offsetY = height / 2 - (int)(BASE_HEIGHT * scaleFactor / 2);
+            int offsetX = width / 2 - (int)(BASE_WIDTH / 2);
+            int offsetY = height / 2 - (int)(BASE_HEIGHT / 2);
 
             for (int i = 0; i < BALL_DATA.length; i++) {
-                float x = (BALL_DATA[i][0] * scaleFactor) + offsetX;
-                float y = (BALL_DATA[i][1] * scaleFactor) + offsetY;
-                float size = Math.max(2, BALL_DATA[i][2] * scaleFactor);
+                float x = (BALL_DATA[i][0]) + offsetX;
+                float y = (BALL_DATA[i][1]) + offsetY;
+                float size = BALL_DATA[i][2]*2f;
                 int color = BALL_DATA[i][3];
                 points[i] = new Point(x, y, size, color);
             }
