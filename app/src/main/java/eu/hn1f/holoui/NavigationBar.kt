@@ -18,12 +18,12 @@ class NavigationBar(val context: Context) {
     val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     var root: LinearLayout? = null
     val barHeight = context.resources.getDimensionPixelSize(R.dimen.navigationbar_height)
-    var windowInsetsOwner = Binder();
+    var token = Binder("NavigationBar");
     var inflater = LayoutInflater.from(context)
 
     fun hide() {
         val animator = root!!.animate()
-        animator.translationY(-barHeight.toFloat())
+        animator.translationY(barHeight.toFloat())
         animator.withEndAction {
             root!!.visibility = View.INVISIBLE
         }
@@ -49,7 +49,7 @@ class NavigationBar(val context: Context) {
                     or WindowManager.LayoutParams.FLAG_SLIPPERY,
             PixelFormat.TRANSLUCENT)
         lp.privateFlags = WindowManager.LayoutParams.PRIVATE_FLAG_LAYOUT_SIZE_EXTENDED_BY_CUTOUT
-        lp.token = Binder()
+        lp.token = token
         lp.gravity = Gravity.BOTTOM
         lp.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
         lp.title = "NavigationBar"
@@ -57,7 +57,7 @@ class NavigationBar(val context: Context) {
         lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
         lp.windowAnimations = android.R.anim.fade_out
         lp.providedInsets = arrayOf<InsetsFrameProvider>(
-            InsetsFrameProvider(windowInsetsOwner, 0, WindowInsets.Type.navigationBars())
+            InsetsFrameProvider(token, 0, WindowInsets.Type.navigationBars())
                 .setInsetsSize(Insets.of(0,barHeight,0,0))
         )
         windowManager.addView(root, lp)
