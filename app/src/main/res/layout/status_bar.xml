@@ -22,8 +22,16 @@
         <eu.hn1f.holoui.icons.WiFi
             android:layout_width="24dp"
             android:layout_height="24dp"/>
-        <eu.hn1f.holoui.icons.Battery
+        <LinearLayout
             android:layout_width="24dp"
-            android:layout_height="24dp"/>
+            android:layout_height="24dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+            <eu.hn1f.holoui.icons.BatteryMeterView
+                android:layout_height="20.8dp"
+                android:layout_width="13.65dp"
+                android:layout_marginBottom="0.42dp"
+                android:layout_marginStart="5.2dip"/>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
