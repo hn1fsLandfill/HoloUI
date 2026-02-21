@@ -53,13 +53,17 @@
         <activity android:name=".activities.Settings"
             android:label="HoloUI Settings"
             android:theme="@android:style/Theme.Holo.NoActionBar"
-            android:exported="true">
+            android:exported="true"
+            tools:ignore="ExportedPreferenceActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <activity android:name=".activities.Recents"
+            android:label="Recent Apps"
+            android:theme="@android:style/Theme.Holo.Wallpaper.NoTitleBar" />
 
     </application>
 

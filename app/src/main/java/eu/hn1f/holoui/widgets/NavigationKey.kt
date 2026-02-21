@@ -42,9 +42,13 @@ class NavigationKey(context: Context?, attrs: AttributeSet?): ImageView(context,
         if(event?.action == MotionEvent.ACTION_UP) {
             background = null
             val key = key.getInt(R.styleable.NavigationKey_key, 3)
-            if(key == KeyEvent.KEYCODE_HOME) (context.applicationContext as SystemUIApplication)
-                .onHome()
-            else sendEvent(KeyEvent.ACTION_UP, key, SystemClock.uptimeMillis())
+            when (key) {
+                KeyEvent.KEYCODE_HOME -> (context.applicationContext as SystemUIApplication)
+                    .onHome()
+                KeyEvent.KEYCODE_RECENT_APPS -> (context.applicationContext as SystemUIApplication)
+                    .onRecentApps()
+                else -> sendEvent(KeyEvent.ACTION_UP, key, SystemClock.uptimeMillis())
+            }
             return true
         } else if(event?.action == MotionEvent.ACTION_DOWN) {
             background = highlight

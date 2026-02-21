@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
+import eu.hn1f.holoui.activities.Recents
 
 // TODO (aka get it to a usable stage):
 // [] Authentication stuff (Keyguard related probably)
@@ -33,6 +34,12 @@ class SystemUIApplication: Application() {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
             action = Intent.ACTION_MAIN
             addCategory(Intent.CATEGORY_HOME)
+        }
+        startActivity(intent)
+    }
+    fun onRecentApps() {
+        val intent = Intent(this, Recents::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
         startActivity(intent)
     }
