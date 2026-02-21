@@ -56,7 +56,9 @@ class NavigationKey(context: Context?, attrs: AttributeSet?): ImageView(context,
             sendEvent(KeyEvent.ACTION_DOWN, key.getInt(R.styleable.NavigationKey_key, 3), downTime)
             return true
         } else if(event?.action == MotionEvent.ACTION_CANCEL) {
+            val key = key.getInt(R.styleable.NavigationKey_key, 3)
             background = null
+            sendEvent(KeyEvent.ACTION_UP, key, SystemClock.uptimeMillis())
             return true
         }
         return super.onTouchEvent(event)
