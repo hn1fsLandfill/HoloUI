@@ -20,6 +20,7 @@ class SystemUIApplication: Application() {
     var statusBar: StatusBar? = null
     var navigationBar: NavigationBar? = null
     var toaster: Toaster? = null
+    var lowBatteryWatcher: LowBatteryWatcher? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -66,6 +67,8 @@ class SystemUIApplication: Application() {
                 statusBar!!.init()
                 navigationBar = NavigationBar(this)
                 navigationBar!!.init()
+                lowBatteryWatcher = LowBatteryWatcher(this)
+                lowBatteryWatcher!!.register()
                 statusBarRunning = true
             }
         }
