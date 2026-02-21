@@ -17,11 +17,18 @@ class PanelView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
     var offsetY: Float = 0f
     var handleHeight = resources.getDimensionPixelSize(R.dimen.handle_height)
 
+    var touchOffsetY = 0f
+
     fun handleTouchEvent(event: MotionEvent?): Boolean {
-        if(event?.action == MotionEvent.ACTION_MOVE || event?.action == MotionEvent.ACTION_DOWN) {
+        if(event?.action == MotionEvent.ACTION_DOWN) {
             handle!!.isPressed = true
-            offsetY = event.rawY-handleHeight;
-            handle!!.translationY = offsetY
+            touchOffsetY = handle!!.translationY-event.rawY
+            invalidate()
+            return true
+        } else if(event?.action == MotionEvent.ACTION_MOVE) {
+            handle!!.isPressed = true
+            offsetY = event.rawY+touchOffsetY;
+            if(offsetY < height.toFloat()-handleHeight) handle!!.translationY = offsetY
             invalidate()
             return true
         } else if(event?.action == MotionEvent.ACTION_UP) {
@@ -32,7 +39,7 @@ class PanelView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
             } else {
                 onClose()
             }
-            handle!!.translationY = offsetY
+            if(offsetY < height.toFloat()-handleHeight) handle!!.translationY = offsetY
             return true
         }
         return false
@@ -46,6 +53,7 @@ class PanelView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         handle!!.setOnTouchListener { view, event ->
             handleTouchEvent(event)
         }
+        addView(handle)
         // dispatch it
         setOnTouchListener { view, event ->
             handle!!.dispatchTouchEvent(event)
