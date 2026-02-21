@@ -31,9 +31,6 @@ class StatusBar(val context: Context) {
     fun hideStatusBar() {
         val animator = root!!.animate()
         animator.translationY(-barHeight.toFloat())
-        animator.withEndAction {
-            root!!.visibility = View.INVISIBLE
-        }
         animator.start()
     }
     fun showStatusBar() {
