@@ -193,19 +193,22 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
         // TODO("Not yet implemented")
     }
 
+    // proposed rotation stuff
+    // nice to have
     override fun onProposedRotationChanged(p0: Int, p1: Boolean) {
         // TODO("Not yet implemented")
     }
 
+    // clear status bar stuff
     override fun onSystemBarAttributesChanged(
-        p0: Int,
-        p1: Int,
-        p2: Array<out AppearanceRegion?>?,
-        p3: Boolean,
-        p4: Int,
-        p5: Int,
-        p6: String?,
-        p7: Array<out LetterboxDetails?>?
+        displayId: Int,
+        appearance: Int,
+        appearanceRegions: Array<out AppearanceRegion>,
+        navbarColorManagedByIme: Boolean,
+        behavior: Int,
+        requestedVisibleTypes: Int,
+        packageName: String?,
+        letterboxDetails: Array<out LetterboxDetails>
     ) {
         // TODO("Not yet implemented")
     }
