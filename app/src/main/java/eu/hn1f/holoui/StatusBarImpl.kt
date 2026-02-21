@@ -27,6 +27,19 @@ import com.android.internal.statusbar.LetterboxDetails
 import com.android.internal.statusbar.StatusBarIcon
 import com.android.internal.view.AppearanceRegion
 
+// TODO: (these are called on normal usage of a device without authentication)
+// appTransitionFinished
+// appTransitionPending
+// appTransitionStarting
+// onSystemBarAttributesChanged
+// setWindowState
+// onDisplayAddSystemDecorations
+// setUdfpsRefreshRateCallback
+// addStateMonitorCallback
+// setBiometicContextListener
+// onDisplayAddSystemDecorations
+// setImeWindowStatus
+
 class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
     var mApplication: SystemUIApplication? = core.context.applicationContext as SystemUIApplication;
 
