@@ -34,9 +34,4 @@
             android:text="holoui testing"
             android:paddingBottom="@dimen/handle_height"/>
     </LinearLayout>
-
-    <View
-        android:id="@+id/handle"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/handle_height"/>
 </eu.hn1f.holoui.widgets.PanelView>

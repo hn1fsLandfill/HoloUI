@@ -41,7 +41,8 @@ class PanelView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
     @SuppressLint("ClickableViewAccessibility")
     override fun onFinishInflate() {
         super.onFinishInflate()
-        handle = findViewById(R.id.handle)
+        handle = View(context)
+        handle!!.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, handleHeight)
         handle!!.setOnTouchListener { view, event ->
             handleTouchEvent(event)
         }
