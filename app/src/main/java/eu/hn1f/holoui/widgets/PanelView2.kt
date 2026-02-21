@@ -12,7 +12,7 @@ import android.widget.FrameLayout
 import eu.hn1f.holoui.R
 
 // TODO: Flinging
-class PanelView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
+class PanelView2(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
     var handle: View? = null
     var offsetY: Float = 0f
     var handleHeight = resources.getDimensionPixelSize(R.dimen.handle_height)
@@ -39,7 +39,6 @@ class PanelView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
             } else {
                 onClose()
             }
-            if(offsetY < height.toFloat()-handleHeight) handle!!.translationY = offsetY
             return true
         }
         return false

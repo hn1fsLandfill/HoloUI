@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <eu.hn1f.holoui.widgets.PanelView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/notification_panel">
+    <View
+        android:id="@+id/handle"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/handle_height"
+        android:background="@drawable/status_bar_close"
+        android:visibility="invisible"/>
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -25,7 +32,12 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:id="@+id/stuff"
-            android:orientation="vertical" />
+            android:orientation="vertical">
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+        </LinearLayout>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
