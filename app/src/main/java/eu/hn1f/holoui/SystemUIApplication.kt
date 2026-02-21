@@ -12,8 +12,8 @@ import eu.hn1f.holoui.activities.Recents
 // [X] Navigation bar
 // [] Pulling the navigation bar or status bar in fullscreen apps
 // [] Notifications (shade's already done)
-// [] Volume dialog
-// [] Power menu
+// [] Volume dialog (nice to have)
+// [] Power menu (android has a timeout for a fallback)
 
 class SystemUIApplication: Application() {
     var statusBarRunning = false
