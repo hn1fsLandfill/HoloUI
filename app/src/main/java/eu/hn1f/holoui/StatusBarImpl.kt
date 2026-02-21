@@ -434,7 +434,9 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
     }
 
     override fun toggleRecentApps() {
-        // TODO("Not yet implemented")
+        mApplication!!.runInUIThread {
+            mApplication!!.onRecentApps()
+        }
     }
 
     override fun toggleSplitScreen() {
