@@ -94,7 +94,7 @@ public class NotificationRowLayout
         }
 
         float densityScale = getResources().getDisplayMetrics().density;
-        float pagingTouchSlop = ViewConfiguration.get(mContext).getScaledPagingTouchSlop();
+        float pagingTouchSlop = ViewConfiguration.get(getContext()).getScaledPagingTouchSlop();
         mSwipeHelper = new SwipeHelper(SwipeHelper.X, this, densityScale, pagingTouchSlop);
     }
 
@@ -219,7 +219,7 @@ public class NotificationRowLayout
         super.onConfigurationChanged(newConfig);
         float densityScale = getResources().getDisplayMetrics().density;
         mSwipeHelper.setDensityScale(densityScale);
-        float pagingTouchSlop = ViewConfiguration.get(mContext).getScaledPagingTouchSlop();
+        float pagingTouchSlop = ViewConfiguration.get(getContext()).getScaledPagingTouchSlop();
         mSwipeHelper.setPagingTouchSlop(pagingTouchSlop);
     }
 
@@ -240,9 +240,9 @@ public class NotificationRowLayout
         if (b) {
             setLayoutTransition(mRealLayoutTransition);
         } else {
-            if (mRealLayoutTransition.isRunning()) {
-                mRealLayoutTransition.cancel();
-            }
+            //if (mRealLayoutTransition.isRunning()) {
+            //    mRealLayoutTransition.cancel();
+            //}
             setLayoutTransition(null);
         }
     }

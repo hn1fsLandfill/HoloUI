@@ -33,6 +33,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 
+import eu.hn1f.holoui.R;
+
 public class ExpandHelper implements Gefingerpoken, OnClickListener {
     public interface Callback {
         View getChildAtRawPosition(float x, float y);
