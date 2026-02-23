@@ -1,10 +1,12 @@
 package eu.hn1f.holoui
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
+import android.security.authenticationpolicy.AuthenticationPolicyManager
 import eu.hn1f.holoui.activities.Recents
 
 // TODO (aka get it to a usable stage):
@@ -16,6 +18,7 @@ import eu.hn1f.holoui.activities.Recents
 // [] Power menu (android has a timeout for a fallback)
 
 class SystemUIApplication: Application() {
+    var authenticationPolicyService: AuthenticationPolicyManager? = null;
     var statusBarRunning = false
     var statusBar: StatusBar? = null
     var navigationBar: NavigationBar? = null
@@ -24,6 +27,8 @@ class SystemUIApplication: Application() {
 
     override fun onCreate() {
         super.onCreate()
+        authenticationPolicyService =
+            this.getSystemService(Context.AUTHENTICATION_POLICY_SERVICE) as AuthenticationPolicyManager
     }
 
     fun runInUIThread(r: Runnable) {

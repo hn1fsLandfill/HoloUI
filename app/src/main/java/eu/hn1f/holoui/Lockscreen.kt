@@ -2,15 +2,11 @@ package eu.hn1f.holoui
 
 import android.content.Context
 import android.graphics.PixelFormat
-import android.media.Ringtone
-import android.media.RingtoneManager
 import android.os.Binder
-import android.provider.Settings
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.WindowManager
 import android.widget.Button
-import android.widget.LinearLayout
 
 class Lockscreen(val context: Context) {
     val root = LayoutInflater.from(context).inflate(R.layout.lock_screen, null)
@@ -21,10 +17,11 @@ class Lockscreen(val context: Context) {
         WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG,
         WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
         PixelFormat.TRANSLUCENT)
+    val token = Binder("Lockscreen")
     var shown = false
 
     init {
-        lp.token = Binder()
+        lp.token = token
         lp.gravity = Gravity.TOP
         lp.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
         lp.title = "Keyguard"

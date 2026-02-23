@@ -103,7 +103,7 @@ public class SizeAdaptiveLayout extends ViewGroup {
             background = sld.getCurrent();
         }
         if (background instanceof ColorDrawable) {
-            mModestyPanel.setBackgroundDrawable(background);
+            mModestyPanel.setBackground(background);
         } else {
             mModestyPanel.setBackgroundColor(Color.BLACK);
         }

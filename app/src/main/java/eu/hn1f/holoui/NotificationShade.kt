@@ -19,10 +19,10 @@ class NotificationShade(val core: StatusBar) {
 
     fun show() {
         root!!.visibility = View.VISIBLE
-        root!!.expand()
+        root!!.onOpen()
     }
     fun hide() {
-        //root!!.expand()
+        root!!.onClose()
     }
 
     fun add() {
