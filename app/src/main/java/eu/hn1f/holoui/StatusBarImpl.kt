@@ -140,11 +140,11 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
     override fun immersiveModeChanged(rootDisplayAreaId: Int, isImmersiveMode: Boolean, windowType: Int) {
         mApplication!!.runInUIThread {
             if(isImmersiveMode) {
-                mApplication!!.navigationBar!!.hide()
+                mApplication!!.navigationBar?.hide()
                 core.hideStatusBar()
             }
             else {
-                mApplication!!.navigationBar!!.show()
+                mApplication!!.navigationBar?.show()
                 core.showStatusBar()
             }
         }
