@@ -5,16 +5,20 @@ import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
+import android.os.UserHandle
 import android.provider.Settings
 import android.security.authenticationpolicy.AuthenticationPolicyManager
+import android.service.notification.StatusBarNotification
+import android.util.Log
 import com.android.internal.policy.IKeyguardStateCallback
 import eu.hn1f.holoui.activities.Recents
+import eu.hn1f.holoui.widgets.Notification
 
 // TODO (aka get it to a usable stage):
 // [] Authentication stuff (Keyguard related probably)
 // [X] Navigation bar
 // [] Pulling the navigation bar or status bar in fullscreen apps
-// [] Notifications (shade's already done)
+// [X] Notifications (mostly buggy)
 // [] Volume dialog (nice to have)
 // [] Power menu (android has a timeout for a fallback)
 
@@ -22,6 +26,7 @@ class SystemUIApplication: Application() {
     var authenticationPolicyService: AuthenticationPolicyManager? = null;
     var statusBarRunning = false
     var statusBar: StatusBar? = null
+    var notificationListener: NotificationListener? = null
     var navigationBar: NavigationBar? = null
     var toaster: Toaster? = null
     var lowBatteryWatcher: LowBatteryWatcher? = null
@@ -50,6 +55,25 @@ class SystemUIApplication: Application() {
         startActivity(intent)
     }
 
+    fun addNotification(sbn: StatusBarNotification) {
+        Log.v("HoloUI", "new notification")
+        runInUIThread {
+            val notification = Notification(this, sbn)
+            statusBar!!.shade!!.stuff!!.addView(notification)
+        }
+    }
+
+    fun removeNotification(sbn: StatusBarNotification) {
+        Log.v("HoloUI", "bai bai")
+        runInUIThread {
+            val stuff = statusBar!!.shade!!.stuff!!
+            val notification = stuff.findViewWithTag<Notification?>(sbn.packageName+sbn.postTime)
+            if(notification != null) stuff.removeView(notification)
+            else Log.v("HoloUI", "tried to remove null notification")
+        }
+    }
+
+
     fun getRebootMessage(isReboot: Boolean, reason: String?): Int {
         if (reason != null && reason.startsWith(PowerManager.REBOOT_RECOVERY_UPDATE)) {
             return R.string.reboot_to_update_reboot
@@ -76,6 +100,18 @@ class SystemUIApplication: Application() {
                     navigationBar = NavigationBar(this)
                     navigationBar!!.init()
                 }
+                notificationListener = NotificationListener()
+                notificationListener!!.mApplication = this
+                notificationListener!!.registerAsSystemService()
+
+                /* addNotification(StatusBarNotification(
+                    "hhh", "hhh", 0, "thing", 0, 0, 0, android.app.Notification.Builder(this, "test")
+                        .setSmallIcon(R.drawable.thenews)
+                        .setContentTitle("BREAKING NEWS!!!")
+                        .setSubText("Someone just died! Who? We don't know.")
+                        .build(),
+                    UserHandle.getUserHandleForUid(0), 10
+                )) */
                 statusBarRunning = true
             }
         }

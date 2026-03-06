@@ -16,6 +16,7 @@ class NotificationShade(val core: StatusBar) {
     val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     val inflater = LayoutInflater.from(context)
     var root: PanelView? = null
+    var stuff: LinearLayout? = null
 
     fun show() {
         root!!.visibility = View.VISIBLE
@@ -49,11 +50,13 @@ class NotificationShade(val core: StatusBar) {
         b.height = WindowManager.LayoutParams.WRAP_CONTENT
         b.text = "(DEBUG) $text"
         b.setOnClickListener(l)
-        root!!.findViewById<LinearLayout>(R.id.stuff).addView(b)
+        stuff!!.addView(b)
     }
 
     fun init() {
         add()
+        stuff = root!!.findViewById(R.id.stuff)
+
         addDebugButton("close shade", {
             hide()
         })
