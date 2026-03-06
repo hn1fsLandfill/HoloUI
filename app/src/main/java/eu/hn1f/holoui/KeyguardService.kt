@@ -18,6 +18,7 @@ import com.android.internal.policy.IKeyguardStateCallback
 
 class KeyguardService: Service() {
     val PERMISSION: String = Manifest.permission.CONTROL_KEYGUARD
+    var bootCompleted = false;
 
     fun checkPermission() {
         // Avoid deadlock by avoiding calling back into the system process.
@@ -37,10 +38,10 @@ class KeyguardService: Service() {
         var mApplication: SystemUIApplication? = null;
 
         override fun setOccluded(isOccluded: Boolean, animate: Boolean) {}
-        override fun addStateMonitorCallback(callback: IKeyguardStateCallback?) {
+        override fun addStateMonitorCallback(callback: IKeyguardStateCallback) {
             Log.v("HoloUI", "TODO: addStateMonitorCallback?")
             checkPermission()
-            callback!!.onShowingStateChanged(true, 0)
+            mApplication!!.stateCallback = callback
         }
         override fun verifyUnlock(callback: IKeyguardExitCallback) {
             Log.v("HoloUI", "TODO: Authentication handling (verifyUnlock)")
@@ -86,6 +87,7 @@ class KeyguardService: Service() {
             }
         }
         override fun setKeyguardEnabled(enabled: Boolean) {
+            Log.v("HoloUI", "setKeyguardEnabled")
             checkPermission()
             mApplication!!.runInUIThread {
                 if(enabled)
@@ -94,7 +96,9 @@ class KeyguardService: Service() {
                     mApplication!!.statusBar!!.lockscreen!!.hideLockscreen()
             }
         }
-        override fun onSystemReady() {}
+        override fun onSystemReady() {
+            bootCompleted = true
+        }
         override fun doKeyguardTimeout(options: Bundle?) {
             Log.v("HoloUI", "TODO: doKeyguardTimeout")
         }
@@ -121,7 +125,7 @@ class KeyguardService: Service() {
         Log.v("HoloUI", "STUB: KeyguardService created")
         // throw RuntimeException("mrow meow mrrp")
     }
-    override fun onBind(p0: Intent?): IBinder {
+    override fun onBind(intent: Intent?): IBinder {
         mBinder.mApplication = (application as SystemUIApplication)
         return mBinder;
     }

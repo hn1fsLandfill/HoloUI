@@ -7,6 +7,9 @@
         <PreferenceScreen android:title="About HoloUI">
             <PreferenceCategory>
                 <Preference
+                    android:summary="Xposed"
+                    android:title="Injection method" />
+                <Preference
                     android:summary="alpha"
                     android:title="HoloUI version" />
             </PreferenceCategory>

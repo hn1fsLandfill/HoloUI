@@ -3,6 +3,7 @@ package eu.hn1f.holoui
 import android.content.Context
 import android.graphics.PixelFormat
 import android.os.Binder
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.WindowManager
@@ -36,8 +37,17 @@ class Lockscreen(val context: Context) {
     fun showLockscreen(sound: Boolean = false) {
         if(!shown) {
             windowManager.addView(root, lp)
-            if(sound) Sounds(context).playLock()
+            if (sound) Sounds(context).playLock()
             shown = true
+
+            if((context.applicationContext as SystemUIApplication).stateCallback == null) {
+                Log.v("HoloUI","no statecallback, strange");
+            } else {
+                (context.applicationContext as SystemUIApplication).stateCallback?.onShowingStateChanged(
+                    true,
+                    0
+                )
+            }
         }
     }
     // when unlocked
@@ -45,6 +55,7 @@ class Lockscreen(val context: Context) {
         if(shown) {
             windowManager.removeView(root)
             shown = false
+            (context.applicationContext as SystemUIApplication).stateCallback?.onShowingStateChanged(false, 0)
         }
     }
 }

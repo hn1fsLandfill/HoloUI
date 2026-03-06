@@ -1,18 +1,22 @@
 package eu.hn1f.holoui
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Insets
 import android.graphics.PixelFormat
 import android.os.Binder
 import android.os.ServiceManager
+import android.util.Log
 import android.view.Gravity
 import android.view.InsetsFrameProvider
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import com.android.internal.statusbar.IStatusBarService
 
 class StatusBar(val context: Context) {
@@ -22,6 +26,7 @@ class StatusBar(val context: Context) {
     )
     val inflater = LayoutInflater.from(context)
     var root: FrameLayout? = null
+    var statusBar: LinearLayout? = null
     val statusBarImpl = StatusBarImpl(this)
     val barHeight = context.resources.getDimensionPixelSize(R.dimen.statusbar_height)
     var shade: NotificationShade? = null
@@ -29,13 +34,16 @@ class StatusBar(val context: Context) {
     var windowInsetsOwner = Binder();
 
     fun hideStatusBar() {
-        val animator = root!!.animate()
+        val animator = statusBar!!.animate()
         animator.translationY(-barHeight.toFloat())
+        animator.withEndAction {
+            statusBar!!.visibility = View.GONE
+        }
         animator.start()
     }
     fun showStatusBar() {
-        root!!.visibility = View.VISIBLE
-        val animator = root!!.animate()
+        statusBar!!.visibility = View.VISIBLE
+        val animator = statusBar!!.animate()
         animator.translationY(0f)
         animator.start()
     }
@@ -71,18 +79,26 @@ class StatusBar(val context: Context) {
         windowManager.addView(root, lp)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     fun init() {
         add()
-        root!!.setBackgroundColor(Color.BLACK)
-        val statusBar = inflater.inflate(R.layout.status_bar, root)
-        statusBar.setPadding(64, 0, 64, 0)
-        statusBar.setOnClickListener {
-            expandStatusBar()
+        root!!.setOnTouchListener { v, event ->
+            // TODO
+            Log.v("HoloUI", "touch event $event")
+            if(event.action == MotionEvent.ACTION_DOWN) {
+                expandStatusBar()
+            }
+            return@setOnTouchListener false
         }
+
+        statusBar = inflater.inflate(R.layout.status_bar, null) as LinearLayout?
+        statusBar!!.setPadding(64, 0, 64, 0)
+        statusBar!!.setBackgroundColor(Color.BLACK)
+        root!!.addView(statusBar)
+
         shade = NotificationShade(this)
         shade!!.init()
         statusbarService.registerStatusBar(statusBarImpl)
-
         lockscreen = Lockscreen(context)
         lockscreen!!.showLockscreen()
     }

@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
 import android.security.authenticationpolicy.AuthenticationPolicyManager
+import com.android.internal.policy.IKeyguardStateCallback
 import eu.hn1f.holoui.activities.Recents
 
 // TODO (aka get it to a usable stage):
@@ -24,6 +25,7 @@ class SystemUIApplication: Application() {
     var navigationBar: NavigationBar? = null
     var toaster: Toaster? = null
     var lowBatteryWatcher: LowBatteryWatcher? = null
+    var stateCallback: IKeyguardStateCallback? = null
 
     override fun onCreate() {
         super.onCreate()
