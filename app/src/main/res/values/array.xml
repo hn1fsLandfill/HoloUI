@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="eras">
+        <item>Android 4.4 (2013)</item>
+    </string-array>
+    <array name="eras_value">
+        <item>0</item>
+    </array>
+
     <!-- BatteryMeterView parameters -->
     <array name="batterymeter_color_levels">
         <item>4</item>

@@ -1,11 +1,11 @@
 package eu.hn1f.holoui
 
 import android.app.Application
-import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
+import android.provider.Settings
 import android.security.authenticationpolicy.AuthenticationPolicyManager
 import com.android.internal.policy.IKeyguardStateCallback
 import eu.hn1f.holoui.activities.Recents
@@ -29,8 +29,6 @@ class SystemUIApplication: Application() {
 
     override fun onCreate() {
         super.onCreate()
-        authenticationPolicyService =
-            this.getSystemService(Context.AUTHENTICATION_POLICY_SERVICE) as AuthenticationPolicyManager
     }
 
     fun runInUIThread(r: Runnable) {
@@ -72,10 +70,12 @@ class SystemUIApplication: Application() {
                 toaster = Toaster(this)
                 statusBar = StatusBar(this)
                 statusBar!!.init()
-                navigationBar = NavigationBar(this)
-                navigationBar!!.init()
                 lowBatteryWatcher = LowBatteryWatcher(this)
                 lowBatteryWatcher!!.register()
+                if(Settings.Global.getInt(contentResolver, "holoui_navbar", 1) == 1) {
+                    navigationBar = NavigationBar(this)
+                    navigationBar!!.init()
+                }
                 statusBarRunning = true
             }
         }

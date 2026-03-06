@@ -2,8 +2,15 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
         android:title="main">
-        <Preference
-            android:title="TODO"/>
+        <ListPreference
+            android:key="era"
+            android:title="Era"
+            android:entries="@array/eras"
+            android:entryValues="@array/eras_value"/>
+        <SwitchPreference
+            android:key="use_nav"
+            android:title="Use built-in navigation bar"
+            android:summary="(may break built-in launcher)"/>
         <PreferenceScreen android:title="About HoloUI">
             <PreferenceCategory>
                 <Preference
