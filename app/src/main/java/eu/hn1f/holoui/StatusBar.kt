@@ -37,7 +37,7 @@ class StatusBar(val context: Context) {
         val animator = statusBar!!.animate()
         animator.translationY(-barHeight.toFloat())
         animator.withEndAction {
-            statusBar!!.visibility = View.GONE
+            statusBar!!.visibility = View.INVISIBLE
         }
         animator.start()
     }
