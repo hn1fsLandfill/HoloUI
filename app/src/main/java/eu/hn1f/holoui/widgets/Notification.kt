@@ -66,7 +66,8 @@ class Notification(context: Context, var sbn: StatusBarNotification): LinearLayo
             val title = findViewById<TextView>(R.id.title)
             val subtitle = findViewById<TextView>(R.id.subtitle)
 
-            title.text = sbn.notification.extras.getString(Notification.EXTRA_TITLE, "No Title")
+            val fallback = sbn.notification.extras.getString(Notification.EXTRA_TEXT)
+            title.text = sbn.notification.extras.getString(Notification.EXTRA_TITLE, fallback)
             subtitle.text = sbn.notification.extras.getString(Notification.EXTRA_SUB_TEXT, "")
 
             val progress = sbn.notification.extras.getInt(Notification.EXTRA_PROGRESS, -1)
@@ -74,7 +75,7 @@ class Notification(context: Context, var sbn: StatusBarNotification): LinearLayo
             val progressIndeterminate = sbn.notification.extras.getBoolean(Notification.EXTRA_PROGRESS_INDETERMINATE, false)
             val progressView = findViewById<ProgressBar>(R.id.progress)
 
-            if(progress != -1) {
+            if(progress > 0) {
                 progressView.progress  = progress
                 progressView.max = progressMax
                 progressView.isIndeterminate = progressIndeterminate
