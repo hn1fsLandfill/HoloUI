@@ -92,6 +92,7 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
     }
 
     override fun confirmImmersivePrompt() {
+        Log.v("HoloUI", "TODO: ImmersivePrompt\n");
         // TODO("Not yet implemented")
     }
 
