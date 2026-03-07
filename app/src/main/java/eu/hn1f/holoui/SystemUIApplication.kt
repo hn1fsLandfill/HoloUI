@@ -58,8 +58,17 @@ class SystemUIApplication: Application() {
     fun addNotification(sbn: StatusBarNotification) {
         Log.v("HoloUI", "new notification")
         runInUIThread {
-            val notification = Notification(this, sbn)
-            statusBar!!.shade!!.stuff!!.addView(notification)
+            val stuff = statusBar!!.shade!!.stuff!!
+            val existing = stuff.findViewWithTag<Notification?>(sbn.packageName+sbn.id)
+            if(existing == null) {
+                val notification = Notification(this, sbn)
+                statusBar!!.shade!!.stuff!!.addView(notification)
+                // todo: use notificationChannel
+                if(sbn.notification.sound != null)
+                    Sounds(this).playUri(sbn.notification.sound)
+                else
+                    Sounds(this).playDefaultNotificationSound()
+            } else existing.updateNotification(sbn)
         }
     }
 
@@ -67,7 +76,7 @@ class SystemUIApplication: Application() {
         Log.v("HoloUI", "bai bai")
         runInUIThread {
             val stuff = statusBar!!.shade!!.stuff!!
-            val notification = stuff.findViewWithTag<Notification?>(sbn.packageName+sbn.postTime)
+            val notification = stuff.findViewWithTag<Notification?>(sbn.packageName+sbn.id)
             if(notification != null) stuff.removeView(notification)
             else Log.v("HoloUI", "tried to remove null notification")
         }

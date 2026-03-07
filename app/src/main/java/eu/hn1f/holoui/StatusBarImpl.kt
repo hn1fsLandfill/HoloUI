@@ -272,7 +272,7 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
         Log.v("HoloUI", "TODO: setBiometicContextListener")
     }
 
-    override fun setIcon(p0: String?, p1: StatusBarIcon?) {
+    override fun setIcon(slot: String, sbn: StatusBarIcon) {
         // TODO("Not yet implemented")
     }
 

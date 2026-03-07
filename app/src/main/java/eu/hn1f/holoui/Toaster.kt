@@ -3,6 +3,7 @@ package eu.hn1f.holoui
 import android.app.ITransientNotificationCallback
 import android.content.Context
 import android.graphics.PixelFormat
+import android.os.DeadObjectException
 import android.os.IBinder
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -57,8 +58,10 @@ class Toaster(mContext: Context) {
     }
 
     fun hideToastASAP() {
-        windowManager.removeViewImmediate(currentToast);
-        currentToast = null
-        currentCallback?.onToastHidden()
+        try {
+            windowManager.removeViewImmediate(currentToast);
+            currentToast = null
+            currentCallback?.onToastHidden()
+        } catch (e: DeadObjectException) {}
     }
 }
