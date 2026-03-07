@@ -1,5 +1,6 @@
 package eu.hn1f.holoui
 
+import android.app.ActivityManager
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
@@ -8,8 +9,12 @@ import android.os.Binder
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
+import android.widget.EditText
+import android.widget.Editor
 import com.android.internal.widget.LockPatternUtils
 import com.android.internal.widget.LockscreenCredential
 import kotlin.concurrent.thread
@@ -33,8 +38,31 @@ class Lockscreen(val context: Context) {
         lp.title = "Keyguard"
         lp.packageName = context.packageName
         lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
-        root.findViewById<Button>(R.id.unlock).setOnClickListener {
-            unlock()
+
+        val lockPattern = LockPatternUtils(context)
+        val userId = ActivityManager.getCurrentUser()
+
+        when(lockPattern.getCredentialTypeForUser(userId)) {
+            LockPatternUtils.CREDENTIAL_TYPE_PASSWORD -> {
+                val form = root.findViewById<EditText>(R.id.password_form)
+
+                form.setOnEditorActionListener { _, actionId, _ ->
+                    if(actionId == EditorInfo.IME_ACTION_DONE) {
+                        unlock()
+                        return@setOnEditorActionListener true
+                    }
+                    return@setOnEditorActionListener false
+                }
+                form.visibility = View.VISIBLE
+            }
+            else -> {
+                val form = root.findViewById<Button>(R.id.unlock_noauth)
+
+                form.setOnClickListener {
+                    unlock()
+                }
+                form.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -57,12 +85,15 @@ class Lockscreen(val context: Context) {
     }
 
     fun unlock() {
-        val userId = 0
+        val userId = ActivityManager.getCurrentUser()
         thread {
             val lockPattern = LockPatternUtils(context)
             val cred = when(lockPattern.getCredentialTypeForUser(userId)) {
                 LockPatternUtils.CREDENTIAL_TYPE_PASSWORD -> {
-                    LockscreenCredential.createPassword("test")
+                    val form = root.findViewById<EditText>(R.id.password_form)
+                    val text = form.text
+                    form.text.clear()
+                    LockscreenCredential.createPassword(text)
                 }
                 LockPatternUtils.CREDENTIAL_TYPE_NONE -> {
                     onSuccess()

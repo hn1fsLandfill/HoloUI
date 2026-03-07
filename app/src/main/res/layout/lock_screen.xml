@@ -17,14 +17,29 @@
         android:text="@string/warning"
         android:textSize="20sp"
         android:textColor="#ff0000"/>
-    <Button
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="(debug) Unlock"
-        android:id="@+id/unlock"/>
+        android:orientation="vertical"
+        android:id="@+id/authentication_form">
+        <EditText
+            android:id="@+id/password_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:lines="1"
+            android:inputType="textPassword"
+            android:visibility="gone" />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="(debug) Unlock"
+            android:id="@+id/unlock_noauth"
+            android:visibility="gone" />
+    </LinearLayout>
     <eu.hn1f.holoui.widgets.GoogleBalls
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"/>
-
 </LinearLayout>

@@ -15,7 +15,7 @@ import eu.hn1f.holoui.activities.Recents
 import eu.hn1f.holoui.widgets.Notification
 
 // TODO (aka get it to a usable stage):
-// [] Authentication stuff (Keyguard related probably)
+// [P] Authentication stuff (Biometrics, PINs and Patterns aren't implemented)
 // [X] Navigation bar
 // [] Pulling the navigation bar or status bar in fullscreen apps
 // [X] Notifications (mostly buggy)
