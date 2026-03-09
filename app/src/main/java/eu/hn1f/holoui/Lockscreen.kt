@@ -8,13 +8,13 @@ import android.graphics.PixelFormat
 import android.os.Binder
 import android.util.Log
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Editor
 import com.android.internal.widget.LockPatternUtils
 import com.android.internal.widget.LockscreenCredential
 import kotlin.concurrent.thread
@@ -42,17 +42,31 @@ class Lockscreen(val context: Context) {
         val lockPattern = LockPatternUtils(context)
         val userId = ActivityManager.getCurrentUser()
 
+        val form = root.findViewById<EditText>(R.id.password_form)
+
+        form.isSingleLine = true
+
+        form.setOnEditorActionListener { _, actionId, _ ->
+            if(actionId == EditorInfo.IME_ACTION_DONE) {
+                unlock()
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
+        }
+        form.setOnKeyListener { _, keyCode, _ ->
+            if(keyCode == KeyEvent.KEYCODE_ENTER) {
+                unlock()
+                return@setOnKeyListener true
+            }
+            return@setOnKeyListener false
+        }
+
         when(lockPattern.getCredentialTypeForUser(userId)) {
             LockPatternUtils.CREDENTIAL_TYPE_PASSWORD -> {
-                val form = root.findViewById<EditText>(R.id.password_form)
-
-                form.setOnEditorActionListener { _, actionId, _ ->
-                    if(actionId == EditorInfo.IME_ACTION_DONE) {
-                        unlock()
-                        return@setOnEditorActionListener true
-                    }
-                    return@setOnEditorActionListener false
-                }
+                form.visibility = View.VISIBLE
+            }
+            LockPatternUtils.CREDENTIAL_TYPE_PIN -> {
+                form.inputType = EditorInfo.TYPE_CLASS_NUMBER or EditorInfo.TYPE_NUMBER_VARIATION_PASSWORD
                 form.visibility = View.VISIBLE
             }
             else -> {
@@ -86,14 +100,18 @@ class Lockscreen(val context: Context) {
 
     fun unlock() {
         val userId = ActivityManager.getCurrentUser()
+        val form = root.findViewById<EditText>(R.id.password_form)
+
         thread {
             val lockPattern = LockPatternUtils(context)
             val cred = when(lockPattern.getCredentialTypeForUser(userId)) {
                 LockPatternUtils.CREDENTIAL_TYPE_PASSWORD -> {
-                    val form = root.findViewById<EditText>(R.id.password_form)
                     val text = form.text
-                    form.text.clear()
                     LockscreenCredential.createPassword(text)
+                }
+                LockPatternUtils.CREDENTIAL_TYPE_PIN -> {
+                    val text = form.text
+                    LockscreenCredential.createPin(text)
                 }
                 LockPatternUtils.CREDENTIAL_TYPE_NONE -> {
                     onSuccess()
@@ -114,12 +132,13 @@ class Lockscreen(val context: Context) {
                 lockPattern.reportSuccessfulPasswordAttempt(userId)
             } else {
                 (context.applicationContext as SystemUIApplication).runInUIThread {
-                    showDialog("Authentication failure")
+                    showDialog("Authentication failure (invalid password/pin?)")
                 }
             }
 
             cred.zeroize()
         }
+        form.text.clear()
     }
 
     fun showLockscreen(sound: Boolean = false) {
@@ -127,6 +146,10 @@ class Lockscreen(val context: Context) {
             windowManager.addView(root, lp)
             if (sound) Sounds(context).playLock()
             shown = true
+            (context.applicationContext as SystemUIApplication).runInUIThread {
+                val form = root.findViewById<EditText>(R.id.password_form)
+                form.text.clear()
+            }
 
             if((context.applicationContext as SystemUIApplication).stateCallback == null) {
                 Log.v("HoloUI","no statecallback, strange");
