@@ -17,12 +17,20 @@ class PanelView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
     var offsetY: Float = 0f
     var handleHeight = resources.getDimensionPixelSize(R.dimen.handle_height)
 
+    var hidden = false
+
     var touchOffsetY = 0f
 
     fun handleTouchEvent(event: MotionEvent?): Boolean {
-        if(event?.action == MotionEvent.ACTION_DOWN) {
+        if(event?.action == MotionEvent.ACTION_DOWN && !hidden) {
             handle!!.isPressed = true
             touchOffsetY = handle!!.translationY-event.rawY
+            invalidate()
+            return true
+        } else if(event?.action == MotionEvent.ACTION_DOWN) {
+            handle!!.isPressed = true
+            touchOffsetY = handle!!.translationY-event.rawY
+            onOpen(event.rawY)
             invalidate()
             return true
         } else if(event?.action == MotionEvent.ACTION_MOVE) {
@@ -35,7 +43,7 @@ class PanelView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
             handle!!.isPressed = false
             val uv = offsetY/height
             if(uv > 0.7) {
-                onOpen()
+                expand()
             } else {
                 onClose()
             }
@@ -73,8 +81,22 @@ class PanelView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         canvas.restore()
     }
 
-    fun onOpen() {
+    fun expand() {
+        hidden = false
+        visibility = VISIBLE
         val animation = ValueAnimator.ofFloat(offsetY, height.toFloat()-handleHeight)
+        animation.addUpdateListener { animator ->
+            offsetY = animator.animatedValue as Float
+            handle!!.translationY = offsetY
+            invalidate()
+        }
+        animation.start()
+    }
+
+    fun onOpen(y: Float) {
+        hidden = false
+        visibility = VISIBLE
+        val animation = ValueAnimator.ofFloat(offsetY, y)
         animation.addUpdateListener { animator ->
             offsetY = animator.animatedValue as Float
             handle!!.translationY = offsetY
@@ -93,6 +115,7 @@ class PanelView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         animation.addListener(object: Animator.AnimatorListener {
             override fun onAnimationEnd(animation: Animator) {
                 visibility = GONE
+                hidden = true
             }
             override fun onAnimationCancel(animation: Animator) {}
             override fun onAnimationRepeat(animation: Animator) {}

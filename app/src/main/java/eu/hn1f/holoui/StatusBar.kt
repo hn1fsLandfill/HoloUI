@@ -83,12 +83,9 @@ class StatusBar(val context: Context) {
     fun init() {
         add()
         root!!.setOnTouchListener { v, event ->
-            // TODO
+            // dispatch to the notification shade
             Log.v("HoloUI", "touch event $event")
-            if(event.action == MotionEvent.ACTION_DOWN) {
-                expandStatusBar()
-            }
-            return@setOnTouchListener false
+            return@setOnTouchListener shade!!.root!!.dispatchTouchEvent(event)
         }
 
         statusBar = inflater.inflate(R.layout.status_bar, null) as LinearLayout?
