@@ -3,7 +3,9 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="@dimen/statusbar_height"
-    android:id="@+id/status_bar">
+    android:id="@+id/status_bar"
+    android:paddingStart="@dimen/statusbar_padding"
+    android:paddingEnd="@dimen/statusbar_padding">
     <eu.hn1f.holoui.widgets.Clock
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

@@ -89,7 +89,6 @@ class StatusBar(val context: Context) {
         }
 
         statusBar = inflater.inflate(R.layout.status_bar, null) as LinearLayout?
-        statusBar!!.setPadding(64, 0, 64, 0)
         statusBar!!.setBackgroundColor(Color.BLACK)
         root!!.addView(statusBar)
 

@@ -20,7 +20,9 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="@color/black"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/statusbar_padding"
+            android:paddingEnd="@dimen/statusbar_padding">
 
             <eu.hn1f.holoui.widgets.Clock
                 android:layout_width="wrap_content"

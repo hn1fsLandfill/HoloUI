@@ -4,6 +4,8 @@
     <dimen name="navigationbar_height">48dp</dimen>
     <dimen name="handle_height">24dp</dimen>
 
+    <dimen name="statusbar_padding">28dp</dimen>
+
     <!-- original systemui port stuff begin -->
 
     <!-- Notification drawer tuning parameters (phone UI) -->
