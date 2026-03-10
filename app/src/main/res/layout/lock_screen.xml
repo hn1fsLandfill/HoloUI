@@ -4,13 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_weight="1"
-    android:paddingTop="@dimen/statusbar_height"
-    android:background="@color/black">
+    android:background="@drawable/wallpaper">
 
-    <eu.hn1f.holoui.widgets.Clock
+    <include layout="@layout/status_bar"/>
+
+    <!--<eu.hn1f.holoui.widgets.Clock
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="48sp"/>
+        android:paddingTop="24dp"
+        android:textSize="48sp"
+        android:gravity="center_horizontal"/>-->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,7 +23,9 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
         android:orientation="vertical"
         android:id="@+id/authentication_form">
         <EditText
@@ -38,8 +43,10 @@
             android:id="@+id/unlock_noauth"
             android:visibility="gone" />
     </LinearLayout>
-    <eu.hn1f.holoui.widgets.GoogleBalls
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_height="wrap_content"
+        android:text="HOLOUI TESTING"
+        android:textSize="16sp"
+        android:gravity="center_horizontal"/>
 </LinearLayout>
