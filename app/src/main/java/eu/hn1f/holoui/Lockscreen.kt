@@ -1,9 +1,9 @@
 package eu.hn1f.holoui
 
+import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.graphics.PixelFormat
 import android.os.Binder
 import android.util.Log
@@ -17,9 +17,11 @@ import android.widget.Button
 import android.widget.EditText
 import com.android.internal.widget.LockPatternUtils
 import com.android.internal.widget.LockscreenCredential
+import eu.hn1f.holoui.widgets.Clock
 import kotlin.concurrent.thread
 
 class Lockscreen(val context: Context) {
+    @SuppressLint("InflateParams")
     val root = LayoutInflater.from(context).inflate(R.layout.lock_screen, null)
     val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     val lp = WindowManager.LayoutParams(
@@ -30,6 +32,7 @@ class Lockscreen(val context: Context) {
         PixelFormat.TRANSLUCENT)
     val token = Binder("Lockscreen")
     var shown = false
+    val userId = ActivityManager.getCurrentUser()
 
     init {
         lp.token = token
@@ -39,12 +42,9 @@ class Lockscreen(val context: Context) {
         lp.packageName = context.packageName
         lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
 
-        val lockPattern = LockPatternUtils(context)
-        val userId = ActivityManager.getCurrentUser()
+        root.findViewById<Clock>(R.id.status_bar_clock).visibility = View.GONE
 
         val form = root.findViewById<EditText>(R.id.password_form)
-
-        form.isSingleLine = true
 
         form.setOnEditorActionListener { _, actionId, _ ->
             if(actionId == EditorInfo.IME_ACTION_DONE) {
@@ -60,6 +60,13 @@ class Lockscreen(val context: Context) {
             }
             return@setOnKeyListener false
         }
+
+        reload()
+    }
+
+    fun reload() {
+        val form = root.findViewById<EditText>(R.id.password_form)
+        val lockPattern = LockPatternUtils(context)
 
         when(lockPattern.getCredentialTypeForUser(userId)) {
             LockPatternUtils.CREDENTIAL_TYPE_PASSWORD -> {
@@ -84,7 +91,7 @@ class Lockscreen(val context: Context) {
         val warning = AlertDialog.Builder(context)
             .setTitle("HoloUI")
             .setMessage(msg)
-            .setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->})
+            .setPositiveButton("OK") { _, _ -> }
             .create()
 
         warning.window!!.setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG)
@@ -99,7 +106,7 @@ class Lockscreen(val context: Context) {
     }
 
     fun unlock() {
-        val userId = ActivityManager.getCurrentUser()
+        if(!shown) return;
         val form = root.findViewById<EditText>(R.id.password_form)
 
         thread {
@@ -143,6 +150,7 @@ class Lockscreen(val context: Context) {
 
     fun showLockscreen(sound: Boolean = false) {
         if(!shown) {
+            reload()
             windowManager.addView(root, lp)
             if (sound) Sounds(context).playLock()
             shown = true

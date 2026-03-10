@@ -8,12 +8,12 @@
 
     <include layout="@layout/status_bar"/>
 
-    <!--<eu.hn1f.holoui.widgets.Clock
+    <eu.hn1f.holoui.widgets.Clock
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="24dp"
         android:textSize="48sp"
-        android:gravity="center_horizontal"/>-->
+        android:gravity="center_horizontal"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
