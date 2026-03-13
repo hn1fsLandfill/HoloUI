@@ -1,50 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#111111"
+    android:background="#181818"
     android:layout_marginTop="4dp"
     android:layout_marginBottom="4dp">
 
-    <LinearLayout
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:gravity="center"
-        android:id="@+id/icon_background">
-        <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@mipmap/ic_launcher_round"
-            android:id="@+id/icon"/>
-    </LinearLayout>
+    <View
+        android:id="@+id/top_glow"
+        android:alpha="0"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/notification_divider_height"
+        android:layout_gravity="top|center_horizontal"
+        android:background="@drawable/top_divider_glow"
+        />
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:id="@+id/header">
+        android:id="@+id/core">
+        <LinearLayout
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:gravity="center"
+            android:id="@+id/icon_background">
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@mipmap/ic_launcher_round"
+                android:id="@+id/icon"/>
+        </LinearLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/title"
-            android:textColor="@color/white"
-            android:textSize="18sp"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/subtitle"/>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:id="@+id/header">
 
-        <ProgressBar
-            android:id="@+id/progress"
-            android:layout_width="match_parent"
-            android:layout_height="16dp"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp"
-            android:visibility="gone"
-            style="@android:style/Widget.Holo.ProgressBar.Horizontal"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/title"
+                android:textColor="@color/white"
+                android:textSize="18sp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/subtitle"/>
+
+            <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:visibility="gone"
+                style="@android:style/Widget.Holo.ProgressBar.Horizontal"/>
+        </LinearLayout>
     </LinearLayout>
+
+    <View
+        android:id="@+id/bottom_glow"
+        android:alpha="0"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/notification_divider_height"
+        android:layout_gravity="bottom|center_horizontal"
+        android:background="@drawable/bottom_divider_glow"
+        />
 
 </LinearLayout>
