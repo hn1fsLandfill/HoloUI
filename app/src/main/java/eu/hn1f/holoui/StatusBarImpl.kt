@@ -335,7 +335,7 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
     ) {
         // TODO("Not yet implemented")
         Log.v("HoloUI", "TODO: showAuthenticationDialog")
-        sysuiReceiver?.onDialogDismissed(BiometricPrompt.BIOMETRIC_ACQUIRED_GOOD, null)
+        sysuiReceiver?.onDialogDismissed(BiometricPrompt.DISMISSED_REASON_CREDENTIAL_CONFIRMED, null)
     }
 
     override fun showGlobalActionsMenu() {
