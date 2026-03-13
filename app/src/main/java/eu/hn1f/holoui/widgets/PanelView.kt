@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
@@ -21,32 +22,37 @@ class PanelView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
 
     var touchOffsetY = 0f
 
-    fun handleTouchEvent(event: MotionEvent?): Boolean {
-        if(event?.action == MotionEvent.ACTION_DOWN && !hidden) {
+    var mVelocityTracker: FlingTracker? = null;
+
+    fun handleTouchEvent(event: MotionEvent): Boolean {
+        if(event.action == MotionEvent.ACTION_DOWN) {
             handle!!.isPressed = true
             touchOffsetY = handle!!.translationY-event.rawY
+            if(hidden) onOpen(event.rawY)
+            mVelocityTracker = FlingTracker.obtain()
+            mVelocityTracker!!.trackMovement(event)
             invalidate()
             return true
-        } else if(event?.action == MotionEvent.ACTION_DOWN) {
-            handle!!.isPressed = true
-            touchOffsetY = handle!!.translationY-event.rawY
-            onOpen(event.rawY)
-            invalidate()
-            return true
-        } else if(event?.action == MotionEvent.ACTION_MOVE) {
+        } else if(event.action == MotionEvent.ACTION_MOVE) {
             handle!!.isPressed = true
             offsetY = event.rawY+touchOffsetY;
             if(offsetY < height.toFloat()-handleHeight) handle!!.translationY = offsetY
+            mVelocityTracker!!.trackMovement(event)
             invalidate()
             return true
-        } else if(event?.action == MotionEvent.ACTION_UP) {
+        } else if(event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL) {
             handle!!.isPressed = false
+            mVelocityTracker!!.computeCurrentVelocity(1000);
+            val vy = mVelocityTracker!!.yVelocity
             val uv = offsetY/height
-            if(uv > 0.7) {
+            Log.v("HoloUI", "Velocity Y $vy");
+            // TODO: Use collapse_min_display_fraction and expand_min_display_fraction?
+            if(vy > 200) {
                 expand()
-            } else {
+            } else if(vy < -200) {
                 onClose()
-            }
+            } else if(!hidden) expand()
+            mVelocityTracker!!.recycle()
             if(offsetY < height.toFloat()-handleHeight) handle!!.translationY = offsetY
             return true
         }
