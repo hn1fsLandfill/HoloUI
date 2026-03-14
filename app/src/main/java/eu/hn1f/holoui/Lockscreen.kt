@@ -136,6 +136,7 @@ class Lockscreen(val context: Context) {
                     Sounds(context).playUnlock()
                     hideLockscreen()
                 }
+                lockPattern.userPresent(userId)
                 lockPattern.reportSuccessfulPasswordAttempt(userId)
             } else {
                 (context.applicationContext as SystemUIApplication).runInUIThread {
