@@ -3,17 +3,18 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center">
+    android:gravity="center"
+    android:padding="16dp">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textColor="@color/white"
-        android:text="An application is asking for authentication."/>
+        android:text="An application is asking for authentication."
+        android:paddingBottom="32dp"/>
 
     <EditText
-        android:drawableLeft="@android:drawable/ic_lock_lock"
         android:id="@+id/password_form"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -23,7 +23,6 @@ import eu.hn1f.holoui.widgets.Notification
 // [] Power menu (android has a timeout for a fallback)
 
 class SystemUIApplication: Application() {
-    var authenticationPolicyService: AuthenticationPolicyManager? = null;
     var statusBarRunning = false
     var statusBar: StatusBar? = null
     var notificationListener: NotificationListener? = null
@@ -31,6 +30,8 @@ class SystemUIApplication: Application() {
     var toaster: Toaster? = null
     var lowBatteryWatcher: LowBatteryWatcher? = null
     var stateCallback: IKeyguardStateCallback? = null
+
+    var authenticationForm: Authentication? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -100,6 +101,7 @@ class SystemUIApplication: Application() {
         setTheme(R.style.Theme_SystemUI)
         if(!statusBarRunning) {
             runInUIThread {
+                authenticationForm = Authentication(this)
                 toaster = Toaster(this)
                 statusBar = StatusBar(this)
                 statusBar!!.init()

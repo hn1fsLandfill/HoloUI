@@ -323,23 +323,26 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
     }
 
     override fun showAuthenticationDialog(
-        promptInfo: PromptInfo?,
-        sysuiReceiver: IBiometricSysuiReceiver?,
-        sensorIds: IntArray?,
+        promptInfo: PromptInfo,
+        sysuiReceiver: IBiometricSysuiReceiver,
+        sensorIds: IntArray,
         credentialAllowed: Boolean,
         requireConfirmation: Boolean,
         userId: Int,
         operationId: Long,
-        opPackageName: String?,
+        opPackageName: String,
         requestId: Long
     ) {
         // TODO("Not yet implemented")
         Log.v("HoloUI", "TODO: showAuthenticationDialog")
-        sysuiReceiver?.onDialogDismissed(BiometricPrompt.DISMISSED_REASON_CREDENTIAL_CONFIRMED, null)
+        mApplication!!.runInUIThread {
+            mApplication!!.authenticationForm!!.showAuthenticationDialog(promptInfo, sysuiReceiver)
+        }
     }
 
     override fun showGlobalActionsMenu() {
         Log.v("HoloUI", "TODO: showGlobalActionsMenu")
+        // Power menu stuff it seems like
         // TODO("Not yet implemented")
     }
 
