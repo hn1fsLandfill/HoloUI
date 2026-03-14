@@ -3,10 +3,12 @@ package eu.hn1f.holoui.widgets
 import android.annotation.SuppressLint
 import android.app.Notification
 import android.content.Context
+import android.graphics.Color
 import android.service.notification.StatusBarNotification
 import android.util.Log
+import android.util.TypedValue
+import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
@@ -17,6 +19,62 @@ import eu.hn1f.holoui.SystemUIApplication
 @SuppressLint("ViewConstructor")
 class Notification(context: Context, var sbn: StatusBarNotification): LinearLayout(context) {
     private var mApplication: SystemUIApplication? = null
+
+    fun bigText(id: String, fallbackId: String? = null): TextView? {
+        val fallback = sbn.notification.extras.getString(fallbackId, sbn.packageName)
+        val text = sbn.notification.extras.getString(id, fallback)
+        if(text == null) return null
+
+        val view = findViewById<LinearLayout>(R.id.header)
+        val textView = TextView(context)
+
+        textView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+        textView.text = text
+        textView.setTextSize(18f)
+        textView.setTextColor(Color.WHITE)
+
+        view.addView(textView)
+        return textView
+    }
+
+    fun smallText(id: String, fallbackId: String? = null): TextView? {
+        val fallback = sbn.notification.extras.getString(fallbackId)
+        val text = sbn.notification.extras.getString(id, fallback)
+        if(text == null) return null
+
+        val view = findViewById<LinearLayout>(R.id.header)
+        val textView = TextView(context)
+
+        textView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+        textView.text = text
+
+        view.addView(textView)
+        return textView
+    }
+
+    fun progressBar() {
+        val progress = sbn.notification.extras.getInt(Notification.EXTRA_PROGRESS)
+        val progressMax = sbn.notification.extras.getInt(Notification.EXTRA_PROGRESS_MAX, -1)
+        val progressIndeterminate = sbn.notification.extras.getBoolean(Notification.EXTRA_PROGRESS_INDETERMINATE, false)
+
+        if(progress != null && progress > 0) {
+            val progressView = ProgressBar(ContextThemeWrapper(context, android.R.style.Widget_Holo_ProgressBar_Horizontal))
+            progressView.progress  = progress
+            progressView.max = progressMax
+            progressView.isIndeterminate = progressIndeterminate
+            progressView.setPadding(4, 0, 4, 0)
+            progressView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT,
+                TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    16f,
+                    context.resources.displayMetrics
+                ).toInt()
+            )
+
+            val view = findViewById<LinearLayout>(R.id.header)
+            view.addView(progressView)
+        }
+    }
 
     fun build() {
         removeAllViews()
@@ -55,28 +113,15 @@ class Notification(context: Context, var sbn: StatusBarNotification): LinearLayo
 
         val iconBg = findViewById<LinearLayout>(R.id.icon_background)
         val icon = findViewById<ImageView>(R.id.icon)
-        val title = findViewById<TextView>(R.id.title)
-        val subtitle = findViewById<TextView>(R.id.subtitle)
 
         if(sbn.notification.color != 0) iconBg.setBackgroundColor(sbn.notification.color)
         else iconBg.setBackgroundColor(0x1d3741)
         icon.setImageIcon(sbn.notification.smallIcon)
 
-        val fallback = sbn.notification.extras.getString(Notification.EXTRA_TEXT)
-        title.text = sbn.notification.extras.getString(Notification.EXTRA_TITLE, fallback)
-        subtitle.text = sbn.notification.extras.getString(Notification.EXTRA_SUB_TEXT, "")
-
-        val progress = sbn.notification.extras.getInt(Notification.EXTRA_PROGRESS, -1)
-        val progressMax = sbn.notification.extras.getInt(Notification.EXTRA_PROGRESS_MAX, -1)
-        val progressIndeterminate = sbn.notification.extras.getBoolean(Notification.EXTRA_PROGRESS_INDETERMINATE, false)
-        val progressView = findViewById<ProgressBar>(R.id.progress)
-
-        if(progress > 0) {
-            progressView.progress  = progress
-            progressView.max = progressMax
-            progressView.isIndeterminate = progressIndeterminate
-            progressView.visibility = View.VISIBLE
-        }
+        bigText(Notification.EXTRA_TITLE_BIG, Notification.EXTRA_TITLE)
+        smallText(Notification.EXTRA_BIG_TEXT, Notification.EXTRA_TEXT)
+        smallText(Notification.EXTRA_SUB_TEXT)
+        progressBar()
     }
 
     // TODO: ID and RemoteView stuff
