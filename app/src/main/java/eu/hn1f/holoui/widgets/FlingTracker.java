@@ -27,8 +27,8 @@ import java.util.Iterator;
  * panels.
  */
 public class FlingTracker {
-    static final boolean DEBUG = true;
-    private static final boolean DEBUG_NAN = true;
+    static final boolean DEBUG = false;
+    private static final boolean DEBUG_NAN = false;
     final int MAX_EVENTS = 8;
     final float DECAY = 0.75f;
     ArrayDeque<MotionEventCopy> mEventBuf = new ArrayDeque<MotionEventCopy>(MAX_EVENTS);
