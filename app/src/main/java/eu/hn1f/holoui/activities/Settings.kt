@@ -2,8 +2,10 @@ package eu.hn1f.holoui.activities
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.os.Process
+import android.preference.Preference
 import android.preference.PreferenceActivity
 import android.preference.SwitchPreference
 import android.provider.Settings
@@ -28,7 +30,7 @@ class Settings: PreferenceActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         addPreferencesFromResource(R.xml.settings)
-        val use_nav = (findPreference("use_nav") as SwitchPreference)
+        val use_nav = findPreference("use_nav") as SwitchPreference
 
         use_nav.isChecked = Settings.Global.getInt(contentResolver, "holoui_navbar", 1) == 1
 
@@ -36,6 +38,23 @@ class Settings: PreferenceActivity() {
             Settings.Global.putInt(contentResolver, "holoui_navbar", if(value == true) 1 else 0)
             showRestartRequired()
             true
+        }
+
+        val aboutversion = findPreference("aboutversion") as Preference
+        var taps = 0
+
+        aboutversion.onPreferenceClickListener = object: Preference.OnPreferenceClickListener {
+            override fun onPreferenceClick(preference: Preference?): Boolean {
+                taps++;
+                if(taps == 5) {
+                    val intent = Intent(applicationContext, GoogleBalls::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+                    startActivity(intent)
+                    taps = 0
+                }
+                return true
+            }
         }
     }
 }

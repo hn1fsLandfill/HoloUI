@@ -74,6 +74,9 @@
             android:label="Recent Apps"
             android:theme="@android:style/Theme.Holo.Wallpaper.NoTitleBar" />
 
+        <activity android:name=".activities.GoogleBalls"
+            android:label="Google Balls"
+            android:theme="@android:style/Theme.Holo.Wallpaper.NoTitleBar" />
     </application>
 
 </manifest>
