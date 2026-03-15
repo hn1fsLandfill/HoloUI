@@ -17,6 +17,7 @@
                     android:summary="Xposed"
                     android:title="Injection method" />
                 <Preference
+                    android:key="aboutversion"
                     android:summary="alpha"
                     android:title="HoloUI version" />
             </PreferenceCategory>
