@@ -20,7 +20,7 @@ import eu.hn1f.holoui.SystemUIApplication
 class Notification(context: Context, var sbn: StatusBarNotification): LinearLayout(context) {
     private var mApplication: SystemUIApplication? = null
 
-    fun bigText(id: String, fallbackId: String? = null): TextView? {
+    private fun bigText(id: String, fallbackId: String? = null): TextView? {
         val fallback = sbn.notification.extras.getString(fallbackId, sbn.packageName)
         val text = sbn.notification.extras.getString(id, fallback)
         if(text == null) return null
@@ -37,7 +37,7 @@ class Notification(context: Context, var sbn: StatusBarNotification): LinearLayo
         return textView
     }
 
-    fun smallText(id: String, fallbackId: String? = null): TextView? {
+    private fun smallText(id: String, fallbackId: String? = null): TextView? {
         val fallback = sbn.notification.extras.getString(fallbackId)
         val text = sbn.notification.extras.getString(id, fallback)
         if(text == null) return null
@@ -52,7 +52,7 @@ class Notification(context: Context, var sbn: StatusBarNotification): LinearLayo
         return textView
     }
 
-    fun progressBar() {
+    private fun progressBar() {
         val progress = sbn.notification.extras.getInt(Notification.EXTRA_PROGRESS)
         val progressMax = sbn.notification.extras.getInt(Notification.EXTRA_PROGRESS_MAX, -1)
         val progressIndeterminate = sbn.notification.extras.getBoolean(Notification.EXTRA_PROGRESS_INDETERMINATE, false)
@@ -116,7 +116,10 @@ class Notification(context: Context, var sbn: StatusBarNotification): LinearLayo
 
         if(sbn.notification.color != 0) iconBg.setBackgroundColor(sbn.notification.color)
         else iconBg.setBackgroundColor(0x1d3741)
-        icon.setImageIcon(sbn.notification.smallIcon)
+
+        val bigIcon = sbn.notification.getLargeIcon()
+        if(bigIcon != null) icon.setImageIcon(bigIcon)
+        else icon.setImageIcon(sbn.notification.smallIcon)
 
         bigText(Notification.EXTRA_TITLE_BIG, Notification.EXTRA_TITLE)
         smallText(Notification.EXTRA_BIG_TEXT, Notification.EXTRA_TEXT)
