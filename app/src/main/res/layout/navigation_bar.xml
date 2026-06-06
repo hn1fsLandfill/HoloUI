@@ -9,29 +9,63 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"/>
-    <eu.hn1f.holoui.widgets.NavigationKey
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:src="@drawable/ic_sysbar_recent"
-        app:key="312"/>
-    <View
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"/>
-    <eu.hn1f.holoui.widgets.NavigationKey
+        android:id="@+id/normal">
+        <eu.hn1f.holoui.widgets.NavigationKey
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_sysbar_back"
+            app:key="4"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+        <eu.hn1f.holoui.widgets.NavigationKey
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_sysbar_home"
+            app:key="3"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+        <eu.hn1f.holoui.widgets.NavigationKey
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_sysbar_recent"
+            app:key="312"/>
+    </LinearLayout>
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:src="@drawable/ic_sysbar_home"
-        app:key="3"/>
-    <View
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"/>
-    <eu.hn1f.holoui.widgets.NavigationKey
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:src="@drawable/ic_sysbar_back"
-        app:key="4"/>
+        android:id="@+id/inverted"
+        android:visibility="gone">
+        <eu.hn1f.holoui.widgets.NavigationKey
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_sysbar_recent"
+            app:key="312"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+        <eu.hn1f.holoui.widgets.NavigationKey
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_sysbar_home"
+            app:key="3"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+        <eu.hn1f.holoui.widgets.NavigationKey
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_sysbar_back"
+            app:key="4"/>
+    </LinearLayout>
     <View
         android:layout_width="0dp"
         android:layout_height="match_parent"
