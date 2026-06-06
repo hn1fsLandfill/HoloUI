@@ -45,6 +45,10 @@ class WiFi(context: Context, attrs: AttributeSet?): ImageView(context, attrs) {
     }
 
     fun update(new: Int) {
+        if(new == -1)
+            visibility = GONE
+        else
+            visibility = VISIBLE
         bars = new
         setImageResource(getBarDrawable())
     }
