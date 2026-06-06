@@ -43,57 +43,63 @@ import com.android.internal.view.AppearanceRegion
 
  class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
     var mApplication: SystemUIApplication? = core.context.applicationContext as SystemUIApplication;
+    val DEBUG_ISB = true
+
+     fun trace(msg: String) {
+         if(DEBUG_ISB)
+             Log.v("StatusBarImpl", msg)
+     }
 
     override fun addQsTile(p0: ComponentName?) {
-        // TODO("Not yet implemented")
+        trace("addQsTile")
     }
 
     override fun addQsTileToFrontOrEnd(p0: ComponentName?, p1: Boolean) {
-        // TODO("Not yet implemented")
+        trace("addQsTileToFrontOrEnd")
     }
 
     override fun animateCollapsePanels() {
-        // TODO("Not yet implemented")
+        trace("animateCollapsePanels")
     }
 
     override fun animateExpandNotificationsPanel() {
-        // TODO("Not yet implemented")
+        trace("animateExpandNotificationsPanel")
     }
 
     override fun animateExpandSettingsPanel(p0: String?) {
-        // TODO("Not yet implemented")
+        trace("animateExpandSettingsPanel")
     }
 
     override fun appTransitionCancelled(p0: Int) {
-        // TODO("Not yet implemented")
+        trace("appTransitionCancelled")
     }
 
     override fun appTransitionFinished(p0: Int) {
-        // TODO("Not yet implemented")
+        trace("appTransitionFinished")
     }
 
     override fun appTransitionPending(p0: Int) {
-        // TODO("Not yet implemented")
+        trace("appTransitionPending")
     }
 
     override fun appTransitionStarting(p0: Int, p1: Long, p2: Long) {
-        // TODO("Not yet implemented")
+        trace("appTransitionStarting")
     }
 
     override fun cancelPreloadRecentApps() {
-        // TODO("Not yet implemented")
+        trace("cancelPreloadRecentApps")
     }
 
     override fun cancelRequestAddTile(p0: String?) {
-        // TODO("Not yet implemented")
+        trace("cancelRequestAddTile")
     }
 
     override fun clickQsTile(p0: ComponentName?) {
-        // TODO("Not yet implemented")
+        trace("clickQsTile")
     }
 
     override fun confirmImmersivePrompt() {
-        Log.v("HoloUI", "TODO: ImmersivePrompt\n");
+        trace("TODO: ImmersivePrompt\n");
         // TODO("Not yet implemented")
     }
 
@@ -121,7 +127,7 @@ import com.android.internal.view.AppearanceRegion
     }
 
     override fun handleSystemKey(p0: KeyEvent) {
-        Log.v("HoloUI", "TODO: handleSystemKey ${p0.action} ${p0.keyCode} $p0")
+        trace("TODO: handleSystemKey ${p0.action} ${p0.keyCode} $p0")
         // TODO("Not yet implemented")
     }
 
@@ -166,17 +172,17 @@ import com.android.internal.view.AppearanceRegion
 
     override fun onBiometricAuthenticated(p0: Int) {
         // TODO("Not yet implemented")
-        Log.v("HoloUI", "TODO: onBiometricAuthenticated")
+        trace("TODO: onBiometricAuthenticated")
     }
 
     override fun onBiometricError(p0: Int, p1: Int, p2: Int) {
         // TODO("Not yet implemented")
-        Log.v("HoloUI", "TODO: onBiometricError")
+        trace("TODO: onBiometricError")
     }
 
     override fun onBiometricHelp(p0: Int, p1: String?) {
         // TODO("Not yet implemented")
-        Log.v("HoloUI", "TODO: onBiometricHelp")
+        trace("TODO: onBiometricHelp")
     }
 
     override fun onCameraLaunchGestureDetected(p0: Int) {
@@ -212,7 +218,7 @@ import com.android.internal.view.AppearanceRegion
         packageName: String?,
         letterboxDetails: Array<out LetterboxDetails>
     ) {
-        Log.v("HoloUI", "onSystemBarAttributesChanged $displayId $appearance $appearanceRegions $navbarColorManagedByIme $behavior $requestedVisibleTypes $packageName $letterboxDetails")
+        trace("onSystemBarAttributesChanged $displayId $appearance $appearanceRegions $navbarColorManagedByIme $behavior $requestedVisibleTypes $packageName $letterboxDetails")
 
         // TODO("Not yet implemented")
     }
@@ -273,7 +279,7 @@ import com.android.internal.view.AppearanceRegion
 
     override fun setBiometicContextListener(p0: IBiometricContextListener?) {
         // TODO("Not yet implemented")
-        Log.v("HoloUI", "TODO: setBiometicContextListener")
+        trace("TODO: setBiometicContextListener")
     }
 
     override fun setIcon(slot: String, sbn: StatusBarIcon) {
@@ -287,7 +293,7 @@ import com.android.internal.view.AppearanceRegion
         p3: Boolean
     ) {
         // TODO("Not yet implemented")
-        Log.v("HoloUI", "TODO: setImeWindowStatus")
+        trace("TODO: setImeWindowStatus")
     }
 
     override fun setNavigationBarLumaSamplingEnabled(p0: Int, p1: Boolean) {
@@ -311,17 +317,17 @@ import com.android.internal.view.AppearanceRegion
 
     override fun setUdfpsRefreshRateCallback(callback: IUdfpsRefreshRateRequestCallback?) {
         // TODO("Not yet implemented")
-        Log.v("HoloUI", "TODO: setUdfpsRefreshRateCallback")
+        trace("TODO: setUdfpsRefreshRateCallback")
         callback?.onRequestEnabled(0);
     }
 
     override fun setWindowState(display: Int, window: Int, state: Int) {
-        Log.v("HoloUI", "TODO: setWindowState $display $window $state")
+        trace("TODO: setWindowState $display $window $state")
         // TODO("Not yet implemented")
     }
 
     override fun showAssistDisclosure() {
-        Log.v("HoloUI", "TODO: showAssistDisclosure")
+        trace("TODO: showAssistDisclosure")
         // TODO("Not yet implemented")
     }
 
@@ -337,20 +343,20 @@ import com.android.internal.view.AppearanceRegion
         requestId: Long
     ) {
         // TODO("Not yet implemented")
-        Log.v("HoloUI", "TODO: showAuthenticationDialog")
+        trace("TODO: showAuthenticationDialog")
         mApplication!!.runInUIThread {
             mApplication!!.authenticationForm!!.showAuthenticationDialog(promptInfo, sysuiReceiver)
         }
     }
 
     override fun showGlobalActionsMenu() {
-        Log.v("HoloUI", "TODO: showGlobalActionsMenu")
+        trace("TODO: showGlobalActionsMenu")
         // Power menu stuff it seems like
         // TODO("Not yet implemented")
     }
 
     override fun showInattentiveSleepWarning() {
-        Log.v("HoloUI", "TODO: showInattentiveSleepWarning")
+        trace("TODO: showInattentiveSleepWarning")
         // TODO("Not yet implemented")
     }
 
@@ -417,22 +423,22 @@ import com.android.internal.view.AppearanceRegion
     }
 
     override fun showTransient(displayId: Int, types: Int, isGestureOnSystemBar: Boolean) {
-        Log.v("HoloUI", "TODO: showTransient")
+        trace("TODO: showTransient")
         // TODO("Not yet implemented")
     }
 
     override fun abortTransient(displayId: Int, types: Int) {
-        Log.v("HoloUI", "TODO: abortTransient")
+        trace("TODO: abortTransient")
         // TODO("Not yet implemented")
     }
 
     override fun showWirelessChargingAnimation(p0: Int) {
-        Log.v("HoloUI", "TODO: showWirelessChargingAnimation")
+        trace("TODO: showWirelessChargingAnimation")
         // TODO("Not yet implemented")
     }
 
     override fun startAssist(p0: Bundle?) {
-        Log.v("HoloUI", "TODO: startAssist")
+        trace("TODO: startAssist")
         // TODO("Not yet implemented")
     }
 

@@ -19,6 +19,7 @@ import com.android.internal.policy.IKeyguardStateCallback
 class KeyguardService: Service() {
     val PERMISSION: String = Manifest.permission.CONTROL_KEYGUARD
     var bootCompleted = false;
+    val DEBUG_KG = true;
 
     fun checkPermission() {
         // Avoid deadlock by avoiding calling back into the system process.
@@ -34,16 +35,24 @@ class KeyguardService: Service() {
         }
     }
 
+    fun trace(msg: String) {
+        if(DEBUG_KG)
+            Log.v("KeyguardService", msg)
+    }
+
     private var mBinder = object: IKeyguardService.Stub() {
         var mApplication: SystemUIApplication? = null;
 
-        override fun setOccluded(isOccluded: Boolean, animate: Boolean) {}
+        override fun setOccluded(isOccluded: Boolean, animate: Boolean) {
+            trace("setOccluded")
+        }
         override fun addStateMonitorCallback(callback: IKeyguardStateCallback) {
-            Log.v("HoloUI", "TODO: addStateMonitorCallback?")
+            trace("addStateMonitorCallback")
             checkPermission()
             mApplication!!.stateCallback = callback
         }
         override fun verifyUnlock(callback: IKeyguardExitCallback) {
+            trace("verifyUnlock")
             Log.v("HoloUI", "TODO: Authentication handling (verifyUnlock)")
             checkPermission()
             callback.onKeyguardExitResult(true)
@@ -52,42 +61,56 @@ class KeyguardService: Service() {
             callback: IKeyguardDismissCallback?,
             message: CharSequence?
         ) {
+            trace("dismiss")
             checkPermission()
             Log.v("HoloUI", "dismiss message $message")
             callback?.onDismissSucceeded()
         }
         // dreams = cute name for screensavers
-        override fun onDreamingStarted() {}
-        override fun onDreamingStopped() {}
+        override fun onDreamingStarted() { trace("onDreamingStarted") }
+        override fun onDreamingStopped() { trace("onDreamingStopped") }
 
-        override fun onStartedGoingToSleep(pmSleepReason: Int) {}
+        override fun onStartedGoingToSleep(pmSleepReason: Int) {
+            trace("onStartedGoingToSleep")
+        }
         override fun onFinishedGoingToSleep(
             pmSleepReason: Int,
             powerButtonLaunchGestureTriggered: Boolean
-        ) {}
+        ) {
+            trace("onFinishedGoingToSleep")
+        }
         override fun onStartedWakingUp(
             pmWakeReason: Int,
             powerButtonLaunchGestureTriggered: Boolean
-        ) {}
-        override fun onFinishedWakingUp() {}
+        ) {
+            trace("onStartedWakingUp")
+        }
+        override fun onFinishedWakingUp() {
+            trace("onFinishedWakingUp")
+        }
         override fun onScreenTurningOn( // LineageOS adds reason: Int as the first argument
             callback: IKeyguardDrawnCallback
         ) {
+            trace("onScreenTurningOn")
+            mApplication!!.statusBar!!.lockscreen!!.showLockscreen()
             callback.onDrawn()
         }
         override fun onScreenTurnedOn() {
-            Log.v("HoloUI", "who woke me up")
+            trace("onScreenTurnedOn")
         }
-        override fun onScreenTurningOff() {}
+        override fun onScreenTurningOff() {
+            trace("onScreenTurningOff")
+        }
 
         override fun onScreenTurnedOff() {
+            trace("onScreenTurnedOff")
             checkPermission()
             mApplication!!.runInUIThread {
                 mApplication!!.statusBar!!.lockscreen!!.showLockscreen(true)
             }
         }
         override fun setKeyguardEnabled(enabled: Boolean) {
-            Log.v("HoloUI", "setKeyguardEnabled")
+            trace("setKeyguardEnabled")
             checkPermission()
             mApplication!!.runInUIThread {
                 if(enabled)
@@ -97,32 +120,47 @@ class KeyguardService: Service() {
             }
         }
         override fun onSystemReady() {
+            trace("onSystemReady")
             bootCompleted = true
         }
         override fun doKeyguardTimeout(options: Bundle?) {
+            trace("doKeyguardTimeout")
             Log.v("HoloUI", "TODO: doKeyguardTimeout")
         }
-        override fun setSwitchingUser(switching: Boolean) {}
-        override fun setCurrentUser(userId: Int) {}
-        override fun onBootCompleted() {}
+        override fun setSwitchingUser(switching: Boolean) {
+            trace("setSwitchingUser")
+        }
+        override fun setCurrentUser(userId: Int) {
+            trace("setCurrentUser")
+        }
+        override fun onBootCompleted() {
+            trace("onBootCompleted")
+        }
         override fun startKeyguardExitAnimation(
             startTime: Long,
             fadeoutDuration: Long
-        ) {}
+        ) {
+            trace("startKeyguardExitAnimation")
+        }
         override fun onShortPowerPressedGoHome() {
             Log.v("HoloUI", "TODO: onShortPowerPressedGoHome")
         }
-        override fun dismissKeyguardToLaunch(intentToLaunch: Intent?) {}
+        override fun dismissKeyguardToLaunch(intentToLaunch: Intent?) {
+            trace("dismissKeyguardToLaunch")
+        }
         override fun onSystemKeyPressed(keycode: Int) {
+            trace("onSystemKeyPressed")
             Log.v("HoloUI", "TODO: onSystemKeyPressed $keycode")
         }
-        override fun showDismissibleKeyguard() {}
+        override fun showDismissibleKeyguard() {
+            trace("showDismissibleKeyguard")
+        }
     }
 
     override fun onCreate() {
         super.onCreate()
         // TODO?
-        Log.v("HoloUI", "STUB: KeyguardService created")
+        Log.v("HoloUI", "KeyguardService created")
         // throw RuntimeException("mrow meow mrrp")
     }
     override fun onBind(intent: Intent?): IBinder {
