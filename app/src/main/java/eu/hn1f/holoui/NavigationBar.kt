@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.Insets
 import android.graphics.PixelFormat
 import android.os.Binder
+import android.provider.Settings
 import android.view.Gravity
 import android.view.InsetsFrameProvider
 import android.view.KeyEvent
@@ -63,5 +64,13 @@ class NavigationBar(val context: Context) {
     fun init() {
         add()
         root!!.setBackgroundColor(Color.BLACK)
+
+        if(Settings.Global.getInt(context.contentResolver, "holoui_invert_navbar", 1) == 1) {
+            val inverted = root!!.findViewById<LinearLayout>(R.id.inverted)
+            val normal = root!!.findViewById<LinearLayout>(R.id.normal)
+
+            normal.visibility = View.GONE
+            inverted.visibility = View.VISIBLE
+        }
     }
 }

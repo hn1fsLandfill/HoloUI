@@ -11,6 +11,9 @@
             android:key="use_nav"
             android:title="Use built-in navigation bar"
             android:summary="(may break built-in launcher)"/>
+        <SwitchPreference
+            android:key="invert_navbar"
+            android:title="Inverted navigation bar"/>
         <PreferenceScreen android:title="About HoloUI">
             <PreferenceCategory>
                 <Preference
