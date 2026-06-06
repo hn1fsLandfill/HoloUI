@@ -23,11 +23,14 @@ class Sounds(val context: Context) {
     }
 
     fun playDefaultNotificationSound() {
-
+        // TODO
+        val uri = Uri.parse("file://"+Settings.Global.getString(context.contentResolver,
+            "notification_sound"))
+        playUri(uri)
     }
 
     fun playUri(uri: Uri) {
-        val ringtone = RingtoneManager.getRingtone(context, uri)
+        val ringtone = RingtoneManager.getRingtone(context, uri) ?: return
         ringtone.play()
     }
 }
