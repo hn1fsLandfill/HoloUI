@@ -4,12 +4,15 @@ import android.annotation.SuppressLint
 import android.app.Notification
 import android.content.Context
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.LayerDrawable
 import android.service.notification.StatusBarNotification
 import android.util.Log
 import android.util.TypedValue
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
-import android.widget.ImageView
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -111,15 +114,21 @@ class Notification(context: Context, var sbn: StatusBarNotification): LinearLayo
             sbn.notification.contentIntent.send()
         }
 
-        val iconBg = findViewById<LinearLayout>(R.id.icon_background)
-        val icon = findViewById<ImageView>(R.id.icon)
+        val veto = findViewById<Button>(R.id.veto)
 
-        if(sbn.notification.color != 0) iconBg.setBackgroundColor(sbn.notification.color)
-        else iconBg.setBackgroundColor(0x1d3741)
+        val iconBackground = if(sbn.notification.color != 0)
+            ColorDrawable(sbn.notification.color)
+        else
+            ColorDrawable(0x1d3741)
 
         val bigIcon = sbn.notification.getLargeIcon()
-        if(bigIcon != null) icon.setImageIcon(bigIcon)
-        else icon.setImageIcon(sbn.notification.smallIcon)
+
+        val layers: Array<Drawable?> = if(bigIcon == null)
+            arrayOf(iconBackground, sbn.notification.smallIcon.loadDrawable(context))
+        else
+            arrayOf(iconBackground, bigIcon!!.loadDrawable(context))
+
+        veto.background = LayerDrawable(layers)
 
         bigText(Notification.EXTRA_TITLE_BIG, Notification.EXTRA_TITLE)
         smallText(Notification.EXTRA_BIG_TEXT, Notification.EXTRA_TEXT)

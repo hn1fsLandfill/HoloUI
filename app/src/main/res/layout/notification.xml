@@ -2,10 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#181818"
-    android:layout_marginTop="4dp"
-    android:layout_marginBottom="4dp">
+    android:layout_height="72dp"
+    android:background="#181818">
 
     <View
         android:id="@+id/top_glow"
@@ -21,18 +19,13 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:id="@+id/core">
-        <LinearLayout
+        android:id="@+id/core"
+        android:background="#181818">
+        <Button
+            android:id="@+id/veto"
             android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:gravity="center"
-            android:id="@+id/icon_background">
-            <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@mipmap/ic_launcher_round"
-                android:id="@+id/icon"/>
-        </LinearLayout>
+            android:layout_height="match_parent"
+            android:background="@null" />
 
         <LinearLayout
             android:layout_marginStart="4dp"
