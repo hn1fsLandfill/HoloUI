@@ -70,8 +70,7 @@ class KeyguardService: Service() {
             powerButtonLaunchGestureTriggered: Boolean
         ) {}
         override fun onFinishedWakingUp() {}
-        override fun onScreenTurningOn(
-            reason: Int,
+        override fun onScreenTurningOn( // LineageOS adds reason: Int as the first argument
             callback: IKeyguardDrawnCallback
         ) {
             callback.onDrawn()
@@ -80,6 +79,7 @@ class KeyguardService: Service() {
             Log.v("HoloUI", "who woke me up")
         }
         override fun onScreenTurningOff() {}
+
         override fun onScreenTurnedOff() {
             checkPermission()
             mApplication!!.runInUIThread {

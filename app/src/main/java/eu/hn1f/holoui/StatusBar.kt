@@ -15,6 +15,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.view.WindowManagerPolicyConstants
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import com.android.internal.statusbar.IStatusBarService
@@ -32,6 +33,13 @@ class StatusBar(val context: Context) {
     var shade: NotificationShade? = null
     var lockscreen: Lockscreen? = null
     var windowInsetsOwner = Binder();
+
+    val pointEventListener = object : WindowManagerPolicyConstants.PointerEventListener {
+        override fun onPointerEvent(motionEvent: MotionEvent) {
+            TODO("Not yet implemented")
+            Log.v("HoloUI", "onPointerEvent $motionEvent")
+        }
+    }
 
     fun hideStatusBar() {
         val animator = statusBar!!.animate()
@@ -79,6 +87,13 @@ class StatusBar(val context: Context) {
         windowManager.addView(root, lp)
     }
 
+    fun semiOpaque() {
+        statusBar!!.setBackgroundColor(Color.pack(0f,0f,0f,0.5f).toInt())
+    }
+    fun opaque() {
+        statusBar!!.setBackgroundColor(Color.BLACK)
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     fun init() {
         add()
@@ -89,7 +104,7 @@ class StatusBar(val context: Context) {
         }
 
         statusBar = inflater.inflate(R.layout.status_bar, null) as LinearLayout?
-        statusBar!!.setBackgroundColor(Color.BLACK)
+        opaque()
         root!!.addView(statusBar)
 
         shade = NotificationShade(this)
@@ -97,5 +112,8 @@ class StatusBar(val context: Context) {
         statusbarService.registerStatusBar(statusBarImpl)
         lockscreen = Lockscreen(context)
         lockscreen!!.showLockscreen()
+
+        // TODO: Escaping full-screen apps gesture
+        // windowManagerService.registerPointerEventListener(pointEventListener, 0);
     }
 }

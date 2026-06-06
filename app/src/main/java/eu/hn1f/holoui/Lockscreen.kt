@@ -53,8 +53,8 @@ class Lockscreen(val context: Context) {
             }
             return@setOnEditorActionListener false
         }
-        form.setOnKeyListener { _, keyCode, _ ->
-            if(keyCode == KeyEvent.KEYCODE_ENTER) {
+        form.setOnKeyListener { _, keyCode, event ->
+            if(keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
                 unlock()
                 return@setOnKeyListener true
             }
@@ -67,6 +67,8 @@ class Lockscreen(val context: Context) {
     fun reload() {
         val form = root.findViewById<EditText>(R.id.password_form)
         val lockPattern = LockPatternUtils(context)
+
+        form.visibility = View.GONE
 
         when(lockPattern.getCredentialTypeForUser(userId)) {
             LockPatternUtils.CREDENTIAL_TYPE_PASSWORD -> {
@@ -85,6 +87,13 @@ class Lockscreen(val context: Context) {
                 form.visibility = View.VISIBLE
             }
         }
+
+        val unlockButton = root.findViewById<Button>(R.id.unlock_noauth)
+
+        unlockButton.setOnClickListener {
+            unlock()
+        }
+        unlockButton.visibility = View.VISIBLE
     }
 
     fun showDialog(msg: String) {

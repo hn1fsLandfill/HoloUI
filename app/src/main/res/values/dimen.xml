@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="statusbar_height">24dp</dimen>
+    <dimen name="statusbar_height">22dp</dimen>
     <dimen name="navigationbar_height">48dp</dimen>
     <dimen name="handle_height">24dp</dimen>
 
-    <dimen name="statusbar_padding">28dp</dimen>
+    <dimen name="statusbar_padding">4dp</dimen>
 
     <!-- original systemui port stuff begin -->
 
@@ -39,4 +39,7 @@
     <!-- How far to slide the panel out when you touch it -->
     <!-- For phones, this is close_handle_height + header_height -->
     <dimen name="peek_height">84dp</dimen>
+
+    <!-- half the distance between notifications in the panel -->
+    <dimen name="notification_divider_height">3dp</dimen>
 </resources>

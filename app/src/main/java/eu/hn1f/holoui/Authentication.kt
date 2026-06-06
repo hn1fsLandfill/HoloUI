@@ -24,11 +24,11 @@ class Authentication(val context: Context) {
         val lockPattern = LockPatternUtils(context)
         val cred = when(lockPattern.getCredentialTypeForUser(userId)) {
             LockPatternUtils.CREDENTIAL_TYPE_PASSWORD -> {
-                val text = form.text
+                val text = form.text.toString().replace("\n", "")
                 LockscreenCredential.createPassword(text)
             }
             LockPatternUtils.CREDENTIAL_TYPE_PIN -> {
-                val text = form.text
+                val text = form.text.toString().replace("\n", "")
                 LockscreenCredential.createPin(text)
             }
             LockPatternUtils.CREDENTIAL_TYPE_NONE -> {

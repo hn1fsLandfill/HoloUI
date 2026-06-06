@@ -18,6 +18,7 @@ import android.os.ParcelFileDescriptor
 import android.os.UserHandle
 import android.util.Log
 import android.view.KeyEvent
+import android.view.WindowInsetsController
 import android.view.WindowManager
 import com.android.internal.statusbar.DisableStates
 import com.android.internal.statusbar.IAddTileResultCallback
@@ -40,7 +41,7 @@ import com.android.internal.view.AppearanceRegion
 // onDisplayAddSystemDecorations
 // setImeWindowStatus
 
-class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
+ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
     var mApplication: SystemUIApplication? = core.context.applicationContext as SystemUIApplication;
 
     override fun addQsTile(p0: ComponentName?) {
@@ -211,6 +212,8 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
         packageName: String?,
         letterboxDetails: Array<out LetterboxDetails>
     ) {
+        Log.v("HoloUI", "onSystemBarAttributesChanged $displayId $appearance $appearanceRegions $navbarColorManagedByIme $behavior $requestedVisibleTypes $packageName $letterboxDetails")
+
         // TODO("Not yet implemented")
     }
 
@@ -260,9 +263,9 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
         // TODO("Not yet implemented")
     }
 
-    override fun restartSystemUI() {
+    /* override fun restartSystemUI() {
         // TODO("Not yet implemented")
-    }
+    } LineageOS specific function */
 
     override fun runGcForTest() {
         // TODO("Not yet implemented")
@@ -313,7 +316,7 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
     }
 
     override fun setWindowState(display: Int, window: Int, state: Int) {
-        Log.v("HoloUI", "TODO: setWindowState")
+        Log.v("HoloUI", "TODO: setWindowState $display $window $state")
         // TODO("Not yet implemented")
     }
 
@@ -354,7 +357,7 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
     override fun showMediaOutputSwitcher(
         p0: String?,
         p1: UserHandle?,
-        p2: MediaSession.Token?
+        /* p2: MediaSession.Token? LineageOS argument */
     ) {
         // TODO("Not yet implemented")
     }
@@ -384,7 +387,7 @@ class StatusBarImpl(val core: StatusBar): IStatusBar.Stub() {
     }
 
     // TODO: Tackle LineageOS's custom rebootCustom property
-    override fun showShutdownUi(isReboot: Boolean, reason: String?, rebootCustom: Boolean) {
+    override fun showShutdownUi(isReboot: Boolean, reason: String?, /* rebootCustom: Boolean */) {
         // TODO("Not yet implemented")
         mApplication!!.runInUIThread {
             val shutdownUI = AlertDialog.Builder(mApplication)
