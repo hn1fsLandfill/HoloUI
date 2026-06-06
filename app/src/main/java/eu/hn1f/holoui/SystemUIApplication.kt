@@ -13,6 +13,7 @@ import android.util.Log
 import com.android.internal.policy.IKeyguardStateCallback
 import eu.hn1f.holoui.activities.Recents
 import eu.hn1f.holoui.widgets.Notification
+import eu.hn1f.holoui.widgets.StatusBarNotificationIcons
 
 // TODO (aka get it to a usable stage):
 // [P] Authentication stuff (Biometrics, PINs and Patterns aren't implemented)
@@ -56,11 +57,15 @@ class SystemUIApplication: Application() {
         startActivity(intent)
     }
 
+    var sbns: Array<StatusBarNotification> = emptyArray()
+
     fun addNotification(sbn: StatusBarNotification) {
         Log.v("HoloUI", "new notification")
         runInUIThread {
             val stuff = statusBar!!.shade!!.stuff!!
+            val statusBarIconList = statusBar!!.statusBar!!.findViewById<StatusBarNotificationIcons>(R.id.notificationIcons)
             val existing = stuff.findViewWithTag<Notification?>(sbn.packageName+sbn.id)
+
             if(existing == null) {
                 val notification = Notification(this, sbn)
                 statusBar!!.shade!!.stuff!!.addView(notification)
@@ -69,6 +74,9 @@ class SystemUIApplication: Application() {
                     Sounds(this).playUri(sbn.notification.sound)
                 else
                     Sounds(this).playDefaultNotificationSound()
+
+                sbns += arrayOf(sbn)
+                statusBarIconList.setIcons(sbns)
             } else existing.updateNotification(sbn)
         }
     }

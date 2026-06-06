@@ -6,22 +6,21 @@
     android:id="@+id/status_bar"
     android:paddingStart="@dimen/statusbar_padding"
     android:paddingEnd="@dimen/statusbar_padding">
-    <eu.hn1f.holoui.widgets.Clock
+    <eu.hn1f.holoui.widgets.StatusBarNotificationIcons
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
-        android:id="@+id/status_bar_clock"/>
+        android:id="@+id/notificationIcons"/>
+
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="horizontal"
         android:gravity="end">
-        <ImageView
+        <!-- <ImageView
             android:layout_width="22dp"
             android:layout_height="22dp"
-            android:src="@drawable/ic_qs_airplane_on" />
+            android:src="@drawable/ic_qs_airplane_on" /> -->
         <eu.hn1f.holoui.icons.WiFi
             android:layout_width="22dp"
             android:layout_height="22dp"/>
@@ -37,4 +36,10 @@
                 android:layout_marginStart="5.2dip"/>
         </LinearLayout>
     </LinearLayout>
+    <eu.hn1f.holoui.widgets.Clock
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:id="@+id/status_bar_clock"/>
 </LinearLayout>
