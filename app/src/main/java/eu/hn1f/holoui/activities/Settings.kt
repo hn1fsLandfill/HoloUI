@@ -31,11 +31,20 @@ class Settings: PreferenceActivity() {
         super.onCreate(savedInstanceState)
         addPreferencesFromResource(R.xml.settings)
         val use_nav = findPreference("use_nav") as SwitchPreference
+        val invert_navbar = findPreference("invert_navbar") as SwitchPreference
 
         use_nav.isChecked = Settings.Global.getInt(contentResolver, "holoui_navbar", 1) == 1
-
         use_nav.setOnPreferenceChangeListener { _, value ->
             Settings.Global.putInt(contentResolver, "holoui_navbar", if(value == true) 1 else 0)
+            invert_navbar.isEnabled = value as Boolean
+            showRestartRequired()
+            true
+        }
+
+        invert_navbar.isEnabled = use_nav.isChecked
+        invert_navbar.isChecked = Settings.Global.getInt(contentResolver, "holoui_invert_navbar", 1) == 1
+        invert_navbar.setOnPreferenceChangeListener { _, value ->
+            Settings.Global.putInt(contentResolver, "holoui_invert_navbar", if(value == true) 1 else 0)
             showRestartRequired()
             true
         }
