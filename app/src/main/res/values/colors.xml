@@ -11,4 +11,6 @@
     <color name="batterymeter_frame_color">#66FFFFFF</color><!-- 40% white -->
     <color name="batterymeter_charge_color">#FFFFFFFF</color>
     <color name="batterymeter_bolt_color">#B2000000</color><!-- 70% black -->
+
+    <color name="notification_list_shadow_top">#80000000</color>
 </resources>
