@@ -36,6 +36,6 @@ android {
 }
 
 dependencies {
+    compileOnly(files("../stub/stubs.jar"))
     compileOnly(files("../libs/framework.jar"))
-    compileOnly(project(":stub"))
 }

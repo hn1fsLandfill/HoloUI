@@ -21,19 +21,25 @@
             android:layout_width="22dp"
             android:layout_height="22dp"
             android:src="@drawable/ic_qs_airplane_on" /> -->
-        <eu.hn1f.holoui.icons.WiFi
-            android:layout_width="22dp"
-            android:layout_height="22dp"/>
         <LinearLayout
-            android:layout_width="22dp"
-            android:layout_height="22dp"
+            android:id="@+id/signal_battery_cluster"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="horizontal"
-            android:gravity="center">
+            android:paddingStart="2dp">
+
+            <include
+                android:id="@+id/signal_cluster"
+                layout="@layout/signal_cluster_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
             <eu.hn1f.holoui.icons.BatteryMeterView
-                android:layout_height="20.8dp"
                 android:layout_width="13.65dp"
-                android:layout_marginBottom="0.42dp"
-                android:layout_marginStart="5.2dip"/>
+                android:layout_height="20.8dp"
+                android:layout_marginStart="5.2dip"
+                android:layout_marginBottom="0.42dp" />
         </LinearLayout>
     </LinearLayout>
     <eu.hn1f.holoui.widgets.Clock

@@ -126,7 +126,7 @@ class Notification(context: Context, var sbn: StatusBarNotification): LinearLayo
         val layers: Array<Drawable?> = if(bigIcon == null)
             arrayOf(iconBackground, sbn.notification.smallIcon.loadDrawable(context))
         else
-            arrayOf(iconBackground, bigIcon!!.loadDrawable(context))
+            arrayOf(iconBackground, bigIcon.loadDrawable(context))
 
         veto.background = LayerDrawable(layers)
 

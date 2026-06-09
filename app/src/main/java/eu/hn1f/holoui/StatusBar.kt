@@ -19,6 +19,10 @@ import android.view.WindowManagerPolicyConstants
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import com.android.internal.statusbar.IStatusBarService
+import eu.hn1f.holoui.policy.NetworkController
+import eu.hn1f.holoui.widgets.SignalClusterView
+
+
 
 class StatusBar(val context: Context) {
     val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -112,6 +116,13 @@ class StatusBar(val context: Context) {
         statusbarService.registerStatusBar(statusBarImpl)
         lockscreen = Lockscreen(context)
         lockscreen!!.showLockscreen()
+
+        val mNetworkController = NetworkController(context)
+        val signalCluster: SignalClusterView? =
+            root!!.findViewById(R.id.signal_cluster)
+
+        mNetworkController.addSignalCluster(signalCluster)
+        signalCluster!!.setNetworkController(mNetworkController)
 
         // TODO: Escaping full-screen apps gesture
         // windowManagerService.registerPointerEventListener(pointEventListener, 0);
