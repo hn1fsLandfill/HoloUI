@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "HoloUI"
 include(":app")
- 
+include(":stub")
