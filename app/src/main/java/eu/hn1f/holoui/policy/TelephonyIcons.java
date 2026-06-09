@@ -188,4 +188,21 @@ class TelephonyIcons {
             R.drawable.ic_qs_signal_full_lte
     };
 
+    // 5G, TODO: Add assets for it instead of using LTE
+    static final int[][] DATA_5G = {
+            { R.drawable.stat_sys_data_fully_connected_lte,
+                    R.drawable.stat_sys_data_fully_connected_lte,
+                    R.drawable.stat_sys_data_fully_connected_lte,
+                    R.drawable.stat_sys_data_fully_connected_lte },
+            { R.drawable.stat_sys_data_fully_connected_lte,
+                    R.drawable.stat_sys_data_fully_connected_lte,
+                    R.drawable.stat_sys_data_fully_connected_lte,
+                    R.drawable.stat_sys_data_fully_connected_lte }
+    };
+
+    static final int[] QS_DATA_5G = {
+            R.drawable.ic_qs_signal_lte,
+            R.drawable.ic_qs_signal_full_lte
+    };
+
 }
