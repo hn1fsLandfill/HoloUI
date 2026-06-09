@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="blinds_pop_duration_ms">10</integer>
+
+    <bool name="config_show4GForLTE">true</bool>
+
+    <!-- Control whether status bar should distinguish HSPA data icon form UMTS
+    data icon on devices -->
+    <bool name="config_hspa_data_distinguishable">false</bool>
+
+    <!-- Show phone (voice) signal strength instead of data in mobile RSSI. -->
+    <bool name="config_showPhoneRSSIForData">false</bool>
+
+    <!-- When true, show 1/2G networks as 3G. -->
+    <bool name="config_showMin3G">false</bool>
+</resources>
