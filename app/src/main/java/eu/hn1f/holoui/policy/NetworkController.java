@@ -678,9 +678,8 @@ public class NetworkController extends BroadcastReceiver implements DemoMode {
                     }
                     break;
                 case TelephonyManager.NETWORK_TYPE_NR:
-                    // TODO: 5G assets
                     mDataIconList = TelephonyIcons.DATA_5G[mInetCondition];
-                    mDataTypeIconId = R.drawable.stat_sys_data_fully_connected_lte;
+                    mDataTypeIconId = R.drawable.stat_sys_data_fully_connected_5g;
                     mQSDataTypeIconId = TelephonyIcons.QS_DATA_5G[mInetCondition];
                     mContentDescriptionDataType = mContext.getString(
                             R.string.accessibility_data_connection_nr);
