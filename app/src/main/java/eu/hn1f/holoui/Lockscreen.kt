@@ -36,6 +36,7 @@ class Lockscreen(val context: Context) {
     val token = Binder("Lockscreen")
     var shown = false
     val userId = ActivityManager.getCurrentUser()
+    val mApplication = context.applicationContext as SystemUIApplication
 
     init {
         lp.token = token
@@ -112,7 +113,7 @@ class Lockscreen(val context: Context) {
     }
 
     fun onSuccess() {
-        (context.applicationContext as SystemUIApplication).runInUIThread {
+        mApplication.runInUIThread {
             Sounds(context).playUnlock()
             hideLockscreen(true)
         }
@@ -121,16 +122,15 @@ class Lockscreen(val context: Context) {
     fun unlock() {
         if(!shown) return;
         val form = root.findViewById<EditText>(R.id.password_form)
+        val text = form.text.toString()
 
         thread {
             val lockPattern = LockPatternUtils(context)
             val cred = when(lockPattern.getCredentialTypeForUser(userId)) {
                 LockPatternUtils.CREDENTIAL_TYPE_PASSWORD -> {
-                    val text = form.text
                     LockscreenCredential.createPassword(text)
                 }
                 LockPatternUtils.CREDENTIAL_TYPE_PIN -> {
-                    val text = form.text
                     LockscreenCredential.createPin(text)
                 }
                 LockPatternUtils.CREDENTIAL_TYPE_NONE -> {
@@ -145,11 +145,18 @@ class Lockscreen(val context: Context) {
 
             val resp = lockPattern.verifyCredential(cred, userId, 0);
             if(resp.isMatched) {
-                onSuccess()
                 lockPattern.userPresent(userId)
                 lockPattern.reportSuccessfulPasswordAttempt(userId)
+
+                onSuccess()
+                if(mApplication.stateCallback == null) {
+                    Log.v("HoloUI","no statecallback, strange");
+                } else {
+                    mApplication.stateCallback!!.onTrustedChanged(true)
+                }
             } else {
-                (context.applicationContext as SystemUIApplication).runInUIThread {
+                mApplication.runInUIThread {
+                    lockPattern.reportFailedPasswordAttempt(userId)
                     showDialog("Authentication failure (invalid password/pin?)")
                 }
             }
@@ -157,12 +164,6 @@ class Lockscreen(val context: Context) {
             cred.zeroize()
         }
         form.text.clear()
-
-        if((context.applicationContext as SystemUIApplication).stateCallback == null) {
-            Log.v("HoloUI","no statecallback, strange");
-        } else {
-            (context.applicationContext as SystemUIApplication).stateCallback!!.onTrustedChanged(true)
-        }
     }
 
     fun showLockscreen(sound: Boolean = false) {
@@ -172,15 +173,15 @@ class Lockscreen(val context: Context) {
             windowManager.addView(root, lp)
             if (sound) Sounds(context).playLock()
             shown = true
-            (context.applicationContext as SystemUIApplication).runInUIThread {
+            mApplication.runInUIThread {
                 val form = root.findViewById<EditText>(R.id.password_form)
                 form.text.clear()
             }
 
-            if((context.applicationContext as SystemUIApplication).stateCallback == null) {
+            if(mApplication.stateCallback == null) {
                 Log.v("HoloUI","no statecallback, strange");
             } else {
-                (context.applicationContext as SystemUIApplication).stateCallback!!.onShowingStateChanged(
+                mApplication.stateCallback!!.onShowingStateChanged(
                     true,
                     userId
                 )
@@ -205,11 +206,10 @@ class Lockscreen(val context: Context) {
                 windowManager.removeView(root)
 
             shown = false
-            if((context.applicationContext as SystemUIApplication).stateCallback == null) {
+            if(mApplication.stateCallback == null) {
                 Log.v("HoloUI","no statecallback, strange");
             } else {
-                (context.applicationContext as SystemUIApplication)
-                    .stateCallback!!.onShowingStateChanged(false, userId)
+                mApplication.stateCallback!!.onShowingStateChanged(false, userId)
             }
 
             val taskManager = ActivityTaskManager.getService()
