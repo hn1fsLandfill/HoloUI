@@ -76,8 +76,18 @@ class SystemUIApplication: Application() {
                     Sounds(this).playDefaultNotificationSound()
 
                 sbns += arrayOf(sbn)
-                statusBarIconList.setIcons(sbns)
             } else existing.updateNotification(sbn)
+
+            var icons = emptyArray<StatusBarNotification>()
+            for (i in 0..stuff.childCount) {
+                val child = stuff.getChildAt(i)
+
+                if(child != null && (child as? Notification) != null) {
+                    icons += child.sbn
+                }
+            }
+            sbns = icons
+            statusBarIconList.setIcons(sbns)
         }
     }
 
