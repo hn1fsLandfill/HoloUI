@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:textSize="18sp"
         android:textColor="@color/white"
-        android:text="An application is asking for authentication."
+        android:text="@string/authentication_subtext"
         android:paddingBottom="32dp"/>
 
     <EditText
