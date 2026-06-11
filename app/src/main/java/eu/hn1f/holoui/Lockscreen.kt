@@ -47,7 +47,7 @@ class Lockscreen(val context: Context) {
         lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
         lp.windowAnimations = android.R.style.Animation_Activity
 
-        root.findViewById<Clock>(R.id.status_bar_clock).visibility = View.GONE
+        root.findViewById<Clock>(R.id.clock).visibility = View.GONE
 
         val form = root.findViewById<EditText>(R.id.password_form)
 

@@ -11,41 +11,53 @@
         android:layout_height="match_parent"
         android:id="@+id/notificationIcons"/>
 
-    <LinearLayout
+    <View
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_weight="1"/>
+
+    <LinearLayout android:id="@+id/system_icon_area"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="horizontal"
         android:gravity="end">
-        <!-- <ImageView
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:src="@drawable/ic_qs_airplane_on" /> -->
+
+        <LinearLayout android:id="@+id/statusIcons"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"/>
+
         <LinearLayout
             android:id="@+id/signal_battery_cluster"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
+            android:layout_height="match_parent"
+            android:paddingStart="2dp"
             android:orientation="horizontal"
-            android:paddingStart="2dp">
-
-            <include
+            android:gravity="center"
+            >
+            <include layout="@layout/signal_cluster_view"
                 android:id="@+id/signal_cluster"
-                layout="@layout/signal_cluster_view"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
+                android:layout_height="wrap_content"
+                />
+            <!-- battery must be padded below to match assets -->
             <eu.hn1f.holoui.icons.BatteryMeterView
-                android:layout_width="13.65dp"
-                android:layout_height="20.8dp"
-                android:layout_marginStart="5.2dip"
-                android:layout_marginBottom="0.42dp" />
+                android:id="@+id/battery"
+                android:layout_height="16dp"
+                android:layout_width="10.5dp"
+                android:layout_marginBottom="0.33dp"
+                android:layout_marginStart="4dip"
+                />
         </LinearLayout>
+
+        <eu.hn1f.holoui.widgets.Clock
+            android:id="@+id/clock"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:singleLine="true"
+            android:paddingStart="6dip"
+            android:gravity="center_vertical|start"
+            />
     </LinearLayout>
-    <eu.hn1f.holoui.widgets.Clock
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:id="@+id/status_bar_clock"/>
 </LinearLayout>
