@@ -5,6 +5,10 @@
         <attr name="key"/>
     </declare-styleable>
 
+    <declare-styleable name="RecentsPanelView">
+        <attr name="recentItemLayout" format="reference" />
+    </declare-styleable>
+
     <!-- =============================== -->
     <!-- SizeAdaptiveLayout class attributes -->
     <!-- =============================== -->

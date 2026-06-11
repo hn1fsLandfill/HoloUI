@@ -29,6 +29,7 @@
     <uses-permission android:name="android.permission.MANAGE_SLICE_PERMISSIONS" />
     <uses-permission android:name="android.permission.CONTROL_KEYGUARD_SECURE_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.GET_RUNTIME_PERMISSIONS" />
+    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS" />
 
     <application
         android:name=".SystemUIApplication"
@@ -73,10 +74,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.Recents"
+        <activity android:name=".recent.RecentsActivity"
             android:label="Recent Apps"
-            android:theme="@android:style/Theme.Holo.Wallpaper.NoTitleBar" />
+            android:theme="@style/RecentsStyle"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.android.systemui.TOGGLE_RECENTS" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name=".recent.RecentsPreloadReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.android.systemui.recent.action.PRELOAD" />
+                <action android:name="com.android.systemui.recent.action.CANCEL_PRELOAD" />
+            </intent-filter>
+        </receiver>
+
+
         <activity
             android:name=".activities.GoogleBalls"
             android:label="Google Balls"

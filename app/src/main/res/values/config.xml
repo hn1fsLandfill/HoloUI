@@ -13,4 +13,18 @@
 
     <!-- When true, show 1/2G networks as 3G. -->
     <bool name="config_showMin3G">false</bool>
+
+    <!-- Whether we're using the tablet-optimized recents interface (we use this
+        value at runtime for some things) -->
+    <bool name="config_recents_interface_for_tablets">false</bool>
+
+    <!-- Whether recents thumbnails should stretch in both x and y to fill their
+     ImageView -->
+    <bool name="config_recents_thumbnail_image_fits_to_xy">false</bool>
+
+    <integer name="config_recent_item_min_alpha">3</integer>
+
+    <!-- Whether we're using the tablet-optimized recents interface (we use this
+    value at runtime for some things) -->
+    <integer name="status_bar_recents_bg_gradient_degrees">90</integer>
 </resources>

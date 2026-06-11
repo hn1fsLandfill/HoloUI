@@ -11,7 +11,7 @@ import android.security.authenticationpolicy.AuthenticationPolicyManager
 import android.service.notification.StatusBarNotification
 import android.util.Log
 import com.android.internal.policy.IKeyguardStateCallback
-import eu.hn1f.holoui.activities.Recents
+import eu.hn1f.holoui.recent.Recents
 import eu.hn1f.holoui.widgets.Notification
 import eu.hn1f.holoui.widgets.StatusBarNotificationIcons
 
@@ -31,6 +31,7 @@ class SystemUIApplication: Application() {
     var toaster: Toaster? = null
     var lowBatteryWatcher: LowBatteryWatcher? = null
     var stateCallback: IKeyguardStateCallback? = null
+    var recents: Recents? = null
 
     var authenticationForm: Authentication? = null
 
@@ -47,12 +48,6 @@ class SystemUIApplication: Application() {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
             action = Intent.ACTION_MAIN
             addCategory(Intent.CATEGORY_HOME)
-        }
-        startActivity(intent)
-    }
-    fun onRecentApps() {
-        val intent = Intent(this, Recents::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
         startActivity(intent)
     }
@@ -119,6 +114,7 @@ class SystemUIApplication: Application() {
         setTheme(R.style.Theme_SystemUI)
         if(!statusBarRunning) {
             runInUIThread {
+                recents = Recents(this)
                 authenticationForm = Authentication(this)
                 toaster = Toaster(this)
                 statusBar = StatusBar(this)

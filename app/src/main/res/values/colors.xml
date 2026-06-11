@@ -13,4 +13,9 @@
     <color name="batterymeter_bolt_color">#B2000000</color><!-- 70% black -->
 
     <color name="notification_list_shadow_top">#80000000</color>
+
+    <color name="status_bar_recents_app_label_color">#ffffffff</color>
+
+    <drawable name="recents_callout_line">#99ffffff</drawable>
+    <drawable name="status_bar_recents_app_thumbnail_background">#88000000</drawable>
 </resources>

@@ -16,6 +16,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.os.ParcelFileDescriptor
 import android.os.UserHandle
+import android.text.TextUtils
 import android.util.Log
 import android.view.KeyEvent
 import android.view.WindowInsetsController
@@ -48,6 +49,15 @@ import com.android.internal.view.AppearanceRegion
      fun trace(msg: String) {
          if(DEBUG_ISB)
              Log.v("StatusBarImpl", msg)
+     }
+
+     fun toggleRecents() {
+         mApplication!!.runInUIThread {
+             val mLocale = mApplication!!.resources.configuration.locale;
+             val mLayoutDirection = TextUtils.getLayoutDirectionFromLocale(mLocale);
+
+             mApplication!!.recents!!.toggleRecents(mApplication!!.display, mLayoutDirection, mApplication!!.statusBar!!.root)
+         }
      }
 
     override fun addQsTile(p0: ComponentName?) {
@@ -136,7 +146,9 @@ import com.android.internal.view.AppearanceRegion
     }
 
     override fun hideRecentApps(p0: Boolean, p1: Boolean) {
-        // TODO("Not yet implemented")
+        mApplication!!.runInUIThread {
+            mApplication!!.recents!!.closeRecents()
+        }
     }
 
     override fun hideToast(packageName: String, token: IBinder) {
@@ -385,7 +397,7 @@ import com.android.internal.view.AppearanceRegion
     }
 
     override fun showRecentApps(p0: Boolean) {
-        // TODO("Not yet implemented")
+        toggleRecents()
     }
 
     override fun showScreenPinningRequest(p0: Int) {
@@ -463,9 +475,7 @@ import com.android.internal.view.AppearanceRegion
     }
 
     override fun toggleRecentApps() {
-        mApplication!!.runInUIThread {
-            mApplication!!.onRecentApps()
-        }
+        toggleRecents()
     }
 
     override fun toggleSplitScreen() {
