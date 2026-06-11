@@ -17,6 +17,7 @@
 package eu.hn1f.holoui.recent;
 
 import android.app.ActivityManager;
+import android.app.ActivityTaskManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -30,10 +31,12 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Process;
+import android.os.RemoteException;
 import android.os.UserHandle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.window.TaskSnapshot;
 
 import eu.hn1f.holoui.R;
 
@@ -186,10 +189,15 @@ public class RecentTasksLoader implements View.OnTouchListener {
     }
 
     void loadThumbnailAndIcon(TaskDescription td) {
-        final ActivityManager am = (ActivityManager)
-                mContext.getSystemService(Context.ACTIVITY_SERVICE);
         final PackageManager pm = mContext.getPackageManager();
-        Bitmap thumbnail = null; // FIXME am.getTaskTopThumbnail(td.persistentTaskId);
+        TaskSnapshot thumbnail_raw = null;
+        Bitmap thumbnail = null;
+
+        try {
+            thumbnail_raw = ActivityTaskManager.getService().getTaskSnapshot(td.persistentTaskId, true);
+            thumbnail = Bitmap.wrapHardwareBuffer(thumbnail_raw.getHardwareBuffer(), thumbnail_raw.getColorSpace());
+        } catch (RemoteException ignored) {}
+
         Drawable icon = getFullResIcon(td.resolveInfo, pm);
 
         if (DEBUG) Log.v(TAG, "Loaded bitmap for task "

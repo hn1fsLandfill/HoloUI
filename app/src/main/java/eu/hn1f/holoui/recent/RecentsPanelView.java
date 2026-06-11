@@ -666,7 +666,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                 context.getSystemService(Context.ACTIVITY_SERVICE);
 
         Bitmap bm = null;
-        boolean usingDrawingCache = true;
+        boolean usingDrawingCache = false; // Crashes recents otherwise
         if (holder.thumbnailViewDrawable instanceof BitmapDrawable) {
             bm = ((BitmapDrawable) holder.thumbnailViewDrawable).getBitmap();
             if (bm.getWidth() == holder.thumbnailViewImage.getWidth() &&
