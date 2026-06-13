@@ -21,7 +21,7 @@ import android.animation.LayoutTransition;
 import android.animation.TimeInterpolator;
 import android.app.ActivityManager;
 import android.app.ActivityManagerNative;
-import android.app.ActivityOptions44;
+import android.app.ActivityOptions;
 import android.app.ActivityTaskManager;
 import android.app.TaskStackBuilder;
 import android.content.ActivityNotFoundException;
@@ -680,8 +680,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         }
         Bundle opts = (bm == null) ?
                 null :
-                ActivityOptions44.makeThumbnailScaleUpAnimation(
-                        holder.thumbnailViewImage, bm, 0, 0, null).toBundle();
+                ActivityOptions.makeCustomAnimation(getContext(), android.R.anim.fade_out, android.R.anim.fade_in).toBundle();
 
         show(false);
         if (ad.taskId >= 0) {

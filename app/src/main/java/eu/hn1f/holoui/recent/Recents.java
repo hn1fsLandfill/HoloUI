@@ -16,7 +16,7 @@
 
 package eu.hn1f.holoui.recent;
 
-import android.app.ActivityOptions44;
+import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -60,7 +60,7 @@ public class Recents implements RecentsComponent {
 
             if (firstTask == null) {
                 if (RecentsActivity.forceOpaqueBackground(mContext)) {
-                    ActivityOptions44 opts = ActivityOptions44.makeCustomAnimation(mContext,
+                    ActivityOptions opts = ActivityOptions.makeCustomAnimation(mContext,
                             R.anim.recents_launch_from_launcher_enter,
                             R.anim.recents_launch_from_launcher_exit);
                     mContext.startActivity(intent, opts.toBundle());
@@ -168,18 +168,8 @@ public class Recents implements RecentsComponent {
                             + recentsItemTopPadding + thumbBgPadding + statusBarHeight);
                 }
 
-                ActivityOptions44 opts = ActivityOptions44.makeThumbnailScaleDownAnimation(
-                        statusBarView,
-                        first, x, y,
-                        new ActivityOptions44.OnAnimationStartedListener() {
-                            public void onAnimationStarted() {
-                                Intent intent =
-                                        new Intent(RecentsActivity.WINDOW_ANIMATION_START_INTENT);
-                                intent.setPackage("eu.hn1f.holoui");
-                                mContext.sendBroadcastAsUser(intent,
-                                        UserHandle.getUserHandleForUid(USER_CURRENT));
-                            }
-                        });
+                ActivityOptions opts = ActivityOptions.makeCustomAnimation(mContext, android.R.anim.fade_out, android.R.anim.fade_in);
+
                 intent.putExtra(RecentsActivity.WAITING_FOR_WINDOW_ANIMATION_PARAM, true);
                 mContext.startActivity(intent, opts.toBundle());
             }

@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IRemoteCallback;
 import android.os.RemoteException;
+import android.view.RemoteAnimationAdapter;
 import android.view.View;
 
 /**
@@ -29,7 +30,7 @@ import android.view.View;
  * {@link android.content.Context#startActivity(android.content.Intent, android.os.Bundle)
  * Context.startActivity(Intent, Bundle)} and related methods.
  */
-public class ActivityOptions44 {
+public class ActivityOptions {
     /**
      * The package name that created the options.
      * @hide
@@ -100,6 +101,7 @@ public class ActivityOptions44 {
     public static final int ANIM_THUMBNAIL_SCALE_UP = 3;
     /** @hide */
     public static final int ANIM_THUMBNAIL_SCALE_DOWN = 4;
+    public static final int ANIM_REMOTE_ANIMATION = 13;
 
     private String mPackageName;
     private int mAnimationType = ANIM_NONE;
@@ -111,6 +113,8 @@ public class ActivityOptions44 {
     private int mStartWidth;
     private int mStartHeight;
     private IRemoteCallback mAnimationStartedListener;
+    private RemoteAnimationAdapter mRemoteAnimationAdapter;
+
 
     /**
      * Create an ActivityOptions specifying a custom animation to run when
@@ -125,8 +129,8 @@ public class ActivityOptions44 {
      * @return Returns a new ActivityOptions object that you can use to
      * supply these options as the options Bundle when starting an activity.
      */
-    public static ActivityOptions44 makeCustomAnimation(Context context,
-                                                        int enterResId, int exitResId) {
+    public static ActivityOptions makeCustomAnimation(Context context,
+                                                      int enterResId, int exitResId) {
         return makeCustomAnimation(context, enterResId, exitResId, null, null);
     }
 
@@ -149,9 +153,9 @@ public class ActivityOptions44 {
      * supply these options as the options Bundle when starting an activity.
      * @hide
      */
-    public static ActivityOptions44 makeCustomAnimation(Context context,
-                                                        int enterResId, int exitResId, Handler handler, OnAnimationStartedListener listener) {
-        ActivityOptions44 opts = new ActivityOptions44();
+    public static ActivityOptions makeCustomAnimation(Context context,
+                                                      int enterResId, int exitResId, Handler handler, OnAnimationStartedListener listener) {
+        ActivityOptions opts = new ActivityOptions();
         opts.mPackageName = context.getPackageName();
         opts.mAnimationType = ANIM_CUSTOM;
         opts.mCustomEnterResId = enterResId;
@@ -177,7 +181,7 @@ public class ActivityOptions44 {
     }
 
     /**
-     * Callback for use with {@link ActivityOptions44#makeThumbnailScaleUpAnimation}
+     * Callback for use with {@link ActivityOptions#makeThumbnailScaleUpAnimation}
      * to find out when the given animation has started running.
      * @hide
      */
@@ -204,9 +208,9 @@ public class ActivityOptions44 {
      * @return Returns a new ActivityOptions object that you can use to
      * supply these options as the options Bundle when starting an activity.
      */
-    public static ActivityOptions44 makeScaleUpAnimation(View source,
-                                                         int startX, int startY, int startWidth, int startHeight) {
-        ActivityOptions44 opts = new ActivityOptions44();
+    public static ActivityOptions makeScaleUpAnimation(View source,
+                                                       int startX, int startY, int startWidth, int startHeight) {
+        ActivityOptions opts = new ActivityOptions();
         opts.mPackageName = source.getContext().getPackageName();
         opts.mAnimationType = ANIM_SCALE_UP;
         int[] pts = new int[2];
@@ -237,9 +241,17 @@ public class ActivityOptions44 {
      * @return Returns a new ActivityOptions object that you can use to
      * supply these options as the options Bundle when starting an activity.
      */
-    public static ActivityOptions44 makeThumbnailScaleUpAnimation(View source,
-                                                                  Bitmap thumbnail, int startX, int startY) {
+    public static ActivityOptions makeThumbnailScaleUpAnimation(View source,
+                                                                Bitmap thumbnail, int startX, int startY) {
         return makeThumbnailScaleUpAnimation(source, thumbnail, startX, startY, null);
+    }
+
+    public static ActivityOptions makeRemoteAnimation(
+            RemoteAnimationAdapter remoteAnimationAdapter) {
+        final ActivityOptions opts = new ActivityOptions();
+        opts.mRemoteAnimationAdapter = remoteAnimationAdapter;
+        opts.mAnimationType = ANIM_REMOTE_ANIMATION;
+        return opts;
     }
 
     /**
@@ -260,37 +272,15 @@ public class ActivityOptions44 {
      * supply these options as the options Bundle when starting an activity.
      * @hide
      */
-    public static ActivityOptions44 makeThumbnailScaleUpAnimation(View source,
-                                                                  Bitmap thumbnail, int startX, int startY, OnAnimationStartedListener listener) {
+    public static ActivityOptions makeThumbnailScaleUpAnimation(View source,
+                                                                Bitmap thumbnail, int startX, int startY, OnAnimationStartedListener listener) {
         return makeThumbnailAnimation(source, thumbnail, startX, startY, listener, true);
     }
 
-    /**
-     * Create an ActivityOptions specifying an animation where an activity window
-     * is scaled from a given position to a thumbnail at a specified location.
-     *
-     * @param source The View that this thumbnail is animating to.  This
-     * defines the coordinate space for <var>startX</var> and <var>startY</var>.
-     * @param thumbnail The bitmap that will be shown as the final thumbnail
-     * of the animation.
-     * @param startX The x end location of the bitmap, relative to <var>source</var>.
-     * @param startY The y end location of the bitmap, relative to <var>source</var>.
-     * @param listener Optional OnAnimationStartedListener to find out when the
-     * requested animation has started running.  If for some reason the animation
-     * is not executed, the callback will happen immediately.
-     * @return Returns a new ActivityOptions object that you can use to
-     * supply these options as the options Bundle when starting an activity.
-     * @hide
-     */
-    public static ActivityOptions44 makeThumbnailScaleDownAnimation(View source,
-                                                                    Bitmap thumbnail, int startX, int startY, OnAnimationStartedListener listener) {
-        return makeThumbnailAnimation(source, thumbnail, startX, startY, listener, false);
-    }
-
-    private static ActivityOptions44 makeThumbnailAnimation(View source,
-                                                            Bitmap thumbnail, int startX, int startY, OnAnimationStartedListener listener,
-                                                            boolean scaleUp) {
-        ActivityOptions44 opts = new ActivityOptions44();
+    private static ActivityOptions makeThumbnailAnimation(View source,
+                                                          Bitmap thumbnail, int startX, int startY, OnAnimationStartedListener listener,
+                                                          boolean scaleUp) {
+        ActivityOptions opts = new ActivityOptions();
         opts.mPackageName = source.getContext().getPackageName();
         opts.mAnimationType = scaleUp ? ANIM_THUMBNAIL_SCALE_UP : ANIM_THUMBNAIL_SCALE_DOWN;
         opts.mThumbnail = thumbnail;
@@ -302,11 +292,11 @@ public class ActivityOptions44 {
         return opts;
     }
 
-    private ActivityOptions44() {
+    private ActivityOptions() {
     }
 
     /** @hide */
-    public ActivityOptions44(Bundle opts) {
+    public ActivityOptions(Bundle opts) {
         mPackageName = opts.getString(KEY_PACKAGE_NAME);
         mAnimationType = opts.getInt(KEY_ANIM_TYPE);
         if (mAnimationType == ANIM_CUSTOM) {
@@ -392,7 +382,7 @@ public class ActivityOptions44 {
     /** @hide */
     public static void abort(Bundle options) {
         if (options != null) {
-            (new ActivityOptions44(options)).abort();
+            (new ActivityOptions(options)).abort();
         }
     }
 
@@ -401,7 +391,7 @@ public class ActivityOptions44 {
      * in <var>otherOptions</var>.  Any values
      * defined in <var>otherOptions</var> replace those in the base options.
      */
-    public void update(ActivityOptions44 otherOptions) {
+    public void update(ActivityOptions otherOptions) {
         if (otherOptions.mPackageName != null) {
             mPackageName = otherOptions.mPackageName;
         }
