@@ -10,6 +10,7 @@ import android.preference.PreferenceActivity
 import android.preference.SwitchPreference
 import android.provider.Settings
 import eu.hn1f.holoui.R
+import eu.hn1f.holoui.SystemUIApplication
 
 @SuppressLint("ExportedPreferenceActivity")
 @Suppress("DEPRECATION")
@@ -37,7 +38,7 @@ class Settings: PreferenceActivity() {
         use_nav.setOnPreferenceChangeListener { _, value ->
             Settings.Global.putInt(contentResolver, "holoui_navbar", if(value == true) 1 else 0)
             invert_navbar.isEnabled = value as Boolean
-            showRestartRequired()
+            (applicationContext as SystemUIApplication).navigationBar?.reload()
             true
         }
 
@@ -45,7 +46,7 @@ class Settings: PreferenceActivity() {
         invert_navbar.isChecked = Settings.Global.getInt(contentResolver, "holoui_invert_navbar", 1) == 1
         invert_navbar.setOnPreferenceChangeListener { _, value ->
             Settings.Global.putInt(contentResolver, "holoui_invert_navbar", if(value == true) 1 else 0)
-            showRestartRequired()
+            (applicationContext as SystemUIApplication).navigationBar?.reload()
             true
         }
 

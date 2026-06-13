@@ -6,6 +6,7 @@ import android.graphics.Insets
 import android.graphics.PixelFormat
 import android.os.Binder
 import android.provider.Settings
+import android.util.LayoutDirection
 import android.view.Gravity
 import android.view.InsetsFrameProvider
 import android.view.KeyEvent
@@ -21,13 +22,24 @@ class NavigationBar(val context: Context) {
     val barHeight = context.resources.getDimensionPixelSize(R.dimen.navigationbar_height)
     var token = Binder("NavigationBar");
     var inflater = LayoutInflater.from(context)
+    var isEnabled = true
+    var invertNavbar = false
+
+    fun reloadSettings() {
+        isEnabled = Settings.Global.getInt(context.contentResolver, "holoui_navbar", 1) == 1
+        invertNavbar = Settings.Global.getInt(context.contentResolver, "holoui_invert_navbar", 1) == 1
+    }
 
     fun hide() {
+        if(!isEnabled) return;
+
         val animator = root!!.animate()
         animator.translationY(barHeight.toFloat())
         animator.start()
     }
     fun show() {
+        if(!isEnabled) return;
+
         root!!.visibility = View.VISIBLE
         val animator = root!!.animate()
         animator.translationY(0f)
@@ -36,7 +48,9 @@ class NavigationBar(val context: Context) {
 
     // TODO: Landscape navigation bar
     fun add() {
+        if(root != null) return;
         root = inflater.inflate(R.layout.navigation_bar, null) as LinearLayout?
+        root!!.setBackgroundColor(Color.BLACK)
         val lp = WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT,
             barHeight,
@@ -61,16 +75,31 @@ class NavigationBar(val context: Context) {
         windowManager.addView(root, lp)
     }
 
+    fun remove() {
+        if(root == null) return;
+        windowManager.removeView(root)
+        root = null
+    }
+
     fun init() {
-        add()
-        root!!.setBackgroundColor(Color.BLACK)
+        reload()
+    }
 
-        if(Settings.Global.getInt(context.contentResolver, "holoui_invert_navbar", 1) == 1) {
-            val inverted = root!!.findViewById<LinearLayout>(R.id.inverted)
-            val normal = root!!.findViewById<LinearLayout>(R.id.normal)
+    fun reload() {
+        reloadSettings()
 
-            normal.visibility = View.GONE
-            inverted.visibility = View.VISIBLE
+        if(!isEnabled) {
+            remove()
+            return
+        } else {
+            add()
+        }
+
+        val normal = root!!.findViewById<LinearLayout>(R.id.normal)
+        if(invertNavbar) {
+            normal.layoutDirection = View.LAYOUT_DIRECTION_RTL
+        } else {
+            normal.layoutDirection = View.LAYOUT_DIRECTION_LTR
         }
     }
 }

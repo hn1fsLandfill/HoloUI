@@ -184,5 +184,10 @@ class NavigationKey(context: Context?, attrs: AttributeSet?): ImageView(context,
         }
         super.onDraw(canvas)
     }
+
+    override fun onAttachedToWindow() {
+        setPressed(false)
+        super.onAttachedToWindow()
+    }
 }
 

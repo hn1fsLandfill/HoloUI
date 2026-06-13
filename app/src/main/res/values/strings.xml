@@ -170,4 +170,7 @@
     <string name="accessibility_battery_level">Battery <xliff:g id="number">%d</xliff:g> percent.</string>
     <!-- Glyph to be overlaid atop the battery when the level is extremely low. Do not translate. -->
     <string name="battery_meter_very_low_overlay_symbol">!</string>
+    <string name="accessibility_back">Back</string>
+    <string name="accessibility_home">Home</string>
+    <string name="accessibility_recent">Recent Apps</string>
 </resources>

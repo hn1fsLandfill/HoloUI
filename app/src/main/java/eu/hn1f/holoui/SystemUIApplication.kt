@@ -121,10 +121,8 @@ class SystemUIApplication: Application() {
                 statusBar!!.init()
                 lowBatteryWatcher = LowBatteryWatcher(this)
                 lowBatteryWatcher!!.register()
-                if(Settings.Global.getInt(contentResolver, "holoui_navbar", 1) == 1) {
-                    navigationBar = NavigationBar(this)
-                    navigationBar!!.init()
-                }
+                navigationBar = NavigationBar(this)
+                navigationBar!!.init()
                 notificationListener = NotificationListener()
                 notificationListener!!.mApplication = this
                 notificationListener!!.registerAsSystemService()
