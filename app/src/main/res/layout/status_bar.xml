@@ -6,10 +6,27 @@
     android:id="@+id/status_bar"
     android:paddingStart="@dimen/statusbar_padding"
     android:paddingEnd="@dimen/statusbar_padding">
-    <eu.hn1f.holoui.widgets.StatusBarNotificationIcons
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/notification_icon_area"
+        android:layout_width="0dip"
         android:layout_height="match_parent"
-        android:id="@+id/notificationIcons"/>
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        >
+        <eu.hn1f.holoui.notification.StatusBarIconView android:id="@+id/moreIcon"
+            android:layout_width="@dimen/status_bar_icon_size"
+            android:layout_height="match_parent"
+            android:src="@drawable/stat_notify_more"
+            android:visibility="gone"
+            />
+
+        <eu.hn1f.holoui.notification.IconMerger android:id="@+id/notificationIcons"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"/>
+    </LinearLayout>
 
     <View
         android:layout_width="0dp"

@@ -16,10 +16,10 @@ import eu.hn1f.holoui.widgets.Notification
 import eu.hn1f.holoui.widgets.StatusBarNotificationIcons
 
 // TODO (aka get it to a usable stage):
-// [P] Authentication stuff (Biometrics, PINs and Patterns aren't implemented)
-// [X] Navigation bar
+// [P] Authentication stuff (Biometrics and Patterns aren't implemented)
+// [P] Navigation bar (Landscape navbar isn't implemented)
 // [] Pulling the navigation bar or status bar in fullscreen apps
-// [X] Notifications (mostly buggy)
+// [P] Notifications (mostly buggy)
 // [] Volume dialog (nice to have)
 // [] Power menu (android has a timeout for a fallback)
 
@@ -42,60 +42,6 @@ class SystemUIApplication: Application() {
     fun runInUIThread(r: Runnable) {
         Handler(Looper.getMainLooper()).post(r)
     }
-
-    fun onHome() {
-        val intent = Intent().apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            action = Intent.ACTION_MAIN
-            addCategory(Intent.CATEGORY_HOME)
-        }
-        startActivity(intent)
-    }
-
-    var sbns: Array<StatusBarNotification> = emptyArray()
-
-    fun addNotification(sbn: StatusBarNotification) {
-        Log.v("HoloUI", "new notification")
-        runInUIThread {
-            val stuff = statusBar!!.shade!!.stuff!!
-            val statusBarIconList = statusBar!!.statusBar!!.findViewById<StatusBarNotificationIcons>(R.id.notificationIcons)
-            val existing = stuff.findViewWithTag<Notification?>(sbn.packageName+sbn.id)
-
-            if(existing == null) {
-                val notification = Notification(this, sbn)
-                statusBar!!.shade!!.stuff!!.addView(notification)
-                // todo: use notificationChannel
-                if(sbn.notification.sound != null)
-                    Sounds(this).playUri(sbn.notification.sound)
-                else
-                    Sounds(this).playDefaultNotificationSound()
-
-                sbns += arrayOf(sbn)
-            } else existing.updateNotification(sbn)
-
-            var icons = emptyArray<StatusBarNotification>()
-            for (i in 0..stuff.childCount) {
-                val child = stuff.getChildAt(i)
-
-                if(child != null && (child as? Notification) != null) {
-                    icons += child.sbn
-                }
-            }
-            sbns = icons
-            statusBarIconList.setIcons(sbns)
-        }
-    }
-
-    fun removeNotification(sbn: StatusBarNotification) {
-        Log.v("HoloUI", "bai bai")
-        runInUIThread {
-            val stuff = statusBar!!.shade!!.stuff!!
-            val notification = stuff.findViewWithTag<Notification?>(sbn.packageName+sbn.id)
-            if(notification != null) stuff.removeView(notification)
-            else Log.v("HoloUI", "tried to remove null notification")
-        }
-    }
-
 
     fun getRebootMessage(isReboot: Boolean, reason: String?): Int {
         if (reason != null && reason.startsWith(PowerManager.REBOOT_RECOVERY_UPDATE)) {
@@ -127,14 +73,6 @@ class SystemUIApplication: Application() {
                 notificationListener!!.mApplication = this
                 notificationListener!!.registerAsSystemService()
 
-                /* addNotification(StatusBarNotification(
-                    "hhh", "hhh", 0, "thing", 0, 0, 0, android.app.Notification.Builder(this, "test")
-                        .setSmallIcon(R.drawable.thenews)
-                        .setContentTitle("BREAKING NEWS!!!")
-                        .setSubText("Someone just died! Who? We don't know.")
-                        .build(),
-                    UserHandle.getUserHandleForUid(0), 10
-                )) */
                 statusBarRunning = true
             }
         }

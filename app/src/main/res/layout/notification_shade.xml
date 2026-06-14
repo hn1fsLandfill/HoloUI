@@ -30,6 +30,11 @@
                 android:layout_height="match_parent"
                 android:textSize="36sp" />
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/stuff"
+            android:orientation="vertical"/>
         <ScrollView
             android:id="@+id/scroll"
             android:layout_width="match_parent"
@@ -38,11 +43,6 @@
             android:fadingEdge="none"
             android:overScrollMode="ifContentScrolls"
             >
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/stuff"
-                android:orientation="vertical"/>
             <eu.hn1f.holoui.policy.NotificationRowLayout
                 android:id="@+id/latestItems"
                 android:layout_width="match_parent"

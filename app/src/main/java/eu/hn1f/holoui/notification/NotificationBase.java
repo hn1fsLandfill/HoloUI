@@ -12,6 +12,7 @@ import android.content.IntentSender;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
+import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -43,8 +44,7 @@ import eu.hn1f.holoui.widgets.SizeAdaptiveLayout;
 public abstract class NotificationBase {
     public static final String TAG = "Notification";
     public static final boolean DEBUG = false;
-    private final Context mContext;
-
+    public final Context mContext;
 
     // all notifications
     protected NotificationData mNotificationData = new NotificationData();
@@ -314,10 +314,10 @@ public abstract class NotificationBase {
      *
      * WARNING: this will call back into us.  Don't hold any locks.
      */
-    public abstract void removeNotification(IBinder key);
+    // public abstract void removeNotification(IBinder key);
 
     void handleNotificationError(IBinder key, StatusBarNotification n, String message) {
-        removeNotification(key);
+        // removeNotification(key);
         /* try {
             mBarService.onNotificationError(n.getPackageName(), n.getTag(), n.getId(), n.getUid(), n.getInitialPid(), message);
         } catch (RemoteException ex) {
@@ -622,5 +622,90 @@ public abstract class NotificationBase {
         }
         if (DEBUG) Log.d(TAG, "interrupt: " + interrupt);
         return interrupt;
+    }
+
+    public void addNotification(StatusBarNotification notification) {
+        Binder key = new Binder(notification.getPackageName()+notification.getId());
+
+        if(mNotificationData.findByKey(key) != null) {
+            updateNotification(key, notification);
+            return;
+        }
+
+        NotificationData.Entry shadeEntry = createNotificationViews(key, notification);
+        if (shadeEntry == null) {
+            return;
+        }
+        if (mUseHeadsUp && shouldInterrupt(notification)) {
+            if (DEBUG) Log.d(TAG, "launching notification in heads up mode");
+            /* TODO NotificationData.Entry interruptionCandidate = new NotificationData.Entry(key, notification, null);
+            if (inflateViews(interruptionCandidate, mHeadsUpNotificationView.getHolder())) {
+                mInterruptingNotificationTime = System.currentTimeMillis();
+                mInterruptingNotificationEntry = interruptionCandidate;
+                shadeEntry.setInterruption();
+
+                // 1. Populate mHeadsUpNotificationView
+                mHeadsUpNotificationView.setNotification(mInterruptingNotificationEntry);
+
+                // 2. Animate mHeadsUpNotificationView in
+                mHandler.sendEmptyMessage(MSG_SHOW_HEADS_UP);
+
+                // 3. Set alarm to age the notification off
+                resetHeadsUpDecayTimer();
+            } */
+        } else if (notification.getNotification().fullScreenIntent != null) {
+            // Stop screensaver if the notification has a full-screen intent.
+            // (like an incoming phone call)
+            // TODO awakenDreams();
+
+            // not immersive & a full-screen alert should be shown
+            if (DEBUG) Log.d(TAG, "Notification has fullScreenIntent; sending fullScreenIntent");
+            try {
+                notification.getNotification().fullScreenIntent.send();
+            } catch (PendingIntent.CanceledException e) {
+            }
+        } else {
+            // usual case: status bar visible & not immersive
+
+            // show the ticker if there isn't already a heads up
+            if (mInterruptingNotificationEntry == null) {
+                tick(null, notification, true);
+            }
+        }
+        addNotificationViews(shadeEntry);
+        // Recalculate the position of the sliding windows and the titles.
+        setAreThereNotifications();
+        updateExpandedViewPos(EXPANDED_LEAVE_ALONE);
+    }
+
+    public void removeNotification(StatusBarNotification notification) {
+        Binder key = new Binder(notification.getPackageName()+notification.getId());
+
+        // What
+        if(mNotificationData.findByKey(key) == null)
+            return;
+
+        StatusBarNotification old = removeNotificationViews(key);
+        // if (SPEW) Log.d(TAG, "removeNotification key=" + key + " old=" + old);
+
+        if (old != null) {
+            // Cancel the ticker if it's still running
+            // mTicker.removeEntry(old);
+
+            // Recalculate the position of the sliding windows and the titles.
+            updateExpandedViewPos(EXPANDED_LEAVE_ALONE);
+
+            /* if (ENABLE_HEADS_UP && mInterruptingNotificationEntry != null
+                    && old == mInterruptingNotificationEntry.notification) {
+                mHandler.sendEmptyMessage(MSG_HIDE_HEADS_UP);
+            }
+
+            if (CLOSE_PANEL_WHEN_EMPTIED && mNotificationData.size() == 0
+                    && !mNotificationPanel.isTracking()) {
+                animateCollapsePanels();
+            } */
+        }
+
+        setAreThereNotifications();
     }
 }
