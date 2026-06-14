@@ -23,4 +23,8 @@
         <attr name="layout_minHeight" format="dimension" />
     </declare-styleable>
     <declare-styleable name="SizeAdaptiveLayout" />
+
+    <declare-styleable name="NotificationRowLayout">
+        <attr name="rowHeight" format="dimension" />
+    </declare-styleable>
 </resources>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.systemui.shims;
+package eu.hn1f.holoui.widgets;
 
 import java.lang.Math;
 

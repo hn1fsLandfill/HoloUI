@@ -81,6 +81,26 @@
          travel -->
     <dimen name="status_bar_recents_app_icon_translate_distance">35dip</dimen>
 
+    <dimen name="blinds_pop_threshold">32dp</dimen>
+
+    <!-- The size of the gesture span needed to activate the "pull" notification expansion -->
+    <dimen name="pull_span_min">25dp</dimen>
+
+    <!-- Height of a small notification in the status bar plus glow, padding, etc -->
+    <dimen name="notification_row_min_height">70dp</dimen>
+
+    <!-- Height of notification icons in the status bar -->
+    <dimen name="status_bar_icon_size">18dp</dimen>
+
+    <!-- size at which Notification icons will be drawn in the status bar -->
+    <dimen name="status_bar_icon_drawing_size">18dip</dimen>
+
+    <!-- Height of a small notification in the status bar -->
+    <dimen name="notification_min_height">64dp</dimen>
+
+    <!-- Height of a large notification in the status bar -->
+    <dimen name="notification_max_height">256dp</dimen>
+
     <!-- Where to place the app icon over the thumbnail -->
     <dimen name="status_bar_recents_app_icon_left_margin">0dp</dimen>
     <dimen name="status_bar_recents_app_icon_top_margin">8dp</dimen>

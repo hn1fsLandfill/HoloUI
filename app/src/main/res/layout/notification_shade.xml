@@ -2,6 +2,7 @@
 <eu.hn1f.holoui.widgets.PanelView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/notification_panel">
     <View
         android:id="@+id/handle"
@@ -30,15 +31,24 @@
                 android:textSize="36sp" />
         </LinearLayout>
         <ScrollView
+            android:id="@+id/scroll"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:fadingEdge="none"
+            android:overScrollMode="ifContentScrolls"
+            >
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/stuff"
-                android:orientation="vertical">
-            </LinearLayout>
+                android:orientation="vertical"/>
+            <eu.hn1f.holoui.policy.NotificationRowLayout
+                android:id="@+id/latestItems"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:rowHeight="@dimen/notification_row_min_height"
+                />
         </ScrollView>
         <TextView
             android:layout_width="match_parent"

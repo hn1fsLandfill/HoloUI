@@ -173,4 +173,6 @@
     <string name="accessibility_back">Back</string>
     <string name="accessibility_home">Home</string>
     <string name="accessibility_recent">Recent Apps</string>
+    <string name="accessibility_notification_dismissed">Dismissed notification</string>
+    <string name="accessibility_remove_notification">Remove Notification</string>
 </resources>

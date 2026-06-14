@@ -24,6 +24,8 @@
 
     <integer name="config_recent_item_min_alpha">3</integer>
 
+    <bool name="config_statusBarShowNumber">false</bool>
+
     <!-- Whether we're using the tablet-optimized recents interface (we use this
     value at runtime for some things) -->
     <integer name="status_bar_recents_bg_gradient_degrees">90</integer>
