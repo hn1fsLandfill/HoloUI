@@ -19,8 +19,17 @@ public class PhoneNotification extends NotificationBase {
     int mIconSize = -1;
     int mIconHPadding = -1;
 
+    SystemUIApplication mApplication;
+    IconMerger mNotificationIcons;
+
     public PhoneNotification(Context newContext) {
         super(newContext);
+        mApplication = (SystemUIApplication)mContext.getApplicationContext();
+
+        mPile = mApplication.getStatusBar().getShade()
+                .getRoot().findViewById(R.id.latestItems);
+        mNotificationIcons = mApplication.getStatusBar()
+                .getRoot().findViewById(R.id.notificationIcons);
     }
 
     @Override
@@ -33,10 +42,6 @@ public class PhoneNotification extends NotificationBase {
     protected void updateNotificationIcons() {
         final LinearLayout.LayoutParams params
                 = new LinearLayout.LayoutParams(mIconSize + 2*mIconHPadding, mNaturalBarHeight);
-
-        SystemUIApplication mApplication = (SystemUIApplication)mContext.getApplicationContext();
-        IconMerger mNotificationIcons = mApplication.getStatusBar()
-                .getShade().getRoot().findViewById(R.id.notificationIcons);
 
         int N = mNotificationData.size();
 
@@ -53,7 +58,8 @@ public class PhoneNotification extends NotificationBase {
             toShow.add(ent.icon);
         }
 
-        ArrayList<View> toRemove = new ArrayList<View>();
+        // Buggy for now
+        /* ArrayList<View> toRemove = new ArrayList<View>();
         for (int i=0; i<mNotificationIcons.getChildCount(); i++) {
             View child = mNotificationIcons.getChildAt(i);
             if (!toShow.contains(child)) {
@@ -63,7 +69,9 @@ public class PhoneNotification extends NotificationBase {
 
         for (View remove : toRemove) {
             mNotificationIcons.removeView(remove);
-        }
+        } */
+
+        mNotificationIcons.removeAllViews();
 
         for (int i=0; i<toShow.size(); i++) {
             View v = toShow.get(i);
@@ -71,10 +79,50 @@ public class PhoneNotification extends NotificationBase {
                 mNotificationIcons.addView(v, i, params);
             }
         }
+
+        updateNotificationShade();
+    }
+
+    protected void updateNotificationShade() {
+        int N = mNotificationData.size();
+
+        ArrayList<View> toShow = new ArrayList<View>();
+
+        // If the device hasn't been through Setup, we only show system notifications
+        for (int i=0; i<N; i++) {
+            NotificationData.Entry ent = mNotificationData.get(N-i-1);
+            if (!notificationIsForCurrentUser(ent.notification)) continue;
+            toShow.add(ent.row);
+        }
+
+        ArrayList<View> toRemove = new ArrayList<View>();
+        for (int i=0; i<mPile.getChildCount(); i++) {
+            View child = mPile.getChildAt(i);
+            if (!toShow.contains(child)) {
+                toRemove.add(child);
+            }
+        }
+
+        for (View remove : toRemove) {
+            mPile.removeView(remove);
+        }
+
+        for (int i=0; i<N; i++) {
+            NotificationData.Entry ent = mNotificationData.get(N-i-1);
+            if (!notificationIsForCurrentUser(ent.notification)) continue;
+            toShow.add(ent.row);
+        }
+
+        for (int i=0; i<toShow.size(); i++) {
+            View v = toShow.get(i);
+            if (v.getParent() == null) {
+                mPile.addView(v, i);
+            }
+        }
     }
 
     @Override
-    protected void tick(IBinder key, StatusBarNotification n, boolean firstTime) {}
+    protected void tick(String key, StatusBarNotification n, boolean firstTime) {}
 
     @Override
     public void updateExpandedViewPos(int thingy) {}

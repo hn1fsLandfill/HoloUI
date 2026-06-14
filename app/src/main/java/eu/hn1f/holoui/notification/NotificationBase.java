@@ -43,7 +43,7 @@ import eu.hn1f.holoui.widgets.SizeAdaptiveLayout;
 
 public abstract class NotificationBase {
     public static final String TAG = "Notification";
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
     public final Context mContext;
 
     // all notifications
@@ -71,7 +71,7 @@ public abstract class NotificationBase {
     public static final int EXPANDED_LEAVE_ALONE = -10000;
     public static final int EXPANDED_FULL_OPEN = -10001;
 
-    protected static final boolean ENABLE_HEADS_UP = true;
+    protected static final boolean ENABLE_HEADS_UP = false; // No heads up for now
 
     public NotificationBase(Context newContext) {
         mContext = newContext;
@@ -314,10 +314,12 @@ public abstract class NotificationBase {
      *
      * WARNING: this will call back into us.  Don't hold any locks.
      */
-    // public abstract void removeNotification(IBinder key);
+    // public abstract void removeNotification(String key);
 
-    void handleNotificationError(IBinder key, StatusBarNotification n, String message) {
-        // removeNotification(key);
+    void handleNotificationError(String key, StatusBarNotification n, String message) {
+        removeNotification(n);
+
+        Log.e(TAG, "Notification error: "+message);
         /* try {
             mBarService.onNotificationError(n.getPackageName(), n.getTag(), n.getId(), n.getUid(), n.getInitialPid(), message);
         } catch (RemoteException ex) {
@@ -325,7 +327,7 @@ public abstract class NotificationBase {
         } */
     }
 
-    protected StatusBarNotification removeNotificationViews(IBinder key) {
+    protected StatusBarNotification removeNotificationViews(String key) {
         NotificationData.Entry entry = mNotificationData.remove(key);
         if (entry == null) {
             Log.w(TAG, "removeNotification for unknown key: " + key);
@@ -340,7 +342,7 @@ public abstract class NotificationBase {
         return entry.notification;
     }
 
-    protected NotificationData.Entry createNotificationViews(IBinder key,
+    protected NotificationData.Entry createNotificationViews(String key,
                                                              StatusBarNotification notification) {
         if (DEBUG) {
             Log.d(TAG, "createNotificationViews(key=" + key + ", notification=" + notification);
@@ -381,7 +383,7 @@ public abstract class NotificationBase {
         updateNotificationIcons();
     }
 
-    private void addNotificationViews(IBinder key, StatusBarNotification notification) {
+    private void addNotificationViews(String key, StatusBarNotification notification) {
         addNotificationViews(createNotificationViews(key, notification));
     }
 
@@ -410,7 +412,7 @@ public abstract class NotificationBase {
     protected abstract void haltTicker();
     protected abstract void setAreThereNotifications();
     protected abstract void updateNotificationIcons();
-    protected abstract void tick(IBinder key, StatusBarNotification n, boolean firstTime);
+    protected abstract void tick(String key, StatusBarNotification n, boolean firstTime);
     protected abstract void updateExpandedViewPos(int expandedPosition);
     protected abstract int getExpandedViewMaxHeight();
     protected abstract boolean shouldDisableNavbarGestures();
@@ -447,7 +449,7 @@ public abstract class NotificationBase {
         return vetoButton;
     }
 
-    public void updateNotification(IBinder key, StatusBarNotification notification) {
+    public void updateNotification(String key, StatusBarNotification notification) {
         if (DEBUG) Log.d(TAG, "updateNotification(" + key + " -> " + notification + ")");
 
         final NotificationData.Entry oldEntry = mNotificationData.findByKey(key);
@@ -625,7 +627,7 @@ public abstract class NotificationBase {
     }
 
     public void addNotification(StatusBarNotification notification) {
-        Binder key = new Binder(notification.getPackageName()+notification.getId());
+        String key = notification.getPackageName()+notification.getId();
 
         if(mNotificationData.findByKey(key) != null) {
             updateNotification(key, notification);
@@ -636,9 +638,9 @@ public abstract class NotificationBase {
         if (shadeEntry == null) {
             return;
         }
-        if (mUseHeadsUp && shouldInterrupt(notification)) {
+        /* if (mUseHeadsUp && shouldInterrupt(notification)) {
             if (DEBUG) Log.d(TAG, "launching notification in heads up mode");
-            /* TODO NotificationData.Entry interruptionCandidate = new NotificationData.Entry(key, notification, null);
+            NotificationData.Entry interruptionCandidate = new NotificationData.Entry(key, notification, null);
             if (inflateViews(interruptionCandidate, mHeadsUpNotificationView.getHolder())) {
                 mInterruptingNotificationTime = System.currentTimeMillis();
                 mInterruptingNotificationEntry = interruptionCandidate;
@@ -652,8 +654,8 @@ public abstract class NotificationBase {
 
                 // 3. Set alarm to age the notification off
                 resetHeadsUpDecayTimer();
-            } */
-        } else if (notification.getNotification().fullScreenIntent != null) {
+            }
+        } else */ if (notification.getNotification().fullScreenIntent != null) {
             // Stop screensaver if the notification has a full-screen intent.
             // (like an incoming phone call)
             // TODO awakenDreams();
@@ -679,7 +681,7 @@ public abstract class NotificationBase {
     }
 
     public void removeNotification(StatusBarNotification notification) {
-        Binder key = new Binder(notification.getPackageName()+notification.getId());
+        String key = notification.getPackageName()+notification.getId();
 
         // What
         if(mNotificationData.findByKey(key) == null)

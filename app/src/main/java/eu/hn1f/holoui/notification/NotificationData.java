@@ -31,7 +31,7 @@ import java.util.Comparator;
  */
 public class NotificationData {
     public static final class Entry {
-        public IBinder key;
+        public String key;
         public StatusBarNotification notification;
         public StatusBarIconView icon;
         public ExpandableNotificationRow row; // the outer expanded view
@@ -41,7 +41,7 @@ public class NotificationData {
         private View expandedBig;
         private boolean interruption;
         public Entry() {}
-        public Entry(IBinder key, StatusBarNotification n, StatusBarIconView ic) {
+        public Entry(String key, StatusBarNotification n, StatusBarIconView ic) {
             this.key = key;
             this.notification = n;
             this.icon = ic;
@@ -89,7 +89,7 @@ public class NotificationData {
         return mEntries.get(i);
     }
 
-    public Entry findByKey(IBinder key) {
+    public Entry findByKey(String key) {
         for (Entry e : mEntries) {
             if (e.key == key) {
                 return e;
@@ -110,7 +110,7 @@ public class NotificationData {
         return i;
     }
 
-    public int add(IBinder key, StatusBarNotification notification, ExpandableNotificationRow row,
+    public int add(String key, StatusBarNotification notification, ExpandableNotificationRow row,
             View content, View expanded, StatusBarIconView icon) {
         Entry entry = new Entry();
         entry.key = key;
@@ -123,7 +123,7 @@ public class NotificationData {
         return add(entry);
     }
 
-    public Entry remove(IBinder key) {
+    public Entry remove(String key) {
         Entry e = findByKey(key);
         if (e != null) {
             mEntries.remove(e);

@@ -25,7 +25,7 @@ class NotificationListener: NotificationListenerService() {
         notifications = PhoneNotification(mApplication)
 
         for(sbn in activeNotifications) {
-            notifications!!.updateNotification(Binder(sbn.packageName+sbn.id.toString()), sbn);
+            notifications!!.updateNotification(sbn.packageName+sbn.id, sbn);
         }
     }
 
