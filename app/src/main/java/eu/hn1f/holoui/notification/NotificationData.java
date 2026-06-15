@@ -91,7 +91,7 @@ public class NotificationData {
 
     public Entry findByKey(String key) {
         for (Entry e : mEntries) {
-            if (e.key == key) {
+            if (e.key.equals(key)) {
                 return e;
             }
         }
@@ -124,9 +124,10 @@ public class NotificationData {
     }
 
     public Entry remove(String key) {
-        Entry e = findByKey(key);
-        if (e != null) {
-            mEntries.remove(e);
+        Entry e = null;
+        for(int i = 0; i<mEntries.size(); i++) {
+            if(mEntries.get(i).key.equals(key))
+                e = mEntries.remove(i);
         }
         return e;
     }
