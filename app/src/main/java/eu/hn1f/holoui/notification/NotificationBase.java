@@ -256,9 +256,13 @@ public abstract class NotificationBase {
         StatusBarNotification sbn = entry.notification;
         RemoteViews contentView = sbn.getNotification().contentView;
         RemoteViews bigContentView = sbn.getNotification().bigContentView;
+        JohnNotificationBuilder john = new JohnNotificationBuilder(mContext, sbn.getNotification(), parent);
         if (contentView == null) {
-            return false;
+            contentView = john.makeContentView();
         }
+
+        // Double check
+        if (contentView == null) return false;
 
         // create the row view
         LayoutInflater inflater = (LayoutInflater)mContext.getSystemService(
@@ -660,7 +664,8 @@ public abstract class NotificationBase {
         String key = notification.getPackageName();
 
         if(mNotificationData.findByKey(key) != null) {
-            updateNotification(key, notification);
+            // Rewrite this to handle Android 7.0+ behavior!!! (or maybe port Android 7's notification system instead)
+            // updateNotification(key, notification);
             return;
         }
 

@@ -56,7 +56,10 @@
                 android:layout_weight="0"
                 >
                 <TextView android:id="@+id/title"
-                    android:textAppearance="@style/TextAppearance.StatusBar.EventContent.Title"
+                    android:textColor="#ffffff"
+                    android:fontFamily="sans-serif-light"
+                    android:textSize="@dimen/notification_title_text_size"
+                    android:textStyle="bold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:singleLine="true"
@@ -80,7 +83,8 @@
                     />
             </LinearLayout>
             <TextView android:id="@+id/text2"
-                android:textAppearance="@style/TextAppearance.StatusBar.EventContent.Line2"
+                android:textColor="#999999"
+                android:textSize="@dimen/notification_subtext_size"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="-2dp"
@@ -104,7 +108,8 @@
                 style="?android:attr/progressBarStyleHorizontal"
                 />
             <TextView android:id="@+id/inbox_text0"
-                android:textAppearance="@style/TextAppearance.StatusBar.EventContent"
+                android:textColor="#999999"
+                android:textSize="@dimen/notification_text_size"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
@@ -115,7 +120,8 @@
                 android:layout_weight="1"
                 />
             <TextView android:id="@+id/inbox_text1"
-                android:textAppearance="@style/TextAppearance.StatusBar.EventContent"
+                android:textColor="#999999"
+                android:textSize="@dimen/notification_text_size"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
@@ -126,7 +132,8 @@
                 android:layout_weight="1"
                 />
             <TextView android:id="@+id/inbox_text2"
-                android:textAppearance="@style/TextAppearance.StatusBar.EventContent"
+                android:textColor="#999999"
+                android:textSize="@dimen/notification_text_size"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
@@ -137,7 +144,8 @@
                 android:layout_weight="1"
                 />
             <TextView android:id="@+id/inbox_text3"
-                android:textAppearance="@style/TextAppearance.StatusBar.EventContent"
+                android:textColor="#999999"
+                android:textSize="@dimen/notification_text_size"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
@@ -148,7 +156,8 @@
                 android:layout_weight="1"
                 />
             <TextView android:id="@+id/inbox_text4"
-                android:textAppearance="@style/TextAppearance.StatusBar.EventContent"
+                android:textColor="#999999"
+                android:textSize="@dimen/notification_text_size"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
@@ -158,7 +167,8 @@
                 android:layout_weight="1"
                 />
             <TextView android:id="@+id/inbox_text5"
-                android:textAppearance="@style/TextAppearance.StatusBar.EventContent"
+                android:textColor="#999999"
+                android:textSize="@dimen/notification_text_size"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
@@ -169,7 +179,8 @@
                 android:layout_weight="1"
                 />
             <TextView android:id="@+id/inbox_text6"
-                android:textAppearance="@style/TextAppearance.StatusBar.EventContent"
+                android:textColor="#999999"
+                android:textSize="@dimen/notification_text_size"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
@@ -180,7 +191,8 @@
                 android:layout_weight="1"
                 />
             <TextView android:id="@+id/inbox_more"
-                android:textAppearance="@style/TextAppearance.StatusBar.EventContent"
+                android:textColor="#999999"
+                android:textSize="@dimen/notification_text_size"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
@@ -231,7 +243,8 @@
             android:gravity="center_vertical"
             >
             <TextView android:id="@+id/text"
-                android:textAppearance="@style/TextAppearance.StatusBar.EventContent"
+                android:textColor="#999999"
+                android:textSize="@dimen/notification_text_size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -241,7 +254,8 @@
                 android:fadingEdge="horizontal"
                 />
             <TextView android:id="@+id/info"
-                android:textAppearance="@style/TextAppearance.StatusBar.EventContent.Info"
+                android:textColor="#999999"
+                android:textSize="@dimen/notification_subtext_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

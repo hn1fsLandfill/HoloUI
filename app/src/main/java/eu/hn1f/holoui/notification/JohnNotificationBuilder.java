@@ -7,6 +7,10 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
 import android.os.SystemClock;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -68,6 +72,18 @@ public class JohnNotificationBuilder {
                 Context.LAYOUT_INFLATER_SERVICE);
     }
 
+    private Bitmap iconToBitmap(Icon icon) {
+        Drawable d = icon.loadDrawable(mContext);
+        if(d == null) return null;
+        Bitmap b = Bitmap.createBitmap(d.getIntrinsicWidth(), d.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888);
+
+        Canvas c = new Canvas(b);
+        d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+        d.draw(c);
+        return  b;
+    }
+
     private RemoteViews applyStandardTemplate(int resId, boolean fitIn1U) {
         RemoteViews contentView = new RemoteViews(mContext.getPackageName(), resId);
 
@@ -75,7 +91,7 @@ public class JohnNotificationBuilder {
         boolean showLine2 = false;
         int smallIconImageViewId = R.id.icon;
         if (notif.getLargeIcon() != null) {
-            contentView.setImageViewIcon(R.id.icon, notif.getLargeIcon());
+            contentView.setImageViewBitmap(R.id.icon, iconToBitmap(notif.getLargeIcon()));
             smallIconImageViewId = R.id.right_icon;
         }
         if (notif.priority < PRIORITY_LOW) {
@@ -85,7 +101,7 @@ public class JohnNotificationBuilder {
                     "setBackgroundResource", R.drawable.notification_bg_low);
         }
         if (notif.getSmallIcon() != null) {
-            contentView.setImageViewIcon(smallIconImageViewId, notif.getSmallIcon());
+            contentView.setImageViewBitmap(smallIconImageViewId, iconToBitmap(notif.getSmallIcon()));
             contentView.setViewVisibility(smallIconImageViewId, View.VISIBLE);
         } else {
             contentView.setViewVisibility(smallIconImageViewId, View.GONE);
