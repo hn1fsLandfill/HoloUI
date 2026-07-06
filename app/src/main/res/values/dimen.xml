@@ -10,6 +10,11 @@
 
     <!-- original systemui port stuff begin -->
 
+    <!-- The width of the big icons in notifications. -->
+    <dimen name="notification_large_icon_width">64dp</dimen>
+    <!-- The width of the big icons in notifications. -->
+    <dimen name="notification_large_icon_height">64dp</dimen>
+
     <!-- Notification drawer tuning parameters (phone UI) -->
     <!-- Initial velocity of the shade when expanding on its own -->
     <dimen name="self_expand_velocity">2000dp</dimen>
@@ -100,6 +105,13 @@
 
     <!-- Height of a large notification in the status bar -->
     <dimen name="notification_max_height">256dp</dimen>
+
+    <!-- Size of notification text (see TextAppearance.StatusBar.EventContent) -->
+    <dimen name="notification_text_size">14dp</dimen>
+    <!-- Size of notification text titles (see TextAppearance.StatusBar.EventContent.Title) -->
+    <dimen name="notification_title_text_size">18dp</dimen>
+    <!-- Size of smaller notification text (see TextAppearance.StatusBar.EventContent.Line2, Info, Time) -->
+    <dimen name="notification_subtext_size">12dp</dimen>
 
     <!-- Where to place the app icon over the thumbnail -->
     <dimen name="status_bar_recents_app_icon_left_margin">0dp</dimen>

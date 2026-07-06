@@ -5,6 +5,7 @@ import android.os.IBinder;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
@@ -22,12 +23,21 @@ public class PhoneNotification extends NotificationBase {
     SystemUIApplication mApplication;
     IconMerger mNotificationIcons;
 
+    int maxExpandedHeight = 0;
+
     public PhoneNotification(Context newContext) {
         super(newContext);
         mApplication = (SystemUIApplication)mContext.getApplicationContext();
 
         mPile = mApplication.getStatusBar().getShade()
                 .getRoot().findViewById(R.id.latestItems);
+
+        maxExpandedHeight = mApplication.getStatusBar().getShade().getRoot()
+                .findViewById(R.id.scroll).getHeight();
+
+        mPile.setLayoutTransitionsEnabled(false);
+        mPile.setLongPressListener(getNotificationLongClicker());
+
         mNotificationIcons = mApplication.getStatusBar()
                 .getRoot().findViewById(R.id.notificationIcons);
     }
@@ -42,6 +52,8 @@ public class PhoneNotification extends NotificationBase {
     protected void updateNotificationIcons() {
         final LinearLayout.LayoutParams params
                 = new LinearLayout.LayoutParams(mIconSize + 2*mIconHPadding, mNaturalBarHeight);
+
+        updateNotificationShade();
 
         int N = mNotificationData.size();
 
@@ -58,19 +70,6 @@ public class PhoneNotification extends NotificationBase {
             toShow.add(ent.icon);
         }
 
-        // Buggy for now
-        /* ArrayList<View> toRemove = new ArrayList<View>();
-        for (int i=0; i<mNotificationIcons.getChildCount(); i++) {
-            View child = mNotificationIcons.getChildAt(i);
-            if (!toShow.contains(child)) {
-                toRemove.add(child);
-            }
-        }
-
-        for (View remove : toRemove) {
-            mNotificationIcons.removeView(remove);
-        } */
-
         mNotificationIcons.removeAllViews();
 
         for (int i=0; i<toShow.size(); i++) {
@@ -79,8 +78,6 @@ public class PhoneNotification extends NotificationBase {
                 mNotificationIcons.addView(v, i, params);
             }
         }
-
-        updateNotificationShade();
     }
 
     protected void updateNotificationShade() {
@@ -129,7 +126,7 @@ public class PhoneNotification extends NotificationBase {
 
     @Override
     protected int getExpandedViewMaxHeight() {
-        return 0;
+        return maxExpandedHeight;
     }
 
     @Override

@@ -20,4 +20,7 @@
     <drawable name="status_bar_recents_app_thumbnail_background">#88000000</drawable>
 
     <drawable name="notification_number_text_color">#ffffffff</drawable>
+    <drawable name="notification_template_icon_bg">#3333B5E5</drawable>
+    <drawable name="notification_template_icon_low_bg">#0cffffff</drawable>
+
 </resources>

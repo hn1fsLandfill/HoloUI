@@ -175,4 +175,8 @@
     <string name="accessibility_recent">Recent Apps</string>
     <string name="accessibility_notification_dismissed">Dismissed notification</string>
     <string name="accessibility_remove_notification">Remove Notification</string>
+
+    <string name="ellipsis">\u2026</string>
+    <string name="status_bar_notification_info_overflow">999+</string>
+    <string name="status_bar_notification_inspect_item_title">App info</string>
 </resources>

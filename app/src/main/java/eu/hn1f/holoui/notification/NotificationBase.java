@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Binder;
 import android.os.Build;
@@ -24,9 +25,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.RemoteViews;
 import android.widget.TextView;
@@ -75,6 +78,35 @@ public abstract class NotificationBase {
 
     public NotificationBase(Context newContext) {
         mContext = newContext;
+    }
+
+    protected View.OnLongClickListener getNotificationLongClicker() {
+        return new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                final String packageNameF = (String) v.getTag();
+                if (packageNameF == null) return false;
+                if (v.getWindowToken() == null) return false;
+                mNotificationBlamePopup = new PopupMenu(mContext, v);
+                mNotificationBlamePopup.getMenuInflater().inflate(
+                        R.menu.notification_popup_menu,
+                        mNotificationBlamePopup.getMenu());
+                mNotificationBlamePopup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if (item.getItemId() == R.id.notification_inspect_item) {
+                            // startApplicationDetailsActivity(packageNameF);
+                            // TODO animateCollapsePanels(CommandQueue.FLAG_EXCLUDE_NONE);
+                        } else {
+                            return false;
+                        }
+                        return true;
+                    }
+                });
+                mNotificationBlamePopup.show();
+
+                return true;
+            }
+        };
     }
 
     public boolean notificationIsForCurrentUser(StatusBarNotification n) {
@@ -201,8 +233,6 @@ public abstract class NotificationBase {
     };
 
     protected void applyLegacyRowBackground(StatusBarNotification sbn, View content) {
-        /* TODO: Figure out if (sbn.getNotification().contentView.getLayoutId() !=
-                com.android.internal.R.layout.notification_template_base) {
             int version = 0;
             try {
                 ApplicationInfo info = mContext.getPackageManager().getApplicationInfo(sbn.getPackageName(), 0);
@@ -211,11 +241,11 @@ public abstract class NotificationBase {
                 Log.e(TAG, "Failed looking up ApplicationInfo for " + sbn.getPackageName(), ex);
             }
             if (version > 0 && version < Build.VERSION_CODES.GINGERBREAD) {
-                content.setBackgroundResource(R.drawable.notification_row_legacy_bg);
+                // TODO: normally this is notification_row_legacy_bg
+                content.setBackgroundResource(R.drawable.notification_bg);
             } else {
-                content.setBackgroundResource(com.android.internal.R.drawable.notification_bg);
+                content.setBackgroundResource(R.drawable.notification_bg);
             }
-        } */
     }
 
     public boolean inflateViews(NotificationData.Entry entry, ViewGroup parent) {
@@ -627,7 +657,7 @@ public abstract class NotificationBase {
     }
 
     public void addNotification(StatusBarNotification notification) {
-        String key = notification.getPackageName()+notification.getId();
+        String key = notification.getPackageName();
 
         if(mNotificationData.findByKey(key) != null) {
             updateNotification(key, notification);
@@ -638,7 +668,7 @@ public abstract class NotificationBase {
         if (shadeEntry == null) {
             return;
         }
-        /* if (mUseHeadsUp && shouldInterrupt(notification)) {
+        /* TODO: Heads up if (mUseHeadsUp && shouldInterrupt(notification)) {
             if (DEBUG) Log.d(TAG, "launching notification in heads up mode");
             NotificationData.Entry interruptionCandidate = new NotificationData.Entry(key, notification, null);
             if (inflateViews(interruptionCandidate, mHeadsUpNotificationView.getHolder())) {
@@ -681,11 +711,7 @@ public abstract class NotificationBase {
     }
 
     public void removeNotification(StatusBarNotification notification) {
-        String key = notification.getPackageName()+notification.getId();
-
-        // What
-        if(mNotificationData.findByKey(key) == null)
-            return;
+        String key = notification.getPackageName();
 
         StatusBarNotification old = removeNotificationViews(key);
         // if (SPEW) Log.d(TAG, "removeNotification key=" + key + " old=" + old);
@@ -697,7 +723,7 @@ public abstract class NotificationBase {
             // Recalculate the position of the sliding windows and the titles.
             updateExpandedViewPos(EXPANDED_LEAVE_ALONE);
 
-            /* if (ENABLE_HEADS_UP && mInterruptingNotificationEntry != null
+            /* TODO if (ENABLE_HEADS_UP && mInterruptingNotificationEntry != null
                     && old == mInterruptingNotificationEntry.notification) {
                 mHandler.sendEmptyMessage(MSG_HIDE_HEADS_UP);
             }

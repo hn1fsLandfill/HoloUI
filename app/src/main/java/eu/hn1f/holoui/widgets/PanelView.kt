@@ -12,7 +12,6 @@ import android.view.View
 import android.widget.FrameLayout
 import eu.hn1f.holoui.R
 
-// TODO: Flinging
 class PanelView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
     var handle: View? = null
     var offsetY: Float = 0f
