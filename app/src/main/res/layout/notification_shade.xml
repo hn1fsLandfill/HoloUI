@@ -43,11 +43,11 @@
             android:fadingEdge="none"
             android:overScrollMode="ifContentScrolls"
             >
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TODO"
-                android:textSize="48sp"/>
+                android:orientation="vertical"
+                android:id="@+id/notifications" />
         </ScrollView>
         <TextView
             android:layout_width="match_parent"

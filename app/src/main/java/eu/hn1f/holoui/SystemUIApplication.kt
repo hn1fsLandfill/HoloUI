@@ -11,6 +11,7 @@ import android.security.authenticationpolicy.AuthenticationPolicyManager
 import android.service.notification.StatusBarNotification
 import android.util.Log
 import com.android.internal.policy.IKeyguardStateCallback
+import eu.hn1f.holoui.notification.NotificationListener
 import eu.hn1f.holoui.recent.Recents
 import eu.hn1f.holoui.widgets.Notification
 import eu.hn1f.holoui.widgets.StatusBarNotificationIcons

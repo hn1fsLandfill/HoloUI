@@ -52,7 +52,7 @@
             android:enabled="true"
             android:exported="true" />
         <service
-            android:name=".NotificationListener"
+            android:name=".notification.NotificationListener"
             android:directBootAware="true"
             android:enabled="true"
             android:exported="false"

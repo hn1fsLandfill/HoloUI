@@ -6,15 +6,12 @@
     android:id="@+id/status_bar"
     android:paddingStart="@dimen/statusbar_padding"
     android:paddingEnd="@dimen/statusbar_padding">
-    <LinearLayout
+    <eu.hn1f.holoui.notification.StatusBarNotifications
         android:id="@+id/notification_icon_area"
         android:layout_width="0dip"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:orientation="horizontal"
-        >
-        <!-- FIXME -->
-    </LinearLayout>
+        android:orientation="horizontal"/>
 
     <View
         android:layout_width="0dp"
