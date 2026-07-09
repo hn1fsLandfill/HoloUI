@@ -1,13 +1,15 @@
 package eu.hn1f.holoui.notification
 
+import android.animation.LayoutTransition
 import android.app.Notification
 import android.content.Context
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import eu.hn1f.holoui.R
 
-class NotificationRow: FrameLayout {
+class NotificationRow: LinearLayout {
     private constructor(context: Context) : super(context)
 
     companion object {
@@ -20,6 +22,10 @@ class NotificationRow: FrameLayout {
 
             return notificationRow
         }
+    }
+
+    init {
+        orientation = VERTICAL
     }
 
     private var isExpanded = false
@@ -72,12 +78,18 @@ class NotificationRow: FrameLayout {
 
         removeAllViews()
         addTopGlow()
+
+        val container = FrameLayout(context)
+        container.setBackgroundResource(R.drawable.notification_bg)
+        container.layoutParams = marginLayout()
+        addView(container)
+
         if(isRemoteView) {
             contentView = notification!!.contentView.apply(context, this)
             addView(contentView)
             if(notification!!.bigContentView != null) {
                 bigContentView = notification!!.bigContentView.apply(context, this);
-                addView(bigContentView)
+                container.addView(bigContentView)
             }
         } else {
             // Call up John
@@ -85,19 +97,11 @@ class NotificationRow: FrameLayout {
             contentView = john.makeContentView()
             bigContentView = john.makeBigContentView()
 
-            addView(contentView)
+            container.addView(contentView)
             if(bigContentView != null)
                 addView(bigContentView)
         }
         addBottomGlow()
-
-        val margin = marginLayout()
-
-        // Finally apply the funny background and margins
-        contentView!!.setBackgroundResource(R.drawable.notification_bg)
-        contentView!!.layoutParams = margin
-        bigContentView?.setBackgroundResource(R.drawable.notification_bg)
-        bigContentView?.layoutParams = margin
     }
 
     fun setExpanded(value: Boolean) {

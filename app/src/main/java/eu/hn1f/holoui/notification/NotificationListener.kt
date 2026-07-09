@@ -6,6 +6,7 @@ import android.os.UserHandle
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
+import android.widget.ImageView
 import android.widget.LinearLayout
 import eu.hn1f.holoui.NotificationShade
 import eu.hn1f.holoui.R
@@ -42,6 +43,21 @@ class NotificationListener: NotificationListenerService() {
     override fun onCreate() {
         super.onCreate()
         mApplication = (applicationContext as SystemUIApplication)
+    }
+
+    fun clearAll() {
+        // get all the sbns because we don't wanna get a funny ConcurrentModificationException
+        var sbns: Array<StatusBarNotification> = emptyArray()
+        for(i in notifications) {
+            sbns += i.sbn
+        }
+
+        for(sbn in sbns) {
+            if(!sbn.isClearable) continue
+
+            sbn.notification.deleteIntent?.send()
+            onNotificationRemoved(sbn)
+        }
     }
 
     fun updateStatusBar() {
@@ -85,6 +101,10 @@ class NotificationListener: NotificationListenerService() {
         notificationsView = shade!!.root!!.findViewById(R.id.notifications)
         statusBarNotificationsView = mApplication!!.statusBar!!.root!!
             .findViewById(R.id.notification_icon_area)
+
+        shade!!.root!!.findViewById<ImageView>(R.id.clear_all_button).setOnClickListener {
+            clearAll()
+        }
 
         for(sbn in activeNotifications) {
             addNotification(sbn);
