@@ -170,7 +170,11 @@ class Lockscreen(val context: Context) {
         if(!shown) {
             reload()
             root.alpha = 1.0f
-            windowManager.addView(root, lp)
+            try {
+                windowManager.addView(root, lp)
+            } catch(ignored: IllegalStateException) {
+                return;
+            }
             if (sound) Sounds(context).playLock()
             shown = true
             mApplication.runInUIThread {
