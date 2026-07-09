@@ -1,8 +1,15 @@
 package eu.hn1f.holoui.notification
 
+import android.app.INotificationManager
+import android.app.Notification
+import android.app.NotificationChannel
 import android.content.ComponentName
+import android.content.Context
+import android.os.IPowerManager
 import android.os.RemoteException
+import android.os.ServiceManager
 import android.os.UserHandle
+import android.service.dreams.IDreamManager
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
@@ -10,6 +17,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import eu.hn1f.holoui.NotificationShade
 import eu.hn1f.holoui.R
+import eu.hn1f.holoui.Sounds
 import eu.hn1f.holoui.SystemUIApplication
 
 class NotificationListener: NotificationListenerService() {
@@ -18,6 +26,7 @@ class NotificationListener: NotificationListenerService() {
     var notificationsView: LinearLayout? = null
     var statusBarNotificationsView: StatusBarNotifications? = null
     var shade: NotificationShade? = null
+    var mINotificationManager: INotificationManager? = null;
 
     private class NotificationData(var sbn: StatusBarNotification,
                                    var row: NotificationRow, var key: String);
@@ -38,6 +47,38 @@ class NotificationListener: NotificationListenerService() {
         }
 
         return null
+    }
+
+
+    private fun shouldInterrupt(sbn: StatusBarNotification): Boolean {
+        val notification: Notification = sbn.getNotification()
+
+        val dreamManager = IDreamManager.Stub.asInterface(
+            ServiceManager.getServiceOrThrow(Context.DREAM_SERVICE))
+        val powerManager = IPowerManager.Stub.asInterface(
+            ServiceManager.getService(Context.POWER_SERVICE));
+
+        // some predicates to make the boolean logic legible
+        val isNoisy =
+            (notification.defaults and Notification.DEFAULT_SOUND) !== 0
+                    || (notification.defaults and Notification.DEFAULT_VIBRATE) !== 0
+                    || notification.sound != null
+                    || notification.vibrate != null
+        val isHighPriority = sbn.notification.groupAlertBehavior >= Notification.GROUP_ALERT_ALL
+        val isFullscreen = notification.fullScreenIntent != null
+        val isAllowed = sbn.notification.groupAlertBehavior >= Notification.GROUP_ALERT_ALL
+
+        val keyguard = mApplication!!.statusBar!!.lockscreen!!
+        var interrupt = (isFullscreen || (isHighPriority && isNoisy))
+                && isAllowed
+                && powerManager.isInteractive
+                && !keyguard.shown // && !keyguard.isInputRestricted()
+        try {
+            interrupt = interrupt && !dreamManager.isDreaming()
+        } catch (e: RemoteException) {
+            // Log.d(TAG, "failed to query dream manager", e)
+        }
+        return interrupt
     }
 
     override fun onCreate() {
@@ -92,11 +133,29 @@ class NotificationListener: NotificationListenerService() {
         notificationsView!!.addView(row)
         notifications.add(NotificationData(sbn, row, sbn.key))
         updateStatusBar()
+
+        var channel: NotificationChannel? = null
+
+        try {
+            channel = mINotificationManager!!.getNotificationChannel(
+                mApplication!!.packageName,
+                sbn.user.identifier,
+                sbn.packageName,
+                sbn.notification.channelId
+            )
+        } catch (ignored: RemoteException) {} // this is probably some old app
+
+        // for testing rn
+        if(channel?.sound != null) {
+            Sounds(mApplication!!).playUri(channel.sound)
+        }
     }
 
     override fun onListenerConnected() {
         super.onListenerConnected()
         Log.v("HoloUI", "Notification listener connected")
+        mINotificationManager = INotificationManager.Stub.asInterface(
+            ServiceManager.getServiceOrThrow(Context.NOTIFICATION_SERVICE))
         shade = mApplication!!.statusBar!!.shade!!
         notificationsView = shade!!.root!!.findViewById(R.id.notifications)
         statusBarNotificationsView = mApplication!!.statusBar!!.root!!

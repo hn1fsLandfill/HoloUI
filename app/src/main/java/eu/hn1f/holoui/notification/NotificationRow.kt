@@ -76,13 +76,14 @@ class NotificationRow: LinearLayout {
         notification = newNotif
         val isRemoteView = notification!!.contentView != null;
 
-        removeAllViews()
-        addTopGlow()
-
         val container = FrameLayout(context)
         container.setBackgroundResource(R.drawable.notification_bg)
         container.layoutParams = marginLayout()
+
+        removeAllViews()
+        addTopGlow()
         addView(container)
+        addBottomGlow()
 
         if(isRemoteView) {
             contentView = notification!!.contentView.apply(context, this)
@@ -101,7 +102,6 @@ class NotificationRow: LinearLayout {
             if(bigContentView != null)
                 addView(bigContentView)
         }
-        addBottomGlow()
     }
 
     fun setExpanded(value: Boolean) {

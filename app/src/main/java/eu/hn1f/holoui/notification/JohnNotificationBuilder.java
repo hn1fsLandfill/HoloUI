@@ -240,7 +240,12 @@ public class JohnNotificationBuilder {
 
         TextView action0 = button.findViewById(R.id.action0);
 
-        Drawable icon = action.getIcon().loadDrawable(mContext);
+        Drawable icon = null;
+        try {
+            icon = action.getIcon().loadDrawable(mContext);
+        } catch(Resources.NotFoundException ignored) {
+            icon = mContext.getResources().getDrawable(android.R.drawable.btn_plus);
+        }
         action0.setCompoundDrawablesRelative(icon, null, null, null);
         action0.setText(action.title);
         if (!tombstone) {
