@@ -88,14 +88,17 @@ class KeyguardService: Service() {
         override fun onFinishedWakingUp() {
             trace("onFinishedWakingUp")
         }
-        override fun onScreenTurningOn(reason: Int, callback: IKeyguardDrawnCallback) {
+        override fun onScreenTurningOn(
+            #ifdef BAKLAVA_QPR2_LATER
+            reason: Int,
+            #endif
+            callback: IKeyguardDrawnCallback) {
             trace("onScreenTurningOn")
             mApplication!!.statusBar!!.lockscreen!!.showLockscreen()
             callback.onDrawn()
         }
         override fun onScreenTurnedOn() {
             trace("onScreenTurnedOn")
-            mApplication!!.statusBar!!.lockscreen!!.showLockscreen()
         }
         override fun onScreenTurningOff() {
             trace("onScreenTurningOff")
