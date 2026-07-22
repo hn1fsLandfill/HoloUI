@@ -242,7 +242,8 @@ public class JohnNotificationBuilder {
 
         Drawable icon = null;
         try {
-            icon = action.getIcon().loadDrawable(mContext);
+            if(action.getIcon() != null)
+                icon = action.getIcon().loadDrawable(mContext);
         } catch(Resources.NotFoundException ignored) {
             icon = mContext.getResources().getDrawable(android.R.drawable.btn_plus);
         }
