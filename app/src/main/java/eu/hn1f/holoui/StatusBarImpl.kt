@@ -375,7 +375,7 @@ import com.android.internal.view.AppearanceRegion
     override fun showMediaOutputSwitcher(
         p0: String?,
         p1: UserHandle?,
-        /* p2: MediaSession.Token? LineageOS argument */
+        p2: MediaSession.Token?
     ) {
         // TODO("Not yet implemented")
     }
