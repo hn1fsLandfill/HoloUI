@@ -14,3 +14,7 @@
 .cxx
 local.properties
 libs/*.jar
+
+# preprocessed stuff
+app/src/main/java/eu/hn1f/holoui/KeyguardService.kt
+app/src/main/java/eu/hn1f/holoui/StatusBarImpl.kt

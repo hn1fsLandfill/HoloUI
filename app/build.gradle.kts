@@ -39,3 +39,13 @@ dependencies {
     compileOnly(files("../stub/stubs.jar"))
     compileOnly(files("../libs/framework.jar"))
 }
+
+tasks.register("preprocess") {
+    exec {
+        commandLine("sh", "src/preprocessStuff.sh")
+    }
+}
+
+tasks.preBuild {
+    dependsOn("preprocess")
+}
