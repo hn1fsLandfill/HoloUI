@@ -10,9 +10,9 @@ import android.hardware.input.InputManagerGlobal
 import android.os.Binder
 import android.os.Looper
 import android.os.ServiceManager
+import android.text.TextUtils
 import android.util.Log
 import android.view.Gravity
-import android.view.IDisplayWindowInsetsController
 import android.view.IWindowManager
 import android.view.InputChannel
 import android.view.InputEvent
@@ -20,6 +20,7 @@ import android.view.InputEventReceiver
 import android.view.InsetsFrameProvider
 import android.view.InsetsSourceControl
 import android.view.InsetsState
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -49,48 +50,18 @@ class StatusBar(val context: Context) {
     var lockscreen: Lockscreen? = null
     var windowInsetsOwner = Binder();
 
-    private var leashes = DisplayWindowInsetsController()
-
     var isImmersed = false
-
-    private class DisplayWindowInsetsController: IDisplayWindowInsetsController.Stub() {
-        var statusBarControl: InsetsSourceControl? = null
-        var navBarControl: InsetsSourceControl? = null
-
-        override fun insetsChanged(p0: InsetsState?) {}
-
-        //
-        override fun insetsControlChanged(p0: InsetsState?, controls: Array<out InsetsSourceControl?>?) {
-            controls?.forEach { control ->
-                if (control?.type == WindowInsets.Type.statusBars()) {
-                    this.statusBarControl = control
-                }
-            }
-        }
-        override fun hideInsets(p0: Int, p1: Boolean, p2: ImeTracker.Token?) {}
-        override fun showInsets(p0: Int, p1: Boolean, p2: ImeTracker.Token?) {}
-
-        override fun setImeInputTargetRequestedVisibility(
-            p0: Boolean,
-            p1: ImeTracker.Token?
-        ) {
-            // TODO("Not yet implemented")
-        }
-
-        override fun topFocusedWindowChanged(p0: ComponentName?, p1: Int) {
-            // TODO("Not yet implemented")
-        }
-
-    }
 
     private class InputListener: InputEventReceiver {
         val statusBar: StatusBar
+        val inputChannel: InputChannel
         val flingTracker = FlingTracker()
         var stalkingEvents = false
 
         constructor(sb: StatusBar, channel: InputChannel, looper: Looper)
                 : super(channel, looper) {
             statusBar = sb
+            inputChannel = channel
         }
 
         fun onSwipe() {
@@ -109,8 +80,17 @@ class StatusBar(val context: Context) {
             }, 3000) */
         }
 
+
         override fun onInputEvent(inputEvent: InputEvent) {
             super.onInputEvent(inputEvent)
+
+            // last minute recents hack
+            if(inputEvent is KeyEvent) {
+                if(inputEvent.keyCode == KeyEvent.KEYCODE_RECENT_APPS && inputEvent.action
+                    == KeyEvent.ACTION_UP) {
+                    onRecents()
+            }
+
             if(inputEvent !is MotionEvent || !statusBar.isImmersed) return
             // this makes the code less confusing imo
             @Suppress("USELESS_CAST")
@@ -130,10 +110,21 @@ class StatusBar(val context: Context) {
 
                 Log.v("HoloUI", "velocity y $yV")
 
-                if(yV > 100)
+                if(yV > 100) {
+                    InputManagerGlobal.getInstance().pilferPointers(inputChannel.token)
                     runInUIThread { onSwipe() }
+                }
             } else if(event.action == MotionEvent.ACTION_CANCEL && stalkingEvents) flingTracker.recycle()
         }
+    }
+
+    fun onRecents() {
+            val mApplication = (statusBar.context.applicationContext as SystemUIApplication);
+            val mLocale = mApplication.resources.configuration.locale;
+            val mLayoutDirection = TextUtils.getLayoutDirectionFromLocale(mLocale);
+
+            mApplication.recents!!.toggleRecents(mApplication.display, mLayoutDirection,
+                mApplication.statusBar!!.root)}
     }
 
     fun hideStatusBar() {
@@ -147,6 +138,7 @@ class StatusBar(val context: Context) {
     }
     fun showStatusBar(immersed: Boolean? = null) {
         statusBar!!.visibility = View.VISIBLE
+        statusBar!!.alpha = 1f
         val animator = statusBar!!.animate()
         animator.translationY(0f)
         animator.start()
@@ -180,6 +172,7 @@ class StatusBar(val context: Context) {
         lp.windowAnimations = android.R.anim.fade_out
         lp.providedInsets = arrayOf<InsetsFrameProvider>(
             InsetsFrameProvider(windowInsetsOwner, 0, WindowInsets.Type.statusBars())
+                .setSource(InsetsFrameProvider.SOURCE_DISPLAY)
                 .setInsetsSize(Insets.of(0,barHeight,0,0))
         )
         windowManager.addView(root, lp)
@@ -194,9 +187,6 @@ class StatusBar(val context: Context) {
 
     @SuppressLint("ClickableViewAccessibility")
     fun init() {
-        val wms = IWindowManager.Stub.asInterface(ServiceManager.getService(Context.WINDOW_SERVICE))
-        wms.setDisplayWindowInsetsController(context.display.displayId, leashes)
-
         add()
         root!!.setOnTouchListener { v, event ->
             // dispatch to the notification shade
