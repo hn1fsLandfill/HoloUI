@@ -46,6 +46,7 @@ isPresent java
 isPresent adb
 isPresent curl
 isPresent unzip
+isPresent cpp
 
 if [ -n "$notPresent" ]; then
   echo "Whoops, you need these installed:$notPresent"
@@ -56,6 +57,7 @@ echo "Determining target device's SDK version"
 SDK_VERSION="$(adb shell getprop ro.system_ext.build.version.sdk_full)"
 
 rm -f app/src/target.sh
+touch app/src/target.sh
 if ! "FOR_$SDK_VERSION" 2>/dev/null; then
   echo "Your Android version (SDK $SDK_VERSION) doesn't seem to be supported :("
 else

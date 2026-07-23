@@ -10,14 +10,21 @@ You'll need the following before you can start the guide:
 - A Linux computer capable of running the Android SDK (TODO: Add a helper script for compiling
 HoloUI, this README is a placeholder for now)
 - Root
-- [LSPosed](https://github.com/JingMatrix/LSPosed)
+- [Vector](https://github.com/JingMatrix/Vector)
+- [Android SDK](https://developer.android.com/studio)
+- Basic commands like unzip, curl
+- Java runtime (You can use the one from Android Studio, usually in android-studio/jbr/bin
+or jbr/bin; must be in $PATH)
 
-1. Using ADB pull the framework.jar from your ROM (`adb pull /system/framework/framework.jar .`)
-2. Finally run `helper.sh` with a path to your framework.jar
-3. You'll get the resulting HoloUI apk under the build directory.
-4. Install the [DroidCSS](https://github.com/hn1fsLandfill/DroidCSS) module and enable it for all
- recommended apps under LSPosed's
- settings. This is required to force Android to use HoloUI instead of it's SystemUI implementation
- and also allow installation of HoloUI without requiring the signing keys of the ROM.
-5. After installing DroidCSS and rebooting, use ADB to install the resulting APK.
-(`adb install build/HoloUI.apk`)
+Once you have these requirements you can do the folowing:
+
+> If building in Android Studio then you can skip running build.sh and replace step 4 with clicking
+> the run button
+
+1. Run `helper.sh` then run `build.sh`
+2. You'll get a resulting HoloUI apk under the build directory.
+3. Install the [DroidCSS](https://github.com/hn1fsLandfill/DroidCSS) module and enable it for 
+the system framework (This is needed before installing HoloUI since HoloUI needs APIS that only
+platform key-signed apps can have)
+4. After installing DroidCSS and rebooting, use ADB to install the resulting APK in the build directory
+5. In DroidCSS settings, enable `Redirect SystemUI` then reboot and enjoy!
