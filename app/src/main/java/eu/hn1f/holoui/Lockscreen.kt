@@ -9,6 +9,8 @@ import android.graphics.PixelFormat
 import android.os.Binder
 import android.util.Log
 import android.view.Gravity
+import android.view.IWindow
+import android.view.IWindowManager
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +29,7 @@ class Lockscreen(val context: Context) {
     @SuppressLint("InflateParams")
     val root = LayoutInflater.from(context).inflate(R.layout.lock_screen, null)
     val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+
     val lp = WindowManager.LayoutParams(
         WindowManager.LayoutParams.MATCH_PARENT,
         WindowManager.LayoutParams.MATCH_PARENT,
@@ -153,6 +156,11 @@ class Lockscreen(val context: Context) {
                     Log.v("HoloUI","no statecallback, strange");
                 } else {
                     mApplication.stateCallback!!.onTrustedChanged(true)
+                    mApplication.stateCallback!!.onInputRestrictedStateChanged(false)
+                    mApplication.stateCallback!!.onShowingStateChanged(
+                        false,
+                        userId
+                    )
                 }
             } else {
                 mApplication.runInUIThread {
@@ -189,6 +197,7 @@ class Lockscreen(val context: Context) {
                     true,
                     userId
                 )
+                mApplication.stateCallback!!.onInputRestrictedStateChanged(true)
             }
 
             val taskManager = ActivityTaskManager.getService()
@@ -198,23 +207,20 @@ class Lockscreen(val context: Context) {
     // when unlocked
     fun hideLockscreen(animate: Boolean = false) {
         if(shown) {
-            if(animate)
-                root.animate()
-                    .alpha(0f)
-                    .setDuration(200)
-                    .withEndAction {
-                        windowManager.removeView(root)
-                    }
-                    .start()
-            else
-                windowManager.removeView(root)
+            runInUIThread {
+                if (animate)
+                    root.animate()
+                        .alpha(0f)
+                        .setDuration(200)
+                        .withEndAction {
+                            windowManager.removeView(root)
+                        }
+                        .start()
+                else
+                    windowManager.removeView(root)
+            }
 
             shown = false
-            if(mApplication.stateCallback == null) {
-                Log.v("HoloUI","no statecallback, strange");
-            } else {
-                mApplication.stateCallback!!.onShowingStateChanged(false, userId)
-            }
 
             val taskManager = ActivityTaskManager.getService()
             taskManager.setLockScreenShown(false, false)
