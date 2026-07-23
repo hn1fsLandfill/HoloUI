@@ -89,7 +89,7 @@ class KeyguardService: Service() {
             trace("onFinishedWakingUp")
         }
         override fun onScreenTurningOn(
-            #ifdef BAKLAVA_QPR2_LATER
+            #ifdef BAKLAVA_QPR1_LATER
             reason: Int,
             #endif
             callback: IKeyguardDrawnCallback) {

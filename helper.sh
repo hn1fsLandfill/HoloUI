@@ -11,10 +11,12 @@ FOR_36.0() {
   true
 }
 FOR_36.1() {
-  true
+  echo "Using Android 16 QPR1 flags"
+  addFlag IS_BAKLAVA_QPR1_LATER
 }
 FOR_36.2() {
   echo "Using Android 16 QPR2 flags"
+  addFlag IS_BAKLAVA_QPR1_LATER
   addFlag IS_BAKLAVA_QPR2_LATER
 }
 
@@ -65,6 +67,7 @@ else
 fi
 
 echo "Converting device's framework.jar into an actual jar"
+rm -rf dump
 mkdir dump
 (
   cd dump || exit 1
@@ -82,7 +85,6 @@ mkdir dump
   adb pull /system/framework/framework.jar framework.jar
   sh d2j/d2j-dex2jar.sh framework.jar
   cp framework-dex2jar.jar ../libs/framework.jar
-) || ( echo "Couldn't convert device's framework.jar :("; exit 1 )
-rm -rf dump
+) || ( echo "Couldn't convert device's framework.jar :(")
 
 echo "You may compile HoloUI as normal now"

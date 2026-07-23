@@ -8,6 +8,9 @@ cd "$(dirname "$0")" || exit 1
 
 CPP_ARGS=""
 
+if [ -n "$IS_BAKLAVA_QPR1_LATER" ]; then
+  CPP_ARGS="$CPP_ARGS -DBAKLAVA_QPR1_LATER"
+fi
 if [ -n "$IS_BAKLAVA_QPR2_LATER" ]; then
   CPP_ARGS="$CPP_ARGS -DBAKLAVA_QPR2_LATER"
 fi
