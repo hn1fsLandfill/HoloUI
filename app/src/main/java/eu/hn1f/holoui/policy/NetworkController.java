@@ -223,7 +223,7 @@ public class NetworkController extends BroadcastReceiver implements DemoMode {
         filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         filter.addAction(TelephonyIntents.ACTION_SIM_STATE_CHANGED);
-        // filter.addAction(TelephonyIntents.SPN_STRINGS_UPDATED_ACTION);
+        filter.addAction(TelephonyManager_ACTION_SERVICE_PROVIDERS_UPDATED);
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         // filter.addAction(ConnectivityManager.INET_CONDITION_ACTION);
         filter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
@@ -368,6 +368,14 @@ public class NetworkController extends BroadcastReceiver implements DemoMode {
         mDataAndWifiStacked = true;
     }
 
+    // i love working with dex2jar framework jars
+    String TelephonyManager_EXTRA_SHOW_SPN = "android.telephony.extra.SHOW_SPN";
+    String TelephonyManager_EXTRA_SHOW_PLMN = "android.telephony.extra.SHOW_PLMN";
+    String TelephonyManager_EXTRA_PLMN = "android.telephony.extra.PLMN";
+    String TelephonyManager_EXTRA_SPN = "android.telephony.extra.SPN";
+    String TelephonyManager_ACTION_SERVICE_PROVIDERS_UPDATED =
+            "android.telephony.action.SERVICE_PROVIDERS_UPDATED";
+
     @Override
     public void onReceive(Context context, Intent intent) {
         final String action = intent.getAction();
@@ -375,6 +383,12 @@ public class NetworkController extends BroadcastReceiver implements DemoMode {
                 || action.equals(WifiManager.WIFI_STATE_CHANGED_ACTION)
                 || action.equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
             updateWifiState(intent);
+            refreshViews();
+        } else if (action.equals(TelephonyManager_ACTION_SERVICE_PROVIDERS_UPDATED)) {
+            updateNetworkName(intent.getBooleanExtra(TelephonyManager_EXTRA_SHOW_SPN, false),
+                    intent.getStringExtra(TelephonyManager_EXTRA_SPN),
+                    intent.getBooleanExtra(TelephonyManager_EXTRA_SHOW_PLMN, false),
+                    intent.getStringExtra(TelephonyManager_EXTRA_PLMN));
             refreshViews();
         } else if (action.equals(TelephonyIntents.ACTION_SIM_STATE_CHANGED)) {
             updateSimState(intent);
