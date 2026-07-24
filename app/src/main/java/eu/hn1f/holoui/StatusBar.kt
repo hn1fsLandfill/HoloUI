@@ -84,13 +84,6 @@ class StatusBar(val context: Context) {
         override fun onInputEvent(inputEvent: InputEvent) {
             super.onInputEvent(inputEvent)
 
-            // last minute recents hack
-            if(inputEvent is KeyEvent) {
-                if(inputEvent.keyCode == KeyEvent.KEYCODE_RECENT_APPS && inputEvent.action
-                    == KeyEvent.ACTION_UP) {
-                    onRecents()
-            }
-
             if(inputEvent !is MotionEvent || !statusBar.isImmersed) return
             // this makes the code less confusing imo
             @Suppress("USELESS_CAST")
@@ -116,15 +109,6 @@ class StatusBar(val context: Context) {
                 }
             } else if(event.action == MotionEvent.ACTION_CANCEL && stalkingEvents) flingTracker.recycle()
         }
-    }
-
-    fun onRecents() {
-            val mApplication = (statusBar.context.applicationContext as SystemUIApplication);
-            val mLocale = mApplication.resources.configuration.locale;
-            val mLayoutDirection = TextUtils.getLayoutDirectionFromLocale(mLocale);
-
-            mApplication.recents!!.toggleRecents(mApplication.display, mLayoutDirection,
-                mApplication.statusBar!!.root)}
     }
 
     fun hideStatusBar() {
@@ -179,7 +163,7 @@ class StatusBar(val context: Context) {
     }
 
     fun semiOpaque() {
-        statusBar!!.setBackgroundColor(Color.pack(0f,0f,0f,0.5f).toInt())
+        statusBar!!.setBackgroundColor(Color.argb(130,0,0,0))
     }
     fun opaque() {
         statusBar!!.setBackgroundColor(Color.BLACK)
