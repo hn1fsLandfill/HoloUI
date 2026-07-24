@@ -66,14 +66,12 @@ class NavigationKey(context: Context?, attrs: AttributeSet?): ImageView(context,
             return true
         } else if(event?.action == MotionEvent.ACTION_DOWN) {
             isPressed = true
-            background = highlight
             downTime = SystemClock.uptimeMillis()
             sendEvent(KeyEvent.ACTION_DOWN, key.getInt(R.styleable.NavigationKey_key, 3), downTime)
             return true
         } else if(event?.action == MotionEvent.ACTION_CANCEL) {
             isPressed = false
             val key = key.getInt(R.styleable.NavigationKey_key, 3)
-            background = null
             sendEvent(KeyEvent.ACTION_UP, key, SystemClock.uptimeMillis())
             return true
         } else if(event?.action == MotionEvent.ACTION_MOVE) {
@@ -186,7 +184,7 @@ class NavigationKey(context: Context?, attrs: AttributeSet?): ImageView(context,
     }
 
     override fun onAttachedToWindow() {
-        setPressed(false)
+        setDrawingAlpha(DEFAULT_QUIESCENT_ALPHA)
         super.onAttachedToWindow()
     }
 }
