@@ -4,12 +4,15 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.Insets
 import android.graphics.PixelFormat
+import android.hardware.input.InputManager
+import android.content.Intent
+import android.hardware.input.KeyGestureEvent
 import android.os.Binder
+import android.os.Build
+import android.os.IBinder
 import android.provider.Settings
-import android.util.LayoutDirection
 import android.view.Gravity
 import android.view.InsetsFrameProvider
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowInsets
@@ -24,6 +27,36 @@ class NavigationBar(val context: Context) {
     var inflater = LayoutInflater.from(context)
     var isEnabled = true
     var invertNavbar = false
+    val mApplication = context.applicationContext as SystemUIApplication
+
+    // Starting in Android 16 QPR1 some keys are offloaded to SystemUI
+    fun interceptKeys() {
+        if(Build.VERSION.SDK_INT_FULL < Build.VERSION_CODES_FULL.BAKLAVA+1) return;
+
+        val inputManager = InputManager(mApplication)
+
+        inputManager.registerKeyGestureEventHandler(
+            listOf(KeyGestureEvent.KEY_GESTURE_TYPE_RECENT_APPS,
+                /* KeyGestureEvent.KEY_GESTURE_TYPE_HOME someone keeps stealing the home button */),
+            object : InputManager.KeyGestureEventHandler {
+                override fun handleKeyGestureEvent(ev: KeyGestureEvent, binder: IBinder) {
+                    if(ev.action != KeyGestureEvent.ACTION_GESTURE_COMPLETE || ev.isCancelled)
+                        return;
+
+                    if(ev.keyGestureType == KeyGestureEvent.KEY_GESTURE_TYPE_HOME) {
+                        val intent = Intent().apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                            action = Intent.ACTION_MAIN
+                            addCategory(Intent.CATEGORY_HOME)
+                        }
+
+                        mApplication.startActivity(intent)
+                    } else
+                        mApplication.statusBar!!.statusBarImpl.toggleRecents()
+                }
+            }
+        )
+    }
 
     fun reloadSettings() {
         isEnabled = Settings.Global.getInt(context.contentResolver, "holoui_navbar", 1) == 1
@@ -46,11 +79,19 @@ class NavigationBar(val context: Context) {
         animator.start()
     }
 
+    fun semiOpaque() {
+        root?.setBackgroundColor(Color.argb(128,0,0,0))
+    }
+
+    fun opaque() {
+        root?.setBackgroundColor(Color.BLACK)
+    }
+
     // TODO: Landscape navigation bar
     fun add() {
         if(root != null) return;
         root = inflater.inflate(R.layout.navigation_bar, null) as LinearLayout?
-        root!!.setBackgroundColor(Color.BLACK)
+        opaque()
         val lp = WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT,
             barHeight,
@@ -83,6 +124,7 @@ class NavigationBar(val context: Context) {
 
     fun init() {
         reload()
+        interceptKeys()
     }
 
     fun reload() {
