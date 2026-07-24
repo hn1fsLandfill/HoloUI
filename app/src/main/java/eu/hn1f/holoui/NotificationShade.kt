@@ -60,5 +60,7 @@ class NotificationShade(val core: StatusBar) {
         addDebugButton("close shade", {
             hide()
         })
+
+        core.mNetworkController.addMobileLabelView(root!!.findViewById(R.id.carrier_name))
     }
 }
