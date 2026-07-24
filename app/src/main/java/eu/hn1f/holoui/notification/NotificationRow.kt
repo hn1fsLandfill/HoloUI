@@ -1,19 +1,29 @@
 package eu.hn1f.holoui.notification
 
-import android.animation.LayoutTransition
-import android.app.Notification
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Configuration
+import android.service.notification.StatusBarNotification
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import eu.hn1f.holoui.R
+import eu.hn1f.holoui.SwipeHelper
 
-class NotificationRow: LinearLayout {
-    private constructor(context: Context) : super(context)
+class NotificationRow: LinearLayout, SwipeHelper.Callback {
+    private val mSwipeHelper: SwipeHelper
+    private constructor(context: Context) : super(context) {
+        val densityScale = resources.displayMetrics.density
+        val pagingTouchSlop = ViewConfiguration.get(context).scaledPagingTouchSlop.toFloat()
+        mSwipeHelper = SwipeHelper(SwipeHelper.X, this, densityScale,
+            pagingTouchSlop)
+    }
 
     companion object {
-        fun createNotification(context: Context, notification: Notification): NotificationRow {
+        fun createNotification(context: Context, notification: StatusBarNotification): NotificationRow {
             val notificationRow = NotificationRow(context);
 
             notificationRow.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT,
@@ -31,7 +41,7 @@ class NotificationRow: LinearLayout {
     private var isExpanded = false
     private var contentView: View? = null
     private var bigContentView: View? = null
-    private var notification: Notification? = null
+    private var sbn: StatusBarNotification? = null
 
     private var topGlow: View? = null;
     private var bottomGlow: View? = null;
@@ -72,9 +82,10 @@ class NotificationRow: LinearLayout {
         addView(bottomGlow)
     }
 
-    fun reloadFromNotification(newNotif: Notification) {
-        notification = newNotif
-        val isRemoteView = notification!!.contentView != null;
+    fun reloadFromNotification(newNotif: StatusBarNotification) {
+        sbn = newNotif
+        val notification = sbn!!.notification
+        val isRemoteView = notification.contentView != null;
 
         val container = FrameLayout(context)
         container.setBackgroundResource(R.drawable.notification_bg)
@@ -88,8 +99,8 @@ class NotificationRow: LinearLayout {
         if(isRemoteView) {
             contentView = notification!!.contentView.apply(context, this)
             addView(contentView)
-            if(notification!!.bigContentView != null) {
-                bigContentView = notification!!.bigContentView.apply(context, this);
+            if(notification.bigContentView != null) {
+                bigContentView = notification.bigContentView.apply(context, this);
                 container.addView(bigContentView)
             }
         } else {
@@ -102,6 +113,8 @@ class NotificationRow: LinearLayout {
             if(bigContentView != null)
                 addView(bigContentView)
         }
+
+        requestDisallowInterceptTouchEvent(false)
     }
 
     fun setExpanded(value: Boolean) {
@@ -122,4 +135,71 @@ class NotificationRow: LinearLayout {
         }
         super.onLayout(changed, left, top, right, bottom)
     }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        val densityScale = resources.displayMetrics.density
+        val pagingTouchSlop = ViewConfiguration.get(context).scaledPagingTouchSlop.toFloat()
+        mSwipeHelper.setDensityScale(densityScale)
+        mSwipeHelper.setPagingTouchSlop(pagingTouchSlop)
+    }
+
+    override fun setOnLongClickListener(l: OnLongClickListener?) {
+        mSwipeHelper.setLongPressListener(l)
+    }
+
+    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
+        return mSwipeHelper.onInterceptTouchEvent(ev) || super.onInterceptTouchEvent(ev)
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        return mSwipeHelper.onTouchEvent(event) || super.onTouchEvent(event)
+    }
+
+    interface ClearCallback {
+        fun onClearCallback(sbn: StatusBarNotification)
+    }
+
+    var clearCallback: ClearCallback? = null
+
+    fun setOnClearListener(callback: ClearCallback) {
+        clearCallback = callback
+    }
+
+    override fun getChildAtPosition(ev: MotionEvent): View? {
+        // find the view under the pointer, accounting for GONE views
+        var y = 0
+        var childIdx = 0
+        var slidingChild: View
+        while (childIdx < childCount) {
+            slidingChild = getChildAt(childIdx)
+            if (slidingChild.visibility == GONE) {
+                childIdx++
+                continue
+            }
+            y += slidingChild.measuredHeight
+            if (ev.y < y) return slidingChild
+            childIdx++
+        }
+        return null
+    }
+
+    override fun getChildContentView(v: View?): View? {
+        return v
+    }
+
+    override fun canChildBeDismissed(v: View?): Boolean {
+        return true; // sbn!!.isClearable
+    }
+
+    override fun onBeginDrag(v: View?) {
+        requestDisallowInterceptTouchEvent(true)
+    }
+
+    override fun onChildDismissed(v: View?) {
+        clearCallback?.onClearCallback(sbn!!)
+    }
+
+    override fun onDragCancelled(v: View?) {}
 }
