@@ -11,6 +11,7 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.provider.Settings
+import android.util.Log
 import android.view.Gravity
 import android.view.InsetsFrameProvider
 import android.view.LayoutInflater
@@ -29,30 +30,20 @@ class NavigationBar(val context: Context) {
     var invertNavbar = false
     val mApplication = context.applicationContext as SystemUIApplication
 
-    // Starting in Android 16 QPR1 some keys are offloaded to SystemUI
+    // Starting in Android 16 QPR1 some keys seem to be offloaded to SystemUI
     fun interceptKeys() {
         if(Build.VERSION.SDK_INT_FULL < Build.VERSION_CODES_FULL.BAKLAVA+1) return;
 
         val inputManager = InputManager(mApplication)
 
         inputManager.registerKeyGestureEventHandler(
-            listOf(KeyGestureEvent.KEY_GESTURE_TYPE_RECENT_APPS,
-                /* KeyGestureEvent.KEY_GESTURE_TYPE_HOME someone keeps stealing the home button */),
+            listOf(KeyGestureEvent.KEY_GESTURE_TYPE_RECENT_APPS),
             object : InputManager.KeyGestureEventHandler {
                 override fun handleKeyGestureEvent(ev: KeyGestureEvent, binder: IBinder) {
                     if(ev.action != KeyGestureEvent.ACTION_GESTURE_COMPLETE || ev.isCancelled)
                         return;
 
-                    if(ev.keyGestureType == KeyGestureEvent.KEY_GESTURE_TYPE_HOME) {
-                        val intent = Intent().apply {
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                            action = Intent.ACTION_MAIN
-                            addCategory(Intent.CATEGORY_HOME)
-                        }
-
-                        mApplication.startActivity(intent)
-                    } else
-                        mApplication.statusBar!!.statusBarImpl.toggleRecents()
+                    mApplication.statusBar!!.statusBarImpl.toggleRecents()
                 }
             }
         )
@@ -124,7 +115,11 @@ class NavigationBar(val context: Context) {
 
     fun init() {
         reload()
-        interceptKeys()
+        try {
+            interceptKeys()
+        } catch (e: IllegalArgumentException) {
+            Log.e("HoloUI", Log.getStackTraceString(e))
+        }
     }
 
     fun reload() {
