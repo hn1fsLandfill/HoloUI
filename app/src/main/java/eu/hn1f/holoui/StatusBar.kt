@@ -48,7 +48,8 @@ class StatusBar(val context: Context) {
     val barHeight = context.resources.getDimensionPixelSize(R.dimen.statusbar_height)
     var shade: NotificationShade? = null
     var lockscreen: Lockscreen? = null
-    var windowInsetsOwner = Binder();
+    var windowInsetsOwner = Binder()
+    val mNetworkController = NetworkController(context)
 
     var isImmersed = false
 
@@ -188,7 +189,6 @@ class StatusBar(val context: Context) {
         lockscreen = Lockscreen(context)
         lockscreen!!.showLockscreen()
 
-        val mNetworkController = NetworkController(context)
         val signalCluster: SignalClusterView? =
             root!!.findViewById(R.id.signal_cluster)
 
