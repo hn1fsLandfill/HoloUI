@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:textAlignment="center"
             android:textAllCaps="true"
-            android:text="holoui testing"
-            android:paddingBottom="@dimen/handle_height"/>
+            android:paddingBottom="@dimen/handle_height"
+            android:id="@+id/carrier_name"/>
     </LinearLayout>
 </eu.hn1f.holoui.widgets.PanelView>
