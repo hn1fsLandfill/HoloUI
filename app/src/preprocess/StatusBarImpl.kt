@@ -98,6 +98,9 @@ import com.android.internal.view.AppearanceRegion
 
     override fun cancelPreloadRecentApps() {
         trace("cancelPreloadRecentApps")
+        mApplication!!.runInUIThread {
+            mApplication!!.recents!!.cancelPreloadingRecentTasksList()
+        }
     }
 
     override fun cancelRequestAddTile(p0: String?) {
@@ -247,7 +250,9 @@ import com.android.internal.view.AppearanceRegion
     }
 
     override fun preloadRecentApps() {
-        // TODO("Not yet implemented")
+        mApplication!!.runInUIThread {
+            mApplication!!.recents!!.preloadRecentTasksList()
+        }
     }
 
     override fun registerNearbyMediaDevicesProvider(p0: INearbyMediaDevicesProvider?) {
