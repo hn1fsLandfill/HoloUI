@@ -116,6 +116,17 @@ class Lockscreen(val context: Context) {
     }
 
     fun onSuccess() {
+        if(mApplication.stateCallback == null) {
+            Log.v("HoloUI","no statecallback, strange");
+        } else {
+            mApplication.stateCallback!!.onTrustedChanged(true)
+            mApplication.stateCallback!!.onInputRestrictedStateChanged(false)
+            mApplication.stateCallback!!.onShowingStateChanged(
+                false,
+                userId
+            )
+        }
+
         mApplication.runInUIThread {
             Sounds(context).playUnlock()
             hideLockscreen(true)
@@ -152,16 +163,6 @@ class Lockscreen(val context: Context) {
                 lockPattern.reportSuccessfulPasswordAttempt(userId)
 
                 onSuccess()
-                if(mApplication.stateCallback == null) {
-                    Log.v("HoloUI","no statecallback, strange");
-                } else {
-                    mApplication.stateCallback!!.onTrustedChanged(true)
-                    mApplication.stateCallback!!.onInputRestrictedStateChanged(false)
-                    mApplication.stateCallback!!.onShowingStateChanged(
-                        false,
-                        userId
-                    )
-                }
             } else {
                 mApplication.runInUIThread {
                     lockPattern.reportFailedPasswordAttempt(userId)
