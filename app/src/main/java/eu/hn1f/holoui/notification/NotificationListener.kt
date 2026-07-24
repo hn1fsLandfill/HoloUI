@@ -5,6 +5,7 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.content.ComponentName
 import android.content.Context
+import android.os.Bundle
 import android.os.IPowerManager
 import android.os.RemoteException
 import android.os.ServiceManager
@@ -111,7 +112,7 @@ class NotificationListener: NotificationListenerService() {
 
     fun updateNotification(sbn: StatusBarNotification): Boolean {
         val notif = findNotificationByKey(sbn.key) ?: return false;
-        notif.row.reloadFromNotification(sbn.notification)
+        notif.row.reloadFromNotification(sbn)
         notif.sbn = sbn
         updateStatusBar()
         return true;
@@ -120,14 +121,23 @@ class NotificationListener: NotificationListenerService() {
     fun addNotification(sbn: StatusBarNotification) {
         if(updateNotification(sbn)) return;
 
-        val row = NotificationRow.createNotification(mApplication!!, sbn.notification)
+        val row = NotificationRow.createNotification(mApplication!!, sbn)
         row.setOnClickListener {
-            sbn.notification.contentIntent?.send()
+            // live laugh love doing weird shit because dex2jar stuff doesn't expose everything
+            val options = Bundle()
+            // 3 is ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOW_ALWAYS
+            options.putInt("android.pendingIntent.backgroundActivityAllowed", 3)
+            sbn.notification.contentIntent?.send(mApplication!!, 0, null, null, null, null, options)
             shade!!.hide()
 
             if(sbn.isClearable)
                 onNotificationRemoved(sbn)
         }
+        row.setOnClearListener(object : NotificationRow.ClearCallback {
+            override fun onClearCallback(sbn: StatusBarNotification) {
+                onNotificationRemoved(sbn)
+            }
+        })
         // expanded for now
         row.setExpanded(true)
         notificationsView!!.addView(row)
