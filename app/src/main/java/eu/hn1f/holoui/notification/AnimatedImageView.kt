@@ -37,13 +37,13 @@ class AnimatedImageView : ImageView {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
     private fun updateAnim() {
-        val drawable = if (mAttached) getDrawable() else null
+        val drawable = if (mAttached) drawable else null
         if (mAttached && mAnim != null) {
             mAnim!!.stop()
         }
         if (drawable is AnimationDrawable) {
             mAnim = drawable
-            if (isShown()) {
+            if (isShown) {
                 mAnim!!.start()
             }
         } else {
@@ -84,7 +84,7 @@ class AnimatedImageView : ImageView {
     override fun onVisibilityChanged(changedView: View, vis: Int) {
         super.onVisibilityChanged(changedView, vis)
         if (mAnim != null) {
-            if (isShown()) {
+            if (isShown) {
                 mAnim!!.start()
             } else {
                 mAnim!!.stop()
