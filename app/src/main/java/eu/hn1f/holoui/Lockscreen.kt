@@ -7,6 +7,8 @@ import android.app.AlertDialog
 import android.content.Context
 import android.graphics.PixelFormat
 import android.os.Binder
+import android.os.UserHandle
+import android.os.UserManager
 import android.util.Log
 import android.view.Gravity
 import android.view.IWindow
@@ -40,6 +42,17 @@ class Lockscreen(val context: Context) {
     var shown = false
     val userId = ActivityManager.getCurrentUser()
     val mApplication = context.applicationContext as SystemUIApplication
+
+    val biometric = Biometrics(mApplication, object : Biometrics.BiometricCallback {
+        override fun onAuthSuccess() {
+            onSuccess()
+            hideLockscreen(true)
+        }
+
+        override fun onAuthFail() {
+            // TODO("Not yet implemented")
+        }
+    })
 
     init {
         lp.token = token
@@ -77,6 +90,12 @@ class Lockscreen(val context: Context) {
         val lockPattern = LockPatternUtils(context)
 
         form.visibility = View.GONE
+
+        val userManager = context.getSystemService(UserManager::class.java)
+
+        if(userManager.isUserUnlocked(UserHandle.getUserHandleForUid(userId))) {
+            biometric.startListening(userId)
+        }
 
         when(lockPattern.getCredentialTypeForUser(userId)) {
             LockPatternUtils.CREDENTIAL_TYPE_PASSWORD -> {
@@ -222,6 +241,8 @@ class Lockscreen(val context: Context) {
             }
 
             shown = false
+
+            biometric.stopListening()
 
             val taskManager = ActivityTaskManager.getService()
             taskManager.setLockScreenShown(false, false)
