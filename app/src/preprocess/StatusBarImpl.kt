@@ -170,6 +170,7 @@ import com.android.internal.view.AppearanceRegion
                 mApplication!!.navigationBar?.show()
                 core.showStatusBar()
             }
+            core.isImmersed = isImmersiveMode
         }
     }
 

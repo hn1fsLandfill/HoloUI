@@ -1,6 +1,7 @@
 package eu.hn1f.holoui
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.ComponentName
 import android.content.Context
 import android.graphics.Color
@@ -67,25 +68,24 @@ class StatusBar(val context: Context) {
 
         fun onSwipe() {
             Log.v("HoloUI", "swiping down event")
-            statusBar.run {
-                showStatusBar()
-                (context.applicationContext as SystemUIApplication).navigationBar!!
-                    .show()
-            }
-            /* Handler(Looper.getMainLooper()).postDelayed({
-                if(!statusBar.isImmersed) return@postDelayed
 
-                statusBar.hideStatusBar()
-                (statusBar.context.applicationContext as SystemUIApplication).navigationBar!!
-                    .hide()
-            }, 3000) */
+            // TODO: android 16+ transient bullshit because showTransient doesn't work
+            // don't wanna lose my sanity for now
+            val workaround = AlertDialog.Builder(statusBar.context)
+                .setView(R.layout.navigation_bar)
+                .create()
+            workaround.window!!.attributes.height = statusBar.context.resources
+                .getDimensionPixelSize(R.dimen.navigationbar_height)
+            workaround.window!!.setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG)
+            workaround.show()
         }
 
 
         override fun onInputEvent(inputEvent: InputEvent) {
             super.onInputEvent(inputEvent)
 
-            if(inputEvent !is MotionEvent || !statusBar.isImmersed) return
+            if(!statusBar.isImmersed) return
+            if(inputEvent !is MotionEvent) return
             // this makes the code less confusing imo
             @Suppress("USELESS_CAST")
             val event = inputEvent as MotionEvent
