@@ -25,6 +25,7 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup.LayoutParams
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.inputmethod.ImeTracker
@@ -71,11 +72,18 @@ class StatusBar(val context: Context) {
 
             // TODO: android 16+ transient bullshit because showTransient doesn't work
             // don't wanna lose my sanity for now
+
+            val container = FrameLayout(statusBar.context)
+            container.layoutParams = LayoutParams(
+                LayoutParams.WRAP_CONTENT,
+                statusBar.context.resources
+                    .getDimensionPixelSize(R.dimen.navigationbar_height)
+            )
+            statusBar.inflater.inflate(R.layout.navigation_bar, container)
+
             val workaround = AlertDialog.Builder(statusBar.context)
-                .setView(R.layout.navigation_bar)
+                .setView(container)
                 .create()
-            workaround.window!!.attributes.height = statusBar.context.resources
-                .getDimensionPixelSize(R.dimen.navigationbar_height)
             workaround.window!!.setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG)
             workaround.show()
         }
@@ -84,7 +92,7 @@ class StatusBar(val context: Context) {
         override fun onInputEvent(inputEvent: InputEvent) {
             super.onInputEvent(inputEvent)
 
-            if(!statusBar.isImmersed) return
+            if(statusBar.statusBar!!.visibility == View.VISIBLE) return
             if(inputEvent !is MotionEvent) return
             // this makes the code less confusing imo
             @Suppress("USELESS_CAST")
