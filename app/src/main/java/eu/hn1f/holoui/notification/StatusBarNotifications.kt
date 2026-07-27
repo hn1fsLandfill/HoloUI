@@ -23,6 +23,8 @@ class StatusBarNotifications: LinearLayout {
             val imgView = AnimatedImageView(context)
             imgView.maxWidth = height
             imgView.maxHeight = height
+            imgView.minimumWidth = height
+            imgView.minimumHeight = height
             val drawable = notif.notification.smallIcon.loadDrawable(context)
             drawable?.setBounds(0,0,height,height)
             imgView.setImageDrawable(drawable)
