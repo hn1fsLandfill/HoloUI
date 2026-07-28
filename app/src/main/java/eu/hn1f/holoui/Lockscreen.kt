@@ -29,6 +29,8 @@ class Lockscreen(val context: Context) {
     @SuppressLint("InflateParams")
     val root = LayoutInflater.from(context).inflate(R.layout.lock_screen, null)
     val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    val trustManager = context.getSystemService(TrustManager::class.java)
+            as TrustManager
 
     val lp = WindowManager.LayoutParams(
         WindowManager.LayoutParams.MATCH_PARENT,
@@ -150,10 +152,6 @@ class Lockscreen(val context: Context) {
         mApplication.runInUIThread {
             Sounds(context).playUnlock()
             hideLockscreen(true)
-            val trustManager = context.getSystemService(TrustManager::class.java)
-                    as TrustManager
-
-            trustManager.reportKeyguardShowingChanged()
         }
     }
 
@@ -230,6 +228,7 @@ class Lockscreen(val context: Context) {
 
             val taskManager = ActivityTaskManager.getService()
             taskManager.setLockScreenShown(true, false)
+            trustManager.reportKeyguardShowingChanged()
         }
     }
     // when unlocked
@@ -255,6 +254,7 @@ class Lockscreen(val context: Context) {
             val taskManager = ActivityTaskManager.getService()
             taskManager.setLockScreenShown(false, false)
             taskManager.keyguardGoingAway(0)
+            trustManager.reportKeyguardShowingChanged()
         }
     }
 }

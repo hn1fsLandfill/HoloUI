@@ -6,20 +6,46 @@
     android:gravity="center"
     android:padding="16dp">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:textColor="@color/white"
-        android:text="@string/authentication_subtext"
-        android:paddingBottom="32dp"/>
+        android:orientation="vertical"
+        android:id="@+id/nonbiometric">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:text="@string/authentication_subtext"
+            android:paddingBottom="32dp"/>
 
-    <EditText
-        android:id="@+id/password_form"
+        <EditText
+            android:id="@+id/password_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:lines="1"
+            android:inputType="textPassword"/>
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:lines="1"
-        android:inputType="textPassword"/>
+        android:id="@+id/biometric"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/verify_fingerprint_authentication_form"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:paddingBottom="16dp"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_fingerprint"
+            android:paddingBottom="16dp"/>
+    </LinearLayout>
 
 </LinearLayout>

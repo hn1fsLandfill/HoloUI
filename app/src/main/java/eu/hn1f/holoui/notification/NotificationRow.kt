@@ -50,6 +50,9 @@ class NotificationRow: LinearLayout, SwipeHelper.Callback {
             pagingTouchSlop)
 
         container = FrameLayout(context)
+        // i still gotta figure out swipehelper shit
+        // or i might just rip out the code and throw it here
+        isClickable = true
     }
 
     fun marginLayout(): LayoutParams {
@@ -150,9 +153,9 @@ class NotificationRow: LinearLayout, SwipeHelper.Callback {
         mSwipeHelper.setLongPressListener(l)
     }
 
-    override fun setOnClickListener(l: OnClickListener?) {
+    /* override fun setOnClickListener(l: OnClickListener?) {
         container.setOnClickListener(l)
-    }
+    } */
 
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
         Log.v("HoloUI", "onInterceptSlop")

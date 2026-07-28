@@ -6,7 +6,8 @@
     <string name="warning">You\'re currently using HoloUI, an alternative SystemUI implementation which is work-in-progress.
         \n\nYou may encounter bugs you wouldn\'t see with the original implementation.</string>
 
-    <string name="authentication_subtext">Enter your TODO to continue</string>
+    <string name="authentication_subtext">Enter your credentials to continue</string>
+    <string name="verify_fingerprint_authentication_form">Verify with the fingerprint scanner</string>
 
     <string name="reboot_to_update_reboot">Restarting\u2026</string>
     <string name="reboot_to_reset_message">Restarting\u2026</string>

@@ -146,6 +146,7 @@ import com.android.internal.view.AppearanceRegion
 
     override fun hideAuthenticationDialog(p0: Long) {
         // TODO("Not yet implemented")
+        mApplication!!.authenticationForm!!.hideAuthenticationDialog()
     }
 
     override fun hideRecentApps(p0: Boolean, p1: Boolean) {
@@ -189,6 +190,7 @@ import com.android.internal.view.AppearanceRegion
     override fun onBiometricAuthenticated(p0: Int) {
         // TODO("Not yet implemented")
         trace("TODO: onBiometricAuthenticated")
+        mApplication!!.authenticationForm!!.onBiometricAuthenticated()
     }
 
     override fun onBiometricError(p0: Int, p1: Int, p2: Int) {
@@ -363,7 +365,7 @@ import com.android.internal.view.AppearanceRegion
         // TODO("Not yet implemented")
         trace("TODO: showAuthenticationDialog")
         mApplication!!.runInUIThread {
-            mApplication!!.authenticationForm!!.showAuthenticationDialog(promptInfo, sysuiReceiver)
+            mApplication!!.authenticationForm!!.showAuthenticationDialog(promptInfo, sysuiReceiver, userId, operationId)
         }
     }
 
