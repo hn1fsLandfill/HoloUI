@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.app.ActivityTaskManager
 import android.app.AlertDialog
+import android.app.trust.TrustManager
 import android.content.Context
 import android.graphics.PixelFormat
 import android.os.Binder
@@ -11,13 +12,10 @@ import android.os.UserHandle
 import android.os.UserManager
 import android.util.Log
 import android.view.Gravity
-import android.view.IWindow
-import android.view.IWindowManager
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
-import android.view.WindowManagerGlobal
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
@@ -42,6 +40,7 @@ class Lockscreen(val context: Context) {
     var shown = false
     val userId = ActivityManager.getCurrentUser()
     val mApplication = context.applicationContext as SystemUIApplication
+    var passwordHandle: Long = 0
 
     val biometric = Biometrics(mApplication, object : Biometrics.BiometricCallback {
         override fun onAuthSuccess() {
@@ -144,11 +143,17 @@ class Lockscreen(val context: Context) {
                 false,
                 userId
             )
+            // todo: sim pin stuff?
+            mApplication.stateCallback!!.onSimSecureStateChanged(false)
         }
 
         mApplication.runInUIThread {
             Sounds(context).playUnlock()
             hideLockscreen(true)
+            val trustManager = context.getSystemService(TrustManager::class.java)
+                    as TrustManager
+
+            trustManager.reportKeyguardShowingChanged()
         }
     }
 
@@ -180,6 +185,7 @@ class Lockscreen(val context: Context) {
             if(resp.isMatched) {
                 lockPattern.userPresent(userId)
                 lockPattern.reportSuccessfulPasswordAttempt(userId)
+                passwordHandle = resp.gatekeeperPasswordHandle
 
                 onSuccess()
             } else {
@@ -187,6 +193,7 @@ class Lockscreen(val context: Context) {
                     lockPattern.reportFailedPasswordAttempt(userId)
                     showDialog("Authentication failure (invalid password/pin?)")
                 }
+                passwordHandle = 0
             }
 
             cred.zeroize()
@@ -218,6 +225,7 @@ class Lockscreen(val context: Context) {
                     userId
                 )
                 mApplication.stateCallback!!.onInputRestrictedStateChanged(true)
+                passwordHandle = 0
             }
 
             val taskManager = ActivityTaskManager.getService()
