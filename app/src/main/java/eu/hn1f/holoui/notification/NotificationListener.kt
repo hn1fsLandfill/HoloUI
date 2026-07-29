@@ -3,6 +3,7 @@ package eu.hn1f.holoui.notification
 import android.app.INotificationManager
 import android.app.Notification
 import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.ComponentName
 import android.content.Context
 import android.os.Bundle
@@ -30,7 +31,8 @@ class NotificationListener: NotificationListenerService() {
     var mINotificationManager: INotificationManager? = null;
 
     private class NotificationData(var sbn: StatusBarNotification,
-                                   var row: NotificationRow, var key: String);
+                                   var row: NotificationRow, var key: String,
+                                   var showInStatusBar: Boolean);
 
     private val notifications = mutableListOf<NotificationData>();
     private fun findNotificationByKey(key: String): NotificationData? {
@@ -102,10 +104,27 @@ class NotificationListener: NotificationListenerService() {
         }
     }
 
+    fun shouldShowInStatusBar(
+        ranking: Ranking,
+        hideSilentStatusBarNotifs: Boolean
+    ): Boolean {
+        if (ranking.suppressedVisualEffects and
+            NotificationManager.Policy.SUPPRESSED_EFFECT_STATUS_BAR != 0) {
+            return false;
+        }
+
+        return when (ranking.importance) {
+            NotificationManager.IMPORTANCE_NONE,
+            NotificationManager.IMPORTANCE_MIN -> false
+            NotificationManager.IMPORTANCE_LOW -> !hideSilentStatusBarNotifs
+            else -> true // IMPORTANCE_DEFAULT, HIGH, or MAX
+        }
+    }
+
     fun updateStatusBar() {
         var sbns: Array<StatusBarNotification> = emptyArray()
         for(i in notifications) {
-            sbns += i.sbn
+            if(i.showInStatusBar) sbns += i.sbn
         }
         statusBarNotificationsView!!.setNotificationSet(sbns)
     }
@@ -118,7 +137,7 @@ class NotificationListener: NotificationListenerService() {
         return true;
     }
 
-    fun addNotification(sbn: StatusBarNotification) {
+    fun addNotification(sbn: StatusBarNotification, rankingMap: RankingMap) {
         if(updateNotification(sbn)) return;
 
         val row = NotificationRow.createNotification(mApplication!!, sbn)
@@ -138,11 +157,6 @@ class NotificationListener: NotificationListenerService() {
                 onNotificationRemoved(sbn)
             }
         })
-        // expanded for now
-        row.setExpanded(true)
-        notificationsView!!.addView(row)
-        notifications.add(NotificationData(sbn, row, sbn.key))
-        updateStatusBar()
 
         var channel: NotificationChannel? = null
 
@@ -155,8 +169,20 @@ class NotificationListener: NotificationListenerService() {
             )
         } catch (ignored: RemoteException) {} // this is probably some old app
 
-        // for testing rn
-        if(channel?.sound != null) {
+        val hideSilentStatusBarNotifs =
+            mINotificationManager!!.shouldHideSilentStatusIcons(mApplication!!.packageName)
+
+        val ranking = Ranking()
+        rankingMap.getRanking(sbn.key, ranking)
+        val showInStatusBar = shouldShowInStatusBar(ranking, hideSilentStatusBarNotifs)
+
+        // expanded for now
+        row.setExpanded(true)
+        notificationsView!!.addView(row)
+        notifications.add(NotificationData(sbn, row, sbn.key, showInStatusBar))
+        updateStatusBar()
+
+        if(channel?.sound != null && channel.importance != NotificationManager.IMPORTANCE_LOW) {
             Sounds(mApplication!!).playUri(channel.sound)
         }
     }
@@ -176,13 +202,13 @@ class NotificationListener: NotificationListenerService() {
         }
 
         for(sbn in activeNotifications) {
-            addNotification(sbn);
+            addNotification(sbn, currentRanking);
         }
     }
 
-    override fun onNotificationPosted(sbn: StatusBarNotification) {
+    override fun onNotificationPosted(sbn: StatusBarNotification, rankingMap: RankingMap) {
         super.onNotificationPosted(sbn)
-        addNotification(sbn)
+        addNotification(sbn, rankingMap)
     }
 
     override fun onNotificationRemoved(sbn: StatusBarNotification) {
