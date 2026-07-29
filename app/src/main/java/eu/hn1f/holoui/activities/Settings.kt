@@ -50,6 +50,14 @@ class Settings: PreferenceActivity() {
             true
         }
 
+        val hide_warning = findPreference("hide_warning") as SwitchPreference
+        invert_navbar.isChecked = Settings.Global.getInt(contentResolver, "holoui_hide_warning", 0) == 1
+        hide_warning.setOnPreferenceChangeListener { _, value ->
+            Settings.Global.putInt(contentResolver, "holoui_hide_warning", if(value == true) 1 else 0)
+            showRestartRequired()
+            true
+        }
+
         val aboutversion = findPreference("aboutversion") as Preference
         var taps = 0
 

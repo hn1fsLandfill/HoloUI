@@ -4,12 +4,15 @@ import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.app.ActivityTaskManager
 import android.app.AlertDialog
+import android.app.WallpaperManager
 import android.app.trust.TrustManager
 import android.content.Context
+import android.graphics.Color
 import android.graphics.PixelFormat
 import android.os.Binder
 import android.os.UserHandle
 import android.os.UserManager
+import android.provider.Settings
 import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
@@ -19,6 +22,7 @@ import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import com.android.internal.widget.LockPatternUtils
 import com.android.internal.widget.LockscreenCredential
 import eu.hn1f.holoui.widgets.Clock
@@ -31,6 +35,7 @@ class Lockscreen(val context: Context) {
     val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     val trustManager = context.getSystemService(TrustManager::class.java)
             as TrustManager
+    val wallpaperManager = context.getSystemService(WallpaperManager::class.java)
 
     val lp = WindowManager.LayoutParams(
         WindowManager.LayoutParams.MATCH_PARENT,
@@ -66,6 +71,14 @@ class Lockscreen(val context: Context) {
 
         root.findViewById<Clock>(R.id.clock).visibility = View.GONE
 
+        root.findViewById<Clock>(R.id.clock).apply {
+            setShadowLayer(25f, 0f, 0f, Color.BLACK)
+        }
+
+        val showWarning = Settings.Global.getInt(context.contentResolver, "holoui_hide_warning", 0) == 1
+        if(showWarning)
+            root.findViewById<TextView>(R.id.warning).visibility = View.GONE
+
         val form = root.findViewById<EditText>(R.id.password_form)
 
         form.setOnEditorActionListener { _, actionId, _ ->
@@ -89,6 +102,8 @@ class Lockscreen(val context: Context) {
     fun reload() {
         val form = root.findViewById<EditText>(R.id.password_form)
         val lockPattern = LockPatternUtils(context)
+
+        root.background = wallpaperManager.drawable
 
         form.visibility = View.GONE
 

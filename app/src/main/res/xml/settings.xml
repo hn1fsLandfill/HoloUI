@@ -16,6 +16,9 @@
         <SwitchPreference
             android:key="invert_navbar"
             android:title="Inverted navigation bar"/>
+        <SwitchPreference
+            android:key="hide_warning"
+            android:title="Hide WIP warning"/>
         <PreferenceScreen android:title="About HoloUI">
             <PreferenceCategory>
                 <Preference
