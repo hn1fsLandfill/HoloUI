@@ -33,6 +33,7 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import com.android.internal.statusbar.IStatusBarService
 import eu.hn1f.holoui.policy.NetworkController
+import eu.hn1f.holoui.volumedialog.VolumeDialog
 import eu.hn1f.holoui.widgets.FlingTracker
 import eu.hn1f.holoui.widgets.SignalClusterView
 import kotlin.concurrent.thread
@@ -52,6 +53,7 @@ class StatusBar(val context: Context) {
     var lockscreen: Lockscreen? = null
     var windowInsetsOwner = Binder()
     val mNetworkController = NetworkController(context)
+    val mVolumeDialog = VolumeDialog(context)
 
     var isImmersed = false
 
@@ -176,6 +178,18 @@ class StatusBar(val context: Context) {
     }
     fun opaque() {
         statusBar!!.setBackgroundColor(Color.BLACK)
+    }
+
+    fun handleSystemKey(keyEvent: KeyEvent) {
+        // todo
+        if(keyEvent.action != KeyEvent.ACTION_DOWN) return
+
+        runInUIThread {
+            when (keyEvent.keyCode) {
+                KeyEvent.KEYCODE_VOLUME_UP -> mVolumeDialog.onTrigger(VolumeDialog.VolumeType.VOLUME_UP)
+                KeyEvent.KEYCODE_VOLUME_DOWN -> mVolumeDialog.onTrigger(VolumeDialog.VolumeType.VOLUME_DOWN)
+            }
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")

@@ -139,8 +139,8 @@ import com.android.internal.view.AppearanceRegion
         // TODO("Not yet implemented")
     }
 
-    override fun handleSystemKey(p0: KeyEvent) {
-        trace("TODO: handleSystemKey ${p0.action} ${p0.keyCode} $p0")
+    override fun handleSystemKey(keyEvent: KeyEvent) {
+        mApplication!!.statusBar!!.handleSystemKey(keyEvent)
         // TODO("Not yet implemented")
     }
 
