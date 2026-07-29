@@ -115,7 +115,9 @@ class StatusBar(val context: Context) {
                 Log.v("HoloUI", "velocity y $yV")
 
                 if(yV > 100) {
-                    InputManagerGlobal.getInstance().pilferPointers(inputChannel.token)
+                    try {
+                        InputManagerGlobal.getInstance().pilferPointers(inputChannel.token)
+                    } catch (e: Exception) {} // monkey patch for now
                     runInUIThread { onSwipe() }
                 }
             } else if(event.action == MotionEvent.ACTION_CANCEL && stalkingEvents) flingTracker.recycle()

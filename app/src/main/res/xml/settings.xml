@@ -6,7 +6,9 @@
             android:key="era"
             android:title="Era"
             android:entries="@array/eras"
-            android:entryValues="@array/eras_value"/>
+            android:entryValues="@array/eras_value"
+            android:shouldDisableView="true"
+            android:enabled="false"/>
         <SwitchPreference
             android:key="use_nav"
             android:title="Use built-in navigation bar"
