@@ -48,7 +48,7 @@ class NotificationRow: LinearLayout {
             fun childDismissed()
             fun isClearable(): Boolean
         }
-        private val velocityTracker = VelocityTracker.obtain()
+        private var velocityTracker: VelocityTracker? = null
         private var offsetX = 0f
         private var densityScale = 0f
         private var dragging = false
@@ -70,10 +70,11 @@ class NotificationRow: LinearLayout {
             when(e.action) {
                 MotionEvent.ACTION_DOWN -> {
                     offsetX = e.x
+                    velocityTracker = VelocityTracker.obtain()
                     return true
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    velocityTracker.addMovement(e)
+                    velocityTracker!!.addMovement(e)
                     dragging = true
                     row.translationX = e.x-offsetX
                     return true
@@ -85,15 +86,15 @@ class NotificationRow: LinearLayout {
                         .start()
                     dragging = false
                     try {
-                        velocityTracker.recycle()
+                        velocityTracker!!.recycle()
                     } catch(ignored: IllegalStateException) {}
                     return true
                 }
                 MotionEvent.ACTION_UP -> {
                     val maxVelocity = MAX_DISMISS_VELOCITY * densityScale
                     val swipeEscape = SWIPE_ESCAPE_VELOCITY * densityScale
-                    velocityTracker.computeCurrentVelocity(1000, maxVelocity)
-                    if(velocityTracker.xVelocity > swipeEscape && callback.isClearable())
+                    velocityTracker!!.computeCurrentVelocity(1000, maxVelocity)
+                    if(velocityTracker!!.xVelocity > swipeEscape && callback.isClearable())
                         row.animate()
                             .translationX(row.width.toFloat())
                             .setDuration(200)
@@ -101,7 +102,7 @@ class NotificationRow: LinearLayout {
                                 callback.childDismissed()
                             }
                             .start()
-                    else if(velocityTracker.xVelocity < 10*densityScale && row.translationX > 0
+                    else if(velocityTracker!!.xVelocity < 10*densityScale && row.translationX > 0
                         && row.translationX < 10*densityScale) {
                         row.callOnClick()
                         row.animate()
@@ -115,7 +116,7 @@ class NotificationRow: LinearLayout {
                             .start()
                     dragging = false
                     try {
-                        velocityTracker.recycle()
+                        velocityTracker!!.recycle()
                     } catch(ignored: IllegalStateException) {}
                     return true
                 }
