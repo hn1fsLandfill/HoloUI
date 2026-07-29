@@ -51,6 +51,7 @@ class NotificationRow: LinearLayout {
         private val velocityTracker = VelocityTracker.obtain()
         private var offsetX = 0f
         private var densityScale = 0f
+        private var dragging = false
 
         companion object {
             private const val MAX_DISMISS_VELOCITY = 2000f
@@ -62,7 +63,7 @@ class NotificationRow: LinearLayout {
         }
 
         fun onInterceptTouchEvent(e: MotionEvent): Boolean {
-            return false
+            return dragging
         }
 
         fun onTouchEvent(e: MotionEvent): Boolean {
@@ -73,10 +74,21 @@ class NotificationRow: LinearLayout {
                 }
                 MotionEvent.ACTION_MOVE -> {
                     velocityTracker.addMovement(e)
+                    dragging = true
                     row.translationX = e.x-offsetX
                     return true
                 }
-                MotionEvent.ACTION_CANCEL,
+                MotionEvent.ACTION_CANCEL -> {
+                    row.animate()
+                        .translationX(0f)
+                        .setDuration(200)
+                        .start()
+                    dragging = false
+                    try {
+                        velocityTracker.recycle()
+                    } catch(ignored: IllegalStateException) {}
+                    return true
+                }
                 MotionEvent.ACTION_UP -> {
                     val maxVelocity = MAX_DISMISS_VELOCITY * densityScale
                     val swipeEscape = SWIPE_ESCAPE_VELOCITY * densityScale
@@ -89,13 +101,19 @@ class NotificationRow: LinearLayout {
                                 callback.childDismissed()
                             }
                             .start()
-                    else if(velocityTracker.xVelocity < 10*densityScale && row.translationX < 10*densityScale)
+                    else if(velocityTracker.xVelocity < 10*densityScale && row.translationX > 0
+                        && row.translationX < 10*densityScale) {
                         row.callOnClick()
-                    else
                         row.animate()
                             .translationX(0f)
                             .setDuration(200)
                             .start()
+                    } else
+                        row.animate()
+                            .translationX(0f)
+                            .setDuration(200)
+                            .start()
+                    dragging = false
                     try {
                         velocityTracker.recycle()
                     } catch(ignored: IllegalStateException) {}
