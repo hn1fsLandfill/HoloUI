@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.SystemClock;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -254,7 +255,8 @@ public class JohnNotificationBuilder {
                 try {
                     action.actionIntent.send();
                 } catch (PendingIntent.CanceledException e) {
-                    throw new RuntimeException(e);
+                    // Whoopsie
+                    Log.v("HoloUI", "Notification action has been canceled?\n"+e.getMessage());
                 }
             });
         }
