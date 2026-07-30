@@ -28,35 +28,51 @@ class Settings: PreferenceActivity() {
             .show()
     }
 
+    interface PreferenceInterface {
+        fun onPress(value: Any);
+    }
+
+    fun switchPreference(key: String, settingName: String, default: Int, listener: PreferenceInterface? = null) {
+        val preference = findPreference(key) as SwitchPreference
+
+        preference.isChecked = Settings.Global.getInt(contentResolver, settingName, default) == 1
+        preference.setOnPreferenceChangeListener { _, value ->
+            Settings.Global.putInt(contentResolver, settingName, if(value == true) 1 else 0)
+            listener?.onPress(value)
+            true
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         addPreferencesFromResource(R.xml.settings)
-        val use_nav = findPreference("use_nav") as SwitchPreference
+
         val invert_navbar = findPreference("invert_navbar") as SwitchPreference
+        switchPreference("use_nav", "holoui_navbar", 1,
+            object : PreferenceInterface {
+                override fun onPress(value: Any) {
+                    invert_navbar.isEnabled = value as Boolean
+                    (applicationContext as SystemUIApplication).navigationBar?.reload()
+                }
+            }
+        )
 
-        use_nav.isChecked = Settings.Global.getInt(contentResolver, "holoui_navbar", 1) == 1
-        use_nav.setOnPreferenceChangeListener { _, value ->
-            Settings.Global.putInt(contentResolver, "holoui_navbar", if(value == true) 1 else 0)
-            invert_navbar.isEnabled = value as Boolean
-            (applicationContext as SystemUIApplication).navigationBar?.reload()
-            true
-        }
+        invert_navbar.isEnabled = (findPreference("use_nav") as SwitchPreference).isChecked
+        switchPreference("invert_navbar", "holoui_invert_navbar", 1,
+            object : PreferenceInterface {
+                override fun onPress(value: Any) {
+                    (applicationContext as SystemUIApplication).navigationBar?.reload()
+                }
+            }
+        )
 
-        invert_navbar.isEnabled = use_nav.isChecked
-        invert_navbar.isChecked = Settings.Global.getInt(contentResolver, "holoui_invert_navbar", 1) == 1
-        invert_navbar.setOnPreferenceChangeListener { _, value ->
-            Settings.Global.putInt(contentResolver, "holoui_invert_navbar", if(value == true) 1 else 0)
-            (applicationContext as SystemUIApplication).navigationBar?.reload()
-            true
-        }
-
-        val hide_warning = findPreference("hide_warning") as SwitchPreference
-        invert_navbar.isChecked = Settings.Global.getInt(contentResolver, "holoui_hide_warning", 0) == 1
-        hide_warning.setOnPreferenceChangeListener { _, value ->
-            Settings.Global.putInt(contentResolver, "holoui_hide_warning", if(value == true) 1 else 0)
-            showRestartRequired()
-            true
-        }
+        switchPreference("hide_warning", "holoui_hide_warning", 0,
+            object : PreferenceInterface {
+                override fun onPress(value: Any) {
+                    showRestartRequired()
+                }
+            }
+        )
 
         val aboutversion = findPreference("aboutversion") as Preference
         var taps = 0

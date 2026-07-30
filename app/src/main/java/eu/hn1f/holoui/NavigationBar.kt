@@ -20,6 +20,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.widget.ImageView
 import android.widget.LinearLayout
 
 private const val PORTRAIT = 0
@@ -30,7 +31,7 @@ private const val BACK = 1
 private const val HOME = 2
 private const val RECENT = 3
 
-private val KEY_ICONS = arrayOf(
+private val KEY_ICONS_KITKAT = arrayOf(
     intArrayOf(
         R.drawable.ic_sysbar_back_ime,
         R.drawable.ic_sysbar_back,
@@ -45,6 +46,21 @@ private val KEY_ICONS = arrayOf(
     )
 )
 
+private val KEY_ICONS_M1 = arrayOf(
+    intArrayOf(
+        R.drawable.ic_m_sysbar_back_ime,
+        R.drawable.ic_m_sysbar_back,
+        R.drawable.ic_m_sysbar_home,
+        R.drawable.ic_m_sysbar_recent
+    ),
+    intArrayOf(
+        R.drawable.ic_m_sysbar_back_ime,
+        R.drawable.ic_m_sysbar_back,
+        R.drawable.ic_m_sysbar_home,
+        R.drawable.ic_m_sysbar_recent
+    )
+)
+
 class NavigationBar(val context: Context) {
     val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     var root: LinearLayout? = null
@@ -56,6 +72,7 @@ class NavigationBar(val context: Context) {
     var invertNavbar = false
     val mApplication = context.applicationContext as SystemUIApplication
     var lp: WindowManager.LayoutParams = WindowManager.LayoutParams()
+    var keys = KEY_ICONS_KITKAT
 
     // Starting in Android 16 QPR1 some keys seem to be offloaded to SystemUI
     fun interceptKeys() {
@@ -132,6 +149,18 @@ class NavigationBar(val context: Context) {
                 .setInsetsSize(Insets.of(0,barHeight,0,0))
         )
         windowManager.addView(root, lp)
+    }
+
+    fun updateKeyIcons() {
+        val normal: LinearLayout = root!!.findViewById(R.id.normal)
+        val landscape: LinearLayout = root!!.findViewById(R.id.landscape)
+
+        normal.findViewById<ImageView>(R.id.back).setImageResource(keys[PORTRAIT][BACK])
+        normal.findViewById<ImageView>(R.id.home).setImageResource(keys[PORTRAIT][HOME])
+        normal.findViewById<ImageView>(R.id.recent_apps).setImageResource(keys[PORTRAIT][RECENT])
+        landscape.findViewById<ImageView>(R.id.back).setImageResource(keys[LANDSCAPE][BACK])
+        landscape.findViewById<ImageView>(R.id.home).setImageResource(keys[LANDSCAPE][HOME])
+        landscape.findViewById<ImageView>(R.id.recent_apps).setImageResource(keys[LANDSCAPE][RECENT])
     }
 
     fun updateKeys(isLandscape: Boolean) {
