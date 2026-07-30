@@ -17,6 +17,7 @@ libs/*.jar
 libs/*.*
 dump
 app/src/target.sh
+app/debug
 
 # preprocessed stuff
 app/src/main/java/eu/hn1f/holoui/KeyguardService.kt
