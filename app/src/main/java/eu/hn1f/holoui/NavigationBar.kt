@@ -1,11 +1,13 @@
 package eu.hn1f.holoui
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Insets
 import android.graphics.PixelFormat
 import android.hardware.input.InputManager
 import android.content.Intent
+import android.content.res.Configuration
 import android.hardware.input.KeyGestureEvent
 import android.os.Binder
 import android.os.Build
@@ -20,15 +22,40 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.LinearLayout
 
+private const val PORTRAIT = 0
+private const val LANDSCAPE = 1
+
+private const val BACK_IME = 0
+private const val BACK = 1
+private const val HOME = 2
+private const val RECENT = 3
+
+private val KEY_ICONS = arrayOf(
+    intArrayOf(
+        R.drawable.ic_sysbar_back_ime,
+        R.drawable.ic_sysbar_back,
+        R.drawable.ic_sysbar_home,
+        R.drawable.ic_sysbar_recent
+    ),
+    intArrayOf(
+        R.drawable.ic_sysbar_back_land,
+        R.drawable.ic_sysbar_back_land,
+        R.drawable.ic_sysbar_home_land,
+        R.drawable.ic_sysbar_recent_land
+    )
+)
+
 class NavigationBar(val context: Context) {
     val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     var root: LinearLayout? = null
     val barHeight = context.resources.getDimensionPixelSize(R.dimen.navigationbar_height)
+    val barWidth = context.resources.getDimensionPixelSize(R.dimen.navigationbar_width)
     var token = Binder("NavigationBar");
     var inflater = LayoutInflater.from(context)
     var isEnabled = true
     var invertNavbar = false
     val mApplication = context.applicationContext as SystemUIApplication
+    var lp: WindowManager.LayoutParams = WindowManager.LayoutParams()
 
     // Starting in Android 16 QPR1 some keys seem to be offloaded to SystemUI
     fun interceptKeys() {
@@ -83,7 +110,7 @@ class NavigationBar(val context: Context) {
         if(root != null) return;
         root = inflater.inflate(R.layout.navigation_bar, null) as LinearLayout?
         opaque()
-        val lp = WindowManager.LayoutParams(
+        lp = WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT,
             barHeight,
             WindowManager.LayoutParams.TYPE_NAVIGATION_BAR,
@@ -105,6 +132,62 @@ class NavigationBar(val context: Context) {
                 .setInsetsSize(Insets.of(0,barHeight,0,0))
         )
         windowManager.addView(root, lp)
+    }
+
+    fun updateKeys(isLandscape: Boolean) {
+        val normal: LinearLayout = root!!.findViewById(R.id.normal)
+        val landscape: LinearLayout = root!!.findViewById(R.id.landscape)
+
+        if(isLandscape) {
+            normal.visibility = View.GONE
+            landscape.visibility = View.VISIBLE
+        } else {
+            normal.visibility = View.VISIBLE
+            landscape.visibility = View.GONE
+        }
+    }
+
+    @SuppressLint("RtlHardcoded")
+    fun onRotation(deg: Int) {
+        windowManager.removeViewImmediate(root)
+        when(deg) {
+            0,
+            360,
+            180 -> {
+                // portrait
+                lp.gravity = Gravity.BOTTOM
+                lp.width = WindowManager.LayoutParams.MATCH_PARENT
+                lp.height = barHeight
+                lp.providedInsets = arrayOf<InsetsFrameProvider>(
+                    InsetsFrameProvider(token, 0, WindowInsets.Type.navigationBars())
+                        .setInsetsSize(Insets.of(0,barHeight,0,0))
+                )
+                updateKeys(false)
+            }
+            90,
+            270 -> {
+                // landscape
+                lp.gravity = Gravity.RIGHT
+                lp.width = barWidth
+                lp.height = WindowManager.LayoutParams.MATCH_PARENT
+                lp.providedInsets = arrayOf<InsetsFrameProvider>(
+                    InsetsFrameProvider(token, 0, WindowInsets.Type.navigationBars())
+                        .setInsetsSize(Insets.of(0,0,barWidth,0))
+                )
+                updateKeys(true)
+            }
+        }
+        windowManager.addView(root, lp)
+        root?.invalidate()
+    }
+
+    fun onConfigurationChanged(newConfig: Configuration) {
+        val rotation = if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
+            90
+        else
+            0
+
+        onRotation(rotation)
     }
 
     fun remove() {
@@ -133,10 +216,13 @@ class NavigationBar(val context: Context) {
         }
 
         val normal = root!!.findViewById<LinearLayout>(R.id.normal)
+        val landscape: LinearLayout = root!!.findViewById(R.id.landscape)
         if(invertNavbar) {
             normal.layoutDirection = View.LAYOUT_DIRECTION_RTL
+            landscape.layoutDirection = View.LAYOUT_DIRECTION_RTL
         } else {
             normal.layoutDirection = View.LAYOUT_DIRECTION_LTR
+            landscape.layoutDirection = View.LAYOUT_DIRECTION_RTL
         }
     }
 }

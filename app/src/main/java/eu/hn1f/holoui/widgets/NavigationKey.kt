@@ -24,8 +24,8 @@ class NavigationKey(context: Context?, attrs: AttributeSet?): ImageView(context,
     val DEFAULT_QUIESCENT_ALPHA: Float = 0.70f
 
     var downTime = 0L
-    val highlight = resources.getDrawable(R.drawable.ic_sysbar_highlight)
-    val mGlowWidth = highlight.intrinsicWidth
+    var highlight = resources.getDrawable(R.drawable.ic_sysbar_highlight)
+    var mGlowWidth = highlight.intrinsicWidth
     var mGlowHeight = highlight.intrinsicHeight
     var mGlowAlpha = 0f
     var mGlowScale = 1f
@@ -36,7 +36,18 @@ class NavigationKey(context: Context?, attrs: AttributeSet?): ImageView(context,
     var mRect = RectF()
     val mTouchSlop = ViewConfiguration.get(context!!).scaledTouchSlop
 
-    val key = context!!.obtainStyledAttributes(attrs, R.styleable.NavigationKey)
+    val navAttrs = context!!.obtainStyledAttributes(attrs, R.styleable.NavigationKey)
+    val key = navAttrs.getInt(R.styleable.NavigationKey_key, 0)
+    val landscape = navAttrs.getBoolean(R.styleable.NavigationKey_landscape, false)
+
+    init {
+        if(landscape)
+            highlight = resources.getDrawable(R.drawable.ic_sysbar_highlight_land)
+        else
+            highlight = resources.getDrawable(R.drawable.ic_sysbar_highlight)
+        mGlowWidth = highlight.intrinsicWidth
+        mGlowHeight = highlight.intrinsicHeight
+    }
 
     fun sendEvent(action: Int, key: Int, eventTime: Long) {
         InputManagerGlobal.getInstance().injectInputEvent(KeyEvent(
@@ -54,24 +65,25 @@ class NavigationKey(context: Context?, attrs: AttributeSet?): ImageView(context,
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         // super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        setMeasuredDimension(highlight.intrinsicWidth, heightMeasureSpec)
+        if(landscape)
+            setMeasuredDimension(widthMeasureSpec, highlight.intrinsicHeight)
+        else
+            setMeasuredDimension(highlight.intrinsicWidth, heightMeasureSpec)
     }
 
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if(event?.action == MotionEvent.ACTION_UP) {
             isPressed = false
-            val key = key.getInt(R.styleable.NavigationKey_key, 3)
             sendEvent(KeyEvent.ACTION_UP, key, SystemClock.uptimeMillis())
             return true
         } else if(event?.action == MotionEvent.ACTION_DOWN) {
             isPressed = true
             downTime = SystemClock.uptimeMillis()
-            sendEvent(KeyEvent.ACTION_DOWN, key.getInt(R.styleable.NavigationKey_key, 3), downTime)
+            sendEvent(KeyEvent.ACTION_DOWN, key, downTime)
             return true
         } else if(event?.action == MotionEvent.ACTION_CANCEL) {
             isPressed = false
-            val key = key.getInt(R.styleable.NavigationKey_key, 3)
             sendEvent(KeyEvent.ACTION_UP, key, SystemClock.uptimeMillis())
             return true
         } else if(event?.action == MotionEvent.ACTION_MOVE) {

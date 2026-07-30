@@ -2,6 +2,7 @@ package eu.hn1f.holoui
 
 import android.app.Application
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
@@ -42,6 +43,11 @@ class SystemUIApplication: Application() {
 
     fun runInUIThread(r: Runnable) {
         Handler(Looper.getMainLooper()).post(r)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        navigationBar?.onConfigurationChanged(newConfig)
     }
 
     fun getRebootMessage(isReboot: Boolean, reason: String?): Int {

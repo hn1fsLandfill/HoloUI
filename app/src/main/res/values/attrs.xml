@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <attr name="key" format="integer"/>
+    <attr name="landscape" format="boolean"/>
     <declare-styleable name="NavigationKey">
         <attr name="key"/>
+        <attr name="landscape"/>
     </declare-styleable>
 
     <declare-styleable name="RecentsPanelView">
