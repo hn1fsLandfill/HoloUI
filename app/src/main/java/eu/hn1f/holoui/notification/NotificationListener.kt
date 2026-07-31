@@ -138,6 +138,10 @@ class NotificationListener: NotificationListenerService() {
     }
 
     fun addNotification(sbn: StatusBarNotification, rankingMap: RankingMap) {
+        // no summary notifications for now
+        // results in "ghost notifications" for now
+        if(sbn.notification.flags and Notification.FLAG_GROUP_SUMMARY != 0) return
+
         if(updateNotification(sbn)) return;
 
         val row = NotificationRow.createNotification(mApplication!!, sbn)
