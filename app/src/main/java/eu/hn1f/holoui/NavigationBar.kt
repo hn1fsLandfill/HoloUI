@@ -46,21 +46,6 @@ private val KEY_ICONS_KITKAT = arrayOf(
     )
 )
 
-private val KEY_ICONS_M1 = arrayOf(
-    intArrayOf(
-        R.drawable.ic_m_sysbar_back_ime,
-        R.drawable.ic_m_sysbar_back,
-        R.drawable.ic_m_sysbar_home,
-        R.drawable.ic_m_sysbar_recent
-    ),
-    intArrayOf(
-        R.drawable.ic_m_sysbar_back_ime,
-        R.drawable.ic_m_sysbar_back,
-        R.drawable.ic_m_sysbar_home,
-        R.drawable.ic_m_sysbar_recent
-    )
-)
-
 class NavigationBar(val context: Context) {
     val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     var root: LinearLayout? = null
