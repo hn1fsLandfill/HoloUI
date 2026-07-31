@@ -186,7 +186,14 @@ class NotificationListener: NotificationListenerService() {
         notifications.add(NotificationData(sbn, row, sbn.key, showInStatusBar))
         updateStatusBar()
 
-        if(channel?.sound != null && channel.importance != NotificationManager.IMPORTANCE_LOW) {
+        val playSound = when(channel?.importance) {
+            NotificationManager.IMPORTANCE_LOW,
+            NotificationManager.IMPORTANCE_MIN,
+            NotificationManager.IMPORTANCE_NONE -> false
+            else -> true
+        }
+
+        if(channel?.sound != null && playSound) {
             Sounds(mApplication!!).playUri(channel.sound)
         }
     }
