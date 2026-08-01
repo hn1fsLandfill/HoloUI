@@ -51,6 +51,8 @@ class NotificationRow: LinearLayout {
         private var velocityTracker: VelocityTracker? = null
         private var offsetX = 0f
         private var densityScale = 0f
+        // OH MY slop!!!
+        private var touchSlop = 0f
         private var dragging = false
 
         companion object {
@@ -60,6 +62,10 @@ class NotificationRow: LinearLayout {
 
         fun setDensityScale(value: Float) {
             densityScale = value
+        }
+
+        fun setTouchSlop(value: Float) {
+            touchSlop = value
         }
 
         fun onInterceptTouchEvent(e: MotionEvent): Boolean {
@@ -74,8 +80,9 @@ class NotificationRow: LinearLayout {
                     return true
                 }
                 MotionEvent.ACTION_MOVE -> {
+                    if(offsetX > touchSlop || -offsetX > touchSlop)
+                        dragging = true
                     velocityTracker!!.addMovement(e)
-                    dragging = true
                     row.translationX = e.x-offsetX
                     return true
                 }
@@ -102,8 +109,7 @@ class NotificationRow: LinearLayout {
                                 callback.childDismissed()
                             }
                             .start()
-                    else if(velocityTracker!!.xVelocity < 10*densityScale && row.translationX > 0
-                        && row.translationX < 10*densityScale) {
+                    else if(!dragging) {
                         row.callOnClick()
                         row.animate()
                             .translationX(0f)
@@ -142,6 +148,8 @@ class NotificationRow: LinearLayout {
             }
         }, container)
         mSwipeHelper.setDensityScale(resources.displayMetrics.density)
+        val touchSlop = ViewConfiguration.get(context).scaledPagingTouchSlop
+        mSwipeHelper.setTouchSlop(touchSlop.toFloat())
     }
 
     fun marginLayout(): LayoutParams {
@@ -233,8 +241,8 @@ class NotificationRow: LinearLayout {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         mSwipeHelper.setDensityScale(resources.displayMetrics.density)
-        // val pagingTouchSlop = ViewConfiguration.get(context).scaledPagingTouchSlop.toFloat()
-        // mSwipeHelper.setPagingTouchSlop(pagingTouchSlop)
+        val pagingTouchSlop = ViewConfiguration.get(context).scaledPagingTouchSlop
+        mSwipeHelper.setTouchSlop(pagingTouchSlop.toFloat())
     }
 
     override fun setOnLongClickListener(l: OnLongClickListener?) {
