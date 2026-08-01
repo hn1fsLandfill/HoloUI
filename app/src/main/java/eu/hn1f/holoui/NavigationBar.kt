@@ -133,6 +133,7 @@ class NavigationBar(val context: Context) {
             InsetsFrameProvider(token, 0, WindowInsets.Type.navigationBars())
                 .setInsetsSize(Insets.of(0,barHeight,0,0))
         )
+        lp.setTrustedOverlay()
         windowManager.addView(root, lp)
     }
 

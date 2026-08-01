@@ -172,6 +172,7 @@ class StatusBar(val context: Context) {
                 .setSource(InsetsFrameProvider.SOURCE_DISPLAY)
                 .setInsetsSize(Insets.of(0,barHeight,0,0))
         )
+        lp.setTrustedOverlay()
         windowManager.addView(root, lp)
     }
 
