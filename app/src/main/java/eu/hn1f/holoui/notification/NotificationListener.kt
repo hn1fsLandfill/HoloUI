@@ -182,8 +182,8 @@ class NotificationListener: NotificationListenerService() {
 
         // expanded for now
         row.setExpanded(true)
-        notificationsView!!.addView(row)
-        notifications.add(NotificationData(sbn, row, sbn.key, showInStatusBar))
+        notificationsView!!.addView(row, ranking.rank)
+        notifications.add(ranking.rank, NotificationData(sbn, row, sbn.key, showInStatusBar))
         updateStatusBar()
 
         val playSound = when(channel?.importance) {
