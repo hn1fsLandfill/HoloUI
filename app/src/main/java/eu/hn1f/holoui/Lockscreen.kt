@@ -103,6 +103,7 @@ class Lockscreen(val context: Context) {
         val form = root.findViewById<EditText>(R.id.password_form)
         val lockPattern = LockPatternUtils(context)
 
+        // FIXME: Background is stretched
         root.background = wallpaperManager.drawable
 
         form.visibility = View.GONE
