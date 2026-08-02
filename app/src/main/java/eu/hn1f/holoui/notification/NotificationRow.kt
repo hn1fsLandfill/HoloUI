@@ -1,19 +1,12 @@
 package eu.hn1f.holoui.notification
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.Configuration
 import android.service.notification.StatusBarNotification
-import android.util.Log
 import android.view.Gravity
-import android.view.MotionEvent
-import android.view.VelocityTracker
 import android.view.View
-import android.view.ViewConfiguration
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import eu.hn1f.holoui.R
-import kotlin.contracts.contract
 
 class NotificationRow: LinearLayout {
     companion object {
@@ -43,125 +36,9 @@ class NotificationRow: LinearLayout {
     private val notificationDividerHeight
             = resources.getDimensionPixelSize(R.dimen.notification_divider_height)
 
-    class SwipeHelper(val callback: Callback, val row: View) {
-        interface Callback {
-            fun childDismissed()
-            fun isClearable(): Boolean
-            fun dragStarted()
-            fun dragEnded()
-        }
-        private var velocityTracker: VelocityTracker? = null
-        private var offsetX = 0f
-        private var densityScale = 0f
-        // OH MY slop!!!
-        private var touchSlop = 0f
-        private var dragging = false
-
-        companion object {
-            private const val MAX_DISMISS_VELOCITY = 2000f
-            private const val SWIPE_ESCAPE_VELOCITY = 100f
-        }
-
-        fun setDensityScale(value: Float) {
-            densityScale = value
-        }
-
-        fun setTouchSlop(value: Float) {
-            touchSlop = value
-        }
-
-        fun onInterceptTouchEvent(e: MotionEvent): Boolean {
-            return dragging
-        }
-
-        fun onTouchEvent(e: MotionEvent): Boolean {
-            when(e.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    offsetX = e.x
-                    velocityTracker = VelocityTracker.obtain()
-                    return true
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    if(offsetX > touchSlop || -offsetX > touchSlop) {
-                        dragging = true
-                        callback.dragStarted()
-                    }
-                    velocityTracker!!.addMovement(e)
-                    row.translationX = e.x-offsetX
-                    return true
-                }
-                MotionEvent.ACTION_CANCEL -> {
-                    row.animate()
-                        .translationX(0f)
-                        .setDuration(200)
-                        .start()
-                    dragging = false
-                    try {
-                        velocityTracker!!.recycle()
-                    } catch(ignored: IllegalStateException) {}
-                    return true
-                }
-                MotionEvent.ACTION_UP -> {
-                    val maxVelocity = MAX_DISMISS_VELOCITY * densityScale
-                    val swipeEscape = SWIPE_ESCAPE_VELOCITY * densityScale
-                    velocityTracker!!.computeCurrentVelocity(1000, maxVelocity)
-                    if(velocityTracker!!.xVelocity > swipeEscape && callback.isClearable())
-                        row.animate()
-                            .translationX(row.width.toFloat())
-                            .setDuration(200)
-                            .withEndAction {
-                                callback.childDismissed()
-                            }
-                            .start()
-                    else if(!dragging) {
-                        row.callOnClick()
-                        row.animate()
-                            .translationX(0f)
-                            .setDuration(200)
-                            .start()
-                    } else
-                        row.animate()
-                            .translationX(0f)
-                            .setDuration(200)
-                            .start()
-                    dragging = false
-                    try {
-                        velocityTracker!!.recycle()
-                    } catch(ignored: IllegalStateException) {}
-                    callback.dragEnded()
-                    return true
-                }
-            }
-            return false
-        }
-    }
-
-    val mSwipeHelper: SwipeHelper
     private constructor(context: Context) : super(context) {
         container = FrameLayout(context)
         container.isClickable = false
-        // i still gotta figure out swipehelper shit
-        // or i might just rip out the code and throw it here
-
-        mSwipeHelper = SwipeHelper(object : SwipeHelper.Callback {
-            override fun childDismissed() {
-                clearCallback?.onClearCallback(sbn!!)
-            }
-
-            override fun isClearable(): Boolean {
-                return sbn!!.isClearable
-            }
-
-            override fun dragStarted() {
-                parent.requestDisallowInterceptTouchEvent(true)
-            }
-            override fun dragEnded() {
-                // parent.requestDisallowInterceptTouchEvent(false)
-            }
-        }, container)
-        mSwipeHelper.setDensityScale(resources.displayMetrics.density)
-        val touchSlop = ViewConfiguration.get(context).scaledPagingTouchSlop
-        mSwipeHelper.setTouchSlop(touchSlop.toFloat())
     }
 
     fun marginLayout(): LayoutParams {
@@ -250,40 +127,21 @@ class NotificationRow: LinearLayout {
         super.onLayout(changed, left, top, right, bottom)
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        mSwipeHelper.setDensityScale(resources.displayMetrics.density)
-        val pagingTouchSlop = ViewConfiguration.get(context).scaledPagingTouchSlop
-        mSwipeHelper.setTouchSlop(pagingTouchSlop.toFloat())
-    }
-
-    override fun setOnLongClickListener(l: OnLongClickListener?) {
-        // TODO
-        // mSwipeHelper.setLongPressListener(l)
-    }
-
-    override fun setOnClickListener(l: OnClickListener?) {
-        container.setOnClickListener(l)
-        container.isClickable = false
-    }
-
-    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
-        Log.v("HoloUI", "onInterceptSlop")
-        return mSwipeHelper.onInterceptTouchEvent(ev) || super.onInterceptTouchEvent(ev)
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        return mSwipeHelper.onTouchEvent(event) || super.onTouchEvent(event)
+    fun isClearable(): Boolean {
+        return sbn!!.isClearable
     }
 
     interface ClearCallback {
         fun onClearCallback(sbn: StatusBarNotification)
     }
 
-    var clearCallback: ClearCallback? = null
+    private var clearCallback: ClearCallback? = null
 
     fun setOnClearListener(callback: ClearCallback) {
         clearCallback = callback
+    }
+
+    fun callOnClear() {
+        clearCallback?.onClearCallback(sbn!!)
     }
 }
