@@ -47,6 +47,8 @@ class NotificationRow: LinearLayout {
         interface Callback {
             fun childDismissed()
             fun isClearable(): Boolean
+            fun dragStarted()
+            fun dragEnded()
         }
         private var velocityTracker: VelocityTracker? = null
         private var offsetX = 0f
@@ -80,8 +82,10 @@ class NotificationRow: LinearLayout {
                     return true
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    if(offsetX > touchSlop || -offsetX > touchSlop)
+                    if(offsetX > touchSlop || -offsetX > touchSlop) {
                         dragging = true
+                        callback.dragStarted()
+                    }
                     velocityTracker!!.addMovement(e)
                     row.translationX = e.x-offsetX
                     return true
@@ -124,6 +128,7 @@ class NotificationRow: LinearLayout {
                     try {
                         velocityTracker!!.recycle()
                     } catch(ignored: IllegalStateException) {}
+                    callback.dragEnded()
                     return true
                 }
             }
@@ -145,6 +150,13 @@ class NotificationRow: LinearLayout {
 
             override fun isClearable(): Boolean {
                 return sbn!!.isClearable
+            }
+
+            override fun dragStarted() {
+                parent.requestDisallowInterceptTouchEvent(true)
+            }
+            override fun dragEnded() {
+                // parent.requestDisallowInterceptTouchEvent(false)
             }
         }, container)
         mSwipeHelper.setDensityScale(resources.displayMetrics.density)
