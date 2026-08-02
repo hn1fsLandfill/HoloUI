@@ -100,7 +100,7 @@ class NotificationListener: NotificationListenerService() {
             if(!sbn.isClearable) continue
 
             sbn.notification.deleteIntent?.send()
-            onNotificationRemoved(sbn)
+            cancelNotification(sbn.key)
         }
     }
 
@@ -154,11 +154,11 @@ class NotificationListener: NotificationListenerService() {
             shade!!.hide()
 
             if(sbn.isClearable)
-                onNotificationRemoved(sbn)
+                cancelNotification(sbn.key)
         }
         row.setOnClearListener(object : NotificationRow.ClearCallback {
             override fun onClearCallback(sbn: StatusBarNotification) {
-                onNotificationRemoved(sbn)
+                cancelNotification(sbn.key)
             }
         })
 
@@ -182,8 +182,14 @@ class NotificationListener: NotificationListenerService() {
 
         // expanded for now
         row.setExpanded(true)
-        notificationsView!!.addView(row, ranking.rank)
-        notifications.add(ranking.rank, NotificationData(sbn, row, sbn.key, showInStatusBar))
+        val data = NotificationData(sbn, row, sbn.key, showInStatusBar)
+        try {
+            notificationsView!!.addView(row, ranking.rank)
+            notifications.add(ranking.rank, data)
+        } catch(e: IndexOutOfBoundsException) {
+            notificationsView!!.addView(row)
+            notifications.add(data)
+        }
         updateStatusBar()
 
         val playSound = when(channel?.importance) {
