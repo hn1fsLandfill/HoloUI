@@ -18,11 +18,11 @@ import eu.hn1f.holoui.widgets.Notification
 import eu.hn1f.holoui.widgets.StatusBarNotificationIcons
 
 // TODO (aka get it to a usable stage):
-// [P] Authentication stuff (Biometrics and Patterns aren't implemented)
-// [P] Navigation bar (Landscape navbar isn't implemented)
+// [P] Authentication stuff (Patterns aren't implemented)
+// [P] Navigation bar (landscape navbar is a little buggy)
 // [] Pulling the navigation bar or status bar in fullscreen apps
 // [P] Notifications (mostly buggy)
-// [] Volume dialog (nice to have)
+// [P] Volume dialog (nice to have; somewhat buggy)
 // [] Power menu (android has a timeout for a fallback)
 
 class SystemUIApplication: Application() {

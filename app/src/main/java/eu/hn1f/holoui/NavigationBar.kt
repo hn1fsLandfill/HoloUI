@@ -107,7 +107,6 @@ class NavigationBar(val context: Context) {
         root?.setBackgroundColor(Color.BLACK)
     }
 
-    // TODO: Landscape navigation bar
     fun add() {
         if(root != null) return;
         root = inflater.inflate(R.layout.navigation_bar, null) as LinearLayout?
