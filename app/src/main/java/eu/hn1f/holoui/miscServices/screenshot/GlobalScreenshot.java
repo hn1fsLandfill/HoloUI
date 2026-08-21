@@ -151,7 +151,7 @@ class SaveImageInBackgroundTask extends AsyncTask<SaveImageInBackgroundData, Voi
         int iconSize = data.iconSize;
 
         final int shortSide = mImageWidth < mImageHeight ? mImageWidth : mImageHeight;
-        Bitmap preview = Bitmap.createBitmap(shortSide, shortSide, Bitmap.Config.ARGB_8888x);
+        Bitmap preview = Bitmap.createBitmap(shortSide, shortSide, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(preview);
         Paint paint = new Paint();
         ColorMatrix desat = new ColorMatrix();
