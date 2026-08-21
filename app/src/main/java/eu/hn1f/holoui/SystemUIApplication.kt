@@ -12,6 +12,7 @@ import android.security.authenticationpolicy.AuthenticationPolicyManager
 import android.service.notification.StatusBarNotification
 import android.util.Log
 import com.android.internal.policy.IKeyguardStateCallback
+import eu.hn1f.holoui.miscServices.NotificationChannels
 import eu.hn1f.holoui.notification.NotificationListener
 import eu.hn1f.holoui.recent.Recents
 import eu.hn1f.holoui.widgets.Notification
@@ -39,6 +40,7 @@ class SystemUIApplication: Application() {
 
     override fun onCreate() {
         super.onCreate()
+        NotificationChannels.create(this)
     }
 
     fun runInUIThread(r: Runnable) {

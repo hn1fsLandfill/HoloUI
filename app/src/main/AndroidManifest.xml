@@ -64,6 +64,26 @@
             </intent-filter>
         </service>
 
+        <service android:name=".miscServices.screenshot.TakeScreenshotService"
+            android:permission="com.android.systemui.permission.SELF"
+            android:process=":screenshot"
+            android:exported="false" />
+
+        <!-- Called from PhoneWindowManager -->
+        <receiver android:name=".miscServices.screenshot.ScreenshotServiceErrorReceiver"
+            android:process=":screenshot"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.android.systemui.screenshot.SHOW_ERROR" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".miscServices.DozeService"
+            android:exported="true"
+            android:singleUser="true"
+            android:permission="android.permission.BIND_DREAM_SERVICE" />
+
         <activity
             android:name=".activities.Settings"
             android:exported="true"

@@ -165,6 +165,20 @@
     <!-- Content description to tell the user an application has been removed from recents -->
     <string name="accessibility_recents_item_dismissed"><xliff:g id="app" example="Calendar">%s</xliff:g> dismissed.</string>
 
+    <!-- Notification ticker displayed when a screenshot is being saved to the Gallery. [CHAR LIMIT=30] -->
+    <string name="screenshot_saving_ticker">Saving screenshot\u2026</string>
+    <!-- Notification title displayed when a screenshot is being saved to the Gallery. [CHAR LIMIT=50] -->
+    <string name="screenshot_saving_title">Saving screenshot\u2026</string>
+    <!-- Notification text displayed when a screenshot is being saved to the Gallery. [CHAR LIMIT=100] -->
+    <string name="screenshot_saving_text">Screenshot is being saved.</string>
+    <!-- Notification title displayed when a screenshot is saved to the Gallery. [CHAR LIMIT=50] -->
+    <string name="screenshot_saved_title">Screenshot captured.</string>
+    <!-- Notification text displayed when a screenshot is saved to the Gallery. [CHAR LIMIT=100] -->
+    <string name="screenshot_saved_text">Touch to view your screenshot.</string>
+    <!-- Notification title displayed when we fail to take a screenshot. [CHAR LIMIT=50] -->
+    <string name="screenshot_failed_title">Couldn\'t capture screenshot.</string>
+    <!-- Notification text displayed when we fail to take a screenshot. [CHAR LIMIT=100] -->
+    <string name="screenshot_failed_text">Couldn\'t save screenshot. Storage may be in use.</string>
 
 
     <!-- Content description of the battery level icon for accessibility (not shown on the screen). [CHAR LIMIT=NONE] -->

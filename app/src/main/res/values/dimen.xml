@@ -112,7 +112,8 @@
     <dimen name="notification_title_text_size">18dp</dimen>
     <!-- Size of smaller notification text (see TextAppearance.StatusBar.EventContent.Line2, Info, Time) -->
     <dimen name="notification_subtext_size">12dp</dimen>
-    
+    <dimen name="global_screenshot_bg_padding">20dp</dimen>
+
     <!-- Where to place the app icon over the thumbnail -->
     <dimen name="status_bar_recents_app_icon_left_margin">0dp</dimen>
     <dimen name="status_bar_recents_app_icon_top_margin">8dp</dimen>
