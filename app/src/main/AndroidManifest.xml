@@ -65,9 +65,8 @@
         </service>
 
         <service android:name=".miscServices.screenshot.TakeScreenshotService"
-            android:permission="com.android.systemui.permission.SELF"
             android:process=":screenshot"
-            android:exported="false" />
+            android:exported="true" />
 
         <!-- Called from PhoneWindowManager -->
         <receiver android:name=".miscServices.screenshot.ScreenshotServiceErrorReceiver"

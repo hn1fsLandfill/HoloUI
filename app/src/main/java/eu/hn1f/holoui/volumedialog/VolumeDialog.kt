@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
+import android.media.IVolumeController
 import android.media.ToneGenerator
 import android.os.Handler
 import android.os.Looper
@@ -20,8 +21,10 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import eu.hn1f.holoui.R
+import eu.hn1f.holoui.runInUIThread
 
 private const val MSG_TIMEOUT = 1
+private const val MSG_TRIGGER = 2
 
 class VolumeDialog: Handler {
     private val mContext: Context
@@ -32,6 +35,41 @@ class VolumeDialog: Handler {
     private val mSliderIcon: ImageView
     private val mTone: ToneGenerator
     private val mAudioManager: AudioManager
+
+    private val mVolumeController = object : IVolumeController.Stub() {
+        override fun dismiss() {
+            dispatchMessage(Message.obtain(null, MSG_TIMEOUT))
+        }
+
+        override fun displaySafeVolumeWarning(flags: Int) {
+            // TODO("Not yet implemented")
+        }
+
+        override fun volumeChanged(streamType: Int, flags: Int) {
+            if(streamType != AudioManager.STREAM_MUSIC) return // TODO
+
+            if(flags and AudioManager.FLAG_SHOW_UI != 0) {
+                dispatchMessage(Message.obtain(null, MSG_TRIGGER))
+            }
+        }
+
+        override fun masterMuteChanged(flags: Int) {
+            // TODO("Not yet implemented")
+        }
+
+        override fun setA11yMode(mode: Int) {
+            // TODO("Not yet implemented")
+        }
+
+        override fun setLayoutDirection(direction: Int) {
+            // TODO("Not yet implemented")
+        }
+
+        override fun displayCsdWarning(warning: Int, displayDurationMs: Int) {
+            // TODO("Not yet implemented")
+        }
+
+    }
 
     private val volumeBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -48,6 +86,8 @@ class VolumeDialog: Handler {
     constructor(context: Context): super(Looper.getMainLooper()) {
         mContext = context
         mAudioManager = context.getSystemService(AudioManager::class.java)
+
+        mAudioManager.setVolumeController(mVolumeController)
 
         val inflater = LayoutInflater.from(context)
         mDialogView = inflater.inflate(
@@ -123,8 +163,11 @@ class VolumeDialog: Handler {
 
     override fun handleMessage(msg: Message) {
         super.handleMessage(msg)
-        when(msg.what) {
-            MSG_TIMEOUT -> mDialog.dismiss()
+        runInUIThread {
+            when (msg.what) {
+                MSG_TIMEOUT -> mDialog.dismiss()
+                MSG_TRIGGER -> onTrigger(VolumeType.VOLUME_UP)
+            }
         }
     }
 }

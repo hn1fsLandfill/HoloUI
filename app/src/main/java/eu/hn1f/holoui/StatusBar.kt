@@ -184,15 +184,7 @@ class StatusBar(val context: Context) {
     }
 
     fun handleSystemKey(keyEvent: KeyEvent) {
-        // todo
-        if(keyEvent.action != KeyEvent.ACTION_DOWN) return
 
-        runInUIThread {
-            when (keyEvent.keyCode) {
-                KeyEvent.KEYCODE_VOLUME_UP -> mVolumeDialog.onTrigger(VolumeDialog.VolumeType.VOLUME_UP)
-                KeyEvent.KEYCODE_VOLUME_DOWN -> mVolumeDialog.onTrigger(VolumeDialog.VolumeType.VOLUME_DOWN)
-            }
-        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
