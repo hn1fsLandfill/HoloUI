@@ -19,6 +19,12 @@ FOR_36.2() {
   addFlag IS_BAKLAVA_QPR1_LATER
   addFlag IS_BAKLAVA_QPR2_LATER
 }
+FOR_37.0() {
+  echo "Using Android 17 flags"
+  addFlag IS_BAKLAVA_QPR1_LATER
+  addFlag IS_BAKLAVA_QPR2_LATER
+  addFlag IS_CINNAMON_BUN
+}
 
 notPresent=""
 isPresent() {
@@ -62,6 +68,7 @@ rm -f app/src/target.sh
 touch app/src/target.sh
 if ! "FOR_$SDK_VERSION" 2>/dev/null; then
   echo "Your Android version (SDK $SDK_VERSION) doesn't seem to be supported :("
+  exit 1
 else
   echo "SDK $SDK_VERSION is supported!"
 fi

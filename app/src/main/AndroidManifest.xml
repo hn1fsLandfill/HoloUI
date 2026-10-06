@@ -8,6 +8,7 @@
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_WALLPAPER_INTERNAL"/>
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission
         android:name="android.permission.STATUS_BAR"
         tools:ignore="ProtectedPermissions" />
@@ -63,6 +64,11 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
+
+        <service android:name=".miscServices.ImageWallpaper"
+                android:singleUser="true"
+                android:permission="android.permission.BIND_WALLPAPER"
+                android:exported="true" />
 
         <service android:name=".miscServices.screenshot.TakeScreenshotService"
             android:process=":screenshot"

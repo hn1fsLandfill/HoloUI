@@ -14,6 +14,9 @@ import com.android.internal.policy.IKeyguardDrawnCallback
 import com.android.internal.policy.IKeyguardExitCallback
 import com.android.internal.policy.IKeyguardService
 import com.android.internal.policy.IKeyguardStateCallback
+#ifdef CINNAMON_BUN
+import com.android.internal.policy.KeyguardState;
+#endif
 
 
 class KeyguardService: Service() {
@@ -43,7 +46,11 @@ class KeyguardService: Service() {
     private var mBinder = object: IKeyguardService.Stub() {
         var mApplication: SystemUIApplication? = null;
 
+        #ifdef CINNAMON_BUN
+        override fun setOccluded(isOccluded: Boolean) {
+        #else
         override fun setOccluded(isOccluded: Boolean, animate: Boolean) {
+        #endif
             trace("setOccluded")
         }
         override fun addStateMonitorCallback(callback: IKeyguardStateCallback) {
@@ -157,6 +164,18 @@ class KeyguardService: Service() {
         override fun showDismissibleKeyguard() {
             trace("showDismissibleKeyguard")
         }
+
+        #ifdef CINNAMON_BUN
+        override fun restoreKeyguardState(
+                p0: KeyguardState?,
+                p1: IKeyguardStateCallback?,
+                p2: IKeyguardDrawnCallback?,
+                p3: Boolean,
+                p4: Bundle?
+        ) {
+             trace("restoreKeyguardState")
+        }
+        #endif
     }
 
     override fun onCreate() {

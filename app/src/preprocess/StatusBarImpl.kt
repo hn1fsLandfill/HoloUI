@@ -28,6 +28,9 @@ import com.android.internal.statusbar.IUndoMediaTransferCallback
 import com.android.internal.statusbar.LetterboxDetails
 import com.android.internal.statusbar.StatusBarIcon
 import com.android.internal.view.AppearanceRegion
+#ifdef CINNAMON_BUN
+import android.app.motioncues.MotionCuesSettings
+#endif
 
 // TODO: (these are called on normal usage of a device without authentication)
 // appTransitionFinished
@@ -415,7 +418,7 @@ import com.android.internal.view.AppearanceRegion
     }
 
     // TODO: Tackle LineageOS's custom rebootCustom property
-    override fun showShutdownUi(isReboot: Boolean, reason: String?, /* rebootCustom: Boolean */) {
+    override fun showShutdownUi(isReboot: Boolean, reason: String? /* rebootCustom: Boolean */) {
         // TODO("Not yet implemented")
         mApplication!!.runInUIThread {
             val shutdownUI = AlertDialog.Builder(mApplication)
@@ -517,4 +520,12 @@ import com.android.internal.view.AppearanceRegion
         // TODO("Not yet implemented")
     }
 
+    #ifdef CINNAMON_BUN
+    override fun showOrHideGlobalActionsMenu() {}
+    override fun startMotionCuesSession(componentName: ComponentName, userId: Int,
+        motionCuesSettings: MotionCuesSettings) {}
+    override fun endMotionCuesSession() {}
+    override fun onDisplayInfoChanged() {}
+    override fun onConfigurationChanged() {}
+    #endif
 }

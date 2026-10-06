@@ -244,6 +244,7 @@ class Lockscreen(val context: Context) {
 
             val taskManager = ActivityTaskManager.getService()
             taskManager.setLockScreenShown(true, false)
+
             trustManager.reportKeyguardShowingChanged()
         }
     }

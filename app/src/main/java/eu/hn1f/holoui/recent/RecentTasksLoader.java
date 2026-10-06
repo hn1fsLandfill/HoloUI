@@ -36,7 +36,9 @@ import android.os.UserHandle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.window.ITaskSnapshotManager;
 import android.window.TaskSnapshot;
+import android.window.TaskSnapshotManager;
 
 import eu.hn1f.holoui.R;
 
@@ -193,9 +195,20 @@ public class RecentTasksLoader implements View.OnTouchListener {
         TaskSnapshot thumbnail_raw = null;
         Bitmap thumbnail = null;
 
-        try {
+
+        // todo: wrap this into a preprocess class because android bullshit
+
+        // android 16
+        /* try {
             thumbnail_raw = ActivityTaskManager.getService().getTaskSnapshot(
                     td.persistentTaskId, true
+            );
+        } catch (RemoteException ignored) {} */
+
+        // android 17
+        try {
+            thumbnail_raw = TaskSnapshotManager.getInstance().getTaskSnapshot(
+                        td.persistentTaskId, 0
             );
         } catch (RemoteException ignored) {}
 

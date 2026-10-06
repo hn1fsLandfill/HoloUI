@@ -14,6 +14,9 @@ fi
 if [ -n "$IS_BAKLAVA_QPR2_LATER" ]; then
   CPP_ARGS="$CPP_ARGS -DBAKLAVA_QPR2_LATER"
 fi
+if [ -n "$IS_CINNAMON_BUN" ]; then
+  CPP_ARGS="$CPP_ARGS -DCINNAMON_BUN"
+fi
 
 toPreprocess() {
   # shellcheck disable=SC2086
