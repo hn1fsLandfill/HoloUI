@@ -41,6 +41,7 @@ import android.window.TaskSnapshot;
 import android.window.TaskSnapshotManager;
 
 import eu.hn1f.holoui.R;
+import eu.hn1f.holoui.TaskSnapshotWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -195,22 +196,7 @@ public class RecentTasksLoader implements View.OnTouchListener {
         TaskSnapshot thumbnail_raw = null;
         Bitmap thumbnail = null;
 
-
-        // todo: wrap this into a preprocess class because android bullshit
-
-        // android 16
-        /* try {
-            thumbnail_raw = ActivityTaskManager.getService().getTaskSnapshot(
-                    td.persistentTaskId, true
-            );
-        } catch (RemoteException ignored) {} */
-
-        // android 17
-        try {
-            thumbnail_raw = TaskSnapshotManager.getInstance().getTaskSnapshot(
-                        td.persistentTaskId, 0
-            );
-        } catch (RemoteException ignored) {}
+        thumbnail_raw = TaskSnapshotWrapper.getTaskSnapshot(td.persistentTaskId);
 
         if(thumbnail_raw != null) {
             thumbnail = Bitmap.wrapHardwareBuffer(

@@ -29,3 +29,4 @@ toPreprocess() {
 
 toPreprocess KeyguardService.kt || exit 1
 toPreprocess StatusBarImpl.kt || exit 1
+toPreprocess TaskSnapshotWrapper.java || exit 1
