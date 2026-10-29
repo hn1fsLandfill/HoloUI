@@ -199,9 +199,7 @@ public class RecentTasksLoader implements View.OnTouchListener {
         thumbnail_raw = TaskSnapshotWrapper.getTaskSnapshot(td.persistentTaskId);
 
         if(thumbnail_raw != null) {
-            thumbnail = Bitmap.wrapHardwareBuffer(
-                    thumbnail_raw.getHardwareBuffer(), thumbnail_raw.getColorSpace()
-            );
+            thumbnail = thumbnail_raw.wrapToBitmap();
         }
 
         Drawable icon = getFullResIcon(td.resolveInfo, pm);
