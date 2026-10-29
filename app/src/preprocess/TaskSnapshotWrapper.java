@@ -13,7 +13,7 @@ public class TaskSnapshotWrapper {
         try {
     #ifdef CINNAMON_BUN
         return TaskSnapshotManager.getInstance().getTaskSnapshot(
-            taskID, 0
+            taskID, 3 // RESOLUTION_ANY
         );
     #else
         return ActivityTaskManager.getService().getTaskSnapshot(
