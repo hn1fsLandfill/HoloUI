@@ -65,7 +65,7 @@ public class ImageWallpaper extends WallpaperService {
     private static final boolean DEBUG = false;
     private static final String PROPERTY_KERNEL_QEMU = "ro.kernel.qemu";
 
-    static final boolean FIXED_SIZED_SURFACE = true;
+    static final boolean FIXED_SIZED_SURFACE = false;
     static final boolean USE_OPENGL = true;
 
     WallpaperManager mWallpaperManager;
