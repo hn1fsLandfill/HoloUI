@@ -15,6 +15,7 @@ import com.android.internal.policy.IKeyguardStateCallback
 import eu.hn1f.holoui.miscServices.NotificationChannels
 import eu.hn1f.holoui.notification.NotificationListener
 import eu.hn1f.holoui.recent.Recents
+import eu.hn1f.holoui.transitions.Transitions
 import eu.hn1f.holoui.widgets.Notification
 import eu.hn1f.holoui.widgets.StatusBarNotificationIcons
 
@@ -35,6 +36,8 @@ class SystemUIApplication: Application() {
     var lowBatteryWatcher: LowBatteryWatcher? = null
     var stateCallback: IKeyguardStateCallback? = null
     var recents: Recents? = null
+
+    var transitions: Transitions? = null
 
     var authenticationForm: Authentication? = null
 
@@ -81,6 +84,8 @@ class SystemUIApplication: Application() {
                 notificationListener = NotificationListener()
                 notificationListener!!.mApplication = this
                 notificationListener!!.registerAsSystemService()
+                transitions = Transitions()
+                transitions!!.register()
 
                 statusBarRunning = true
             }
