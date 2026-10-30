@@ -269,8 +269,14 @@ import android.app.motioncues.MotionCuesSettings
         // TODO("Not yet implemented")
     }
 
-    override fun removeIcon(p0: String?) {
+    override fun setIcon(slot: String, sbn: StatusBarIcon) {
         // TODO("Not yet implemented")
+        trace("seticon on ${sbn.pkg} $slot")
+    }
+
+    override fun removeIcon(slot: String?) {
+        // TODO("Not yet implemented")
+        trace("removeicon $slot")
     }
 
     override fun requestAddTile(
@@ -303,10 +309,6 @@ import android.app.motioncues.MotionCuesSettings
     override fun setBiometicContextListener(p0: IBiometricContextListener?) {
         // TODO("Not yet implemented")
         trace("TODO: setBiometicContextListener")
-    }
-
-    override fun setIcon(slot: String, sbn: StatusBarIcon) {
-        // TODO("Not yet implemented")
     }
 
     override fun setImeWindowStatus(
@@ -462,6 +464,7 @@ import android.app.motioncues.MotionCuesSettings
         // TODO("Not yet implemented")
     }
 
+    // Use power button for digital assistant thingy
     override fun startAssist(p0: Bundle?) {
         trace("TODO: startAssist")
         // TODO("Not yet implemented")
