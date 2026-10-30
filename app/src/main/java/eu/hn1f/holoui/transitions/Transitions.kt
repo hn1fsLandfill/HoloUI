@@ -2,17 +2,15 @@ package eu.hn1f.holoui.transitions
 
 import android.app.ActivityTaskManager
 import android.os.IBinder
-import android.transition.Transition
 import android.view.SurfaceControl
 import android.window.ITransitionPlayer
 import android.window.StartingWindowRemovalInfo
 import android.window.TransitionInfo
 import android.window.TransitionRequestInfo
-import android.window.WindowOrganizer
 import kotlin.concurrent.thread
 
 class Transitions {
-    val controller = ActivityTaskManager.getService().windowOrganizerController
+    val controller = ActivityTaskManager.getService().windowOrganizerController!!
 
     val player = object: ITransitionPlayer.Stub() {
         override fun onTransitionReady(
@@ -24,8 +22,10 @@ class Transitions {
             thread {
                 // do shit with T later
                 t.apply()
-                controller.finishTransition(iBinder, null)
+                t.close()
                 transitionInfo.releaseAllSurfaces()
+
+                controller.finishTransition(iBinder, null)
             }
         }
 
