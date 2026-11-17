@@ -38,6 +38,7 @@ android {
 dependencies {
     compileOnly(files("../stub/stubs.jar"))
     compileOnly(files("../libs/framework.jar"))
+    implementation(files("../animationEngine/animationEngine.jar"))
 }
 
 tasks.register("preprocess") {

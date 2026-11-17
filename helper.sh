@@ -3,6 +3,11 @@
 export DEX2JAR_ZIP="https://github.com/ThexXTURBOXx/dex2jar/releases/download/2.4.38/dex-tools-2.4.38.zip"
 export DEX2JAR_SHA256="5d88e269bd120852fec68de268f6900f5466601e06ca8c16611f4377c6254e5c"
 
+exitEcho() {
+  echo "$1"
+  exit 1
+}
+
 addFlag() {
   echo "export $1=1" >> app/src/target.sh
 }
@@ -51,6 +56,7 @@ fi
 PATH="$PATH:$ANDROID_HOME/platform-tools"
 
 isPresent java
+isPresent javac
 isPresent adb
 isPresent curl
 isPresent unzip
@@ -92,6 +98,12 @@ mkdir dump
   adb pull /system/framework/framework.jar framework.jar
   sh d2j/d2j-dex2jar.sh framework.jar
   cp framework-dex2jar.jar ../libs/framework.jar
-) || ( echo "Couldn't convert device's framework.jar :(")
+) || exitEcho "Couldn't convert device's framework.jar :("
+
+echo "Compiling the animation engine"
+(
+  cd animationEngine
+  ./build.sh
+) || exitEcho "Couldn't compile the animation engine :("
 
 echo "You may compile HoloUI as normal now"

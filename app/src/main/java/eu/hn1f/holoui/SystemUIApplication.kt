@@ -85,7 +85,7 @@ class SystemUIApplication: Application() {
                 notificationListener!!.mApplication = this
                 notificationListener!!.registerAsSystemService()
                 transitions = Transitions()
-                transitions!!.register()
+                transitions!!.register(this)
 
                 statusBarRunning = true
             }

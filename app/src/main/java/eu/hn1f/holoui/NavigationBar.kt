@@ -76,6 +76,20 @@ class NavigationBar(val context: Context) {
                 }
             }
         )
+
+        try {
+            inputManager.registerKeyGestureEventHandler(
+                listOf(KeyGestureEvent.KEY_GESTURE_TYPE_HOME),
+                object : InputManager.KeyGestureEventHandler {
+                    override fun handleKeyGestureEvent(ev: KeyGestureEvent, binder: IBinder) {
+                        if(ev.action != KeyGestureEvent.ACTION_GESTURE_COMPLETE || ev.isCancelled)
+                            return;
+
+                        Log.v("HoloUI", "TODO: Home")
+                    }
+                }
+            )
+        } catch (ignored: Exception) {}
     }
 
     fun reloadSettings() {
